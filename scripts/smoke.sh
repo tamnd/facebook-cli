@@ -24,7 +24,12 @@ fail=0
 walled=0
 
 # run <description> -- <command...>
-# Passes when the command returns data, or exits 3/4 (documented walls).
+# A live read passes when it returns data (exit 0 with output), reports an empty
+# but valid result (exit 0, no output -- e.g. a page with no events), or exits
+# 3/4 (documented content-unavailable / login-wall). Anonymous Facebook serves a
+# given endpoint as an error shell on one request and a real-but-empty page on
+# the next, so all three are clean outcomes. Only an undocumented exit code
+# (1 generic, 2 usage, 5 rate-limit, 6 network, 127 not-found) is a failure.
 run() {
 	local desc="$1"; shift
 	[ "$1" = "--" ] && shift
@@ -33,6 +38,9 @@ run() {
 	rc=$?
 	if [ $rc -eq 0 ] && [ -n "$out" ]; then
 		echo "ok    $desc"
+		pass=$((pass + 1))
+	elif [ $rc -eq 0 ]; then
+		echo "ok    $desc (empty, valid)"
 		pass=$((pass + 1))
 	elif [ $rc -eq 4 ] || [ $rc -eq 3 ]; then
 		echo "wall  $desc (exit $rc, needs a session)"
