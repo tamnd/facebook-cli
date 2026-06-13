@@ -39,13 +39,29 @@ fb comments <url> --limit 200 -o jsonl
 ```
 
 Nested replies are not expanded by default, since that is an extra fetch per
-comment. Add `--replies` to pull them:
+comment. Add `--replies` to pull them. Each reply carries a `parent_id` pointing
+at the comment it answers, so you can rebuild the tree downstream:
 
 ```sh
 fb comments <url> --replies --limit 500 -o jsonl
 ```
 
 `--order chrono|ranked` picks Facebook's chronological or ranked ordering.
+
+### Downloading everything
+
+Both the comment walk and the reply walk follow Facebook's pagination to the end
+on their own; the only bound is `--limit`. Pass `--limit 0` (or `-n 0`) to take
+the whole thread, replies and all:
+
+```sh
+fb comments <url> --replies -n 0 -o jsonl > thread.jsonl
+```
+
+The same holds for feeds: `fb page <slug> --posts -n 0` walks the timeline until
+the next-page cursor runs out, so you capture every post the surface exposes, not
+a fixed first page. Pair it with `--since YYYY-MM-DD` to stop at a date instead
+of the very end.
 
 ## Reactions
 
