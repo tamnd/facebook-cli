@@ -192,6 +192,62 @@ func TestParsePageSSR(t *testing.T) {
 	}
 }
 
+func TestParseGroupSSR(t *testing.T) {
+	doc := `<meta property="og:title" content="Python | Facebook" />` +
+		`<meta property="og:description" content="This is a group for Python developers. 1,234,567 members" />` +
+		`<meta property="og:image" content="https://scontent.test/cover.jpg" />` +
+		`<meta property="og:url" content="https://www.facebook.com/groups/python/" />` +
+		`{"visibility":"OPEN"}`
+	g := parseGroupSSR(doc, "python")
+	if g.Name != "Python" {
+		t.Errorf("Name = %q", g.Name)
+	}
+	if g.Privacy != "public" {
+		t.Errorf("Privacy = %q", g.Privacy)
+	}
+	if g.MembersCount != 1234567 {
+		t.Errorf("MembersCount = %d", g.MembersCount)
+	}
+	if g.CoverURL != "https://scontent.test/cover.jpg" {
+		t.Errorf("CoverURL = %q", g.CoverURL)
+	}
+}
+
+func TestGroupVisibility(t *testing.T) {
+	cases := []struct {
+		doc  string
+		want string
+	}{
+		{`{"visibility":"OPEN"}`, "public"},
+		{`{"visibility":"CLOSED"}`, "private"},
+		{`{"visibility":"SECRET"}`, "private"},
+		{"This is a Public group on Facebook", "public"},
+		{"This is a Private group on Facebook", "private"},
+		{"no signal here", ""},
+	}
+	for _, c := range cases {
+		if got := groupVisibility(c.doc); got != c.want {
+			t.Errorf("groupVisibility(%q) = %q, want %q", c.doc, got, c.want)
+		}
+	}
+}
+
+func TestMembersFromDescription(t *testing.T) {
+	cases := []struct {
+		in   string
+		want int64
+	}{
+		{"1,234,567 members", 1234567},
+		{"42 members . 3 posts a day", 42},
+		{"A group for developers", 0},
+	}
+	for _, c := range cases {
+		if got := membersFromDescription(c.in); got != c.want {
+			t.Errorf("membersFromDescription(%q) = %d, want %d", c.in, got, c.want)
+		}
+	}
+}
+
 func TestWWWURL(t *testing.T) {
 	cases := []struct {
 		in   string

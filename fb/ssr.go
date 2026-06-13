@@ -266,6 +266,60 @@ func pageCountsFromDescription(desc string) (likes, talking int64) {
 	return likes, talking
 }
 
+// parseGroupSSR builds a Group record from a group's crawler page. The crawler
+// surface carries the group name, description, cover image, and visibility, but
+// not the member count, so MembersCount is only set when the description happens
+// to spell it out.
+func parseGroupSSR(doc, gid string) *Group {
+	og := ogMeta(doc)
+	name := firstNonEmpty(stripTitleSuffix(og["title"]), stripTitleSuffix(htmlTitle(doc)))
+	desc := og["description"]
+	return &Group{
+		GroupID:      gid,
+		Slug:         gid,
+		Name:         name,
+		Description:  truncate(desc, 1000),
+		Privacy:      groupVisibility(doc),
+		MembersCount: membersFromDescription(desc),
+		CoverURL:     og["image"],
+		URL:          firstNonEmpty(og["url"], "https://www.facebook.com/groups/"+gid),
+		FetchedAt:    time.Now(),
+	}
+}
+
+// groupVisibility maps the embedded group visibility enum, or a body-text
+// fallback, to fb's public/private vocabulary.
+func groupVisibility(doc string) string {
+	switch {
+	case strings.Contains(doc, `"visibility":"OPEN"`):
+		return "public"
+	case strings.Contains(doc, `"visibility":"CLOSED"`), strings.Contains(doc, `"visibility":"SECRET"`):
+		return "private"
+	}
+	low := strings.ToLower(doc)
+	switch {
+	case strings.Contains(low, "private group"):
+		return "private"
+	case strings.Contains(low, "public group"):
+		return "public"
+	}
+	return ""
+}
+
+var membersCountRe = regexp.MustCompile(`([0-9][0-9.,]*)\s*members`)
+
+// membersFromDescription pulls a "<n> members" count out of a group's Open Graph
+// description when one is present, and returns 0 otherwise.
+func membersFromDescription(desc string) int64 {
+	m := membersCountRe.FindStringSubmatch(strings.ToLower(desc))
+	if m == nil {
+		return 0
+	}
+	s := strings.NewReplacer(".", "", ",", "").Replace(m[1])
+	n, _ := strconv.ParseInt(s, 10, 64)
+	return n
+}
+
 // parsePostSSR builds a Post from a single post's crawler page.
 func parsePostSSR(doc string, id fbid.Identity, target string) *Post {
 	og := ogMeta(doc)
