@@ -1,75 +1,57 @@
 ---
-title: "Authentication"
-description: "Supply a Facebook session cookie, in any of three formats, to unlock full reads."
+title: "How fb reads Facebook"
+description: "fb reads the server-rendered pages Facebook serves to search engines, so there is no login and no browser."
 weight: 10
 ---
 
-Anonymous Facebook serves a login wall or a "content unavailable" shell for most
-reads. A session cookie from a browser where you are logged in unlocks full
-Pages, feeds, comment threads, and reaction lists. fb never logs in for you; it
-reuses a cookie you already have.
-
-## Getting a cookie
-
-Log in to Facebook in a browser, open the developer tools, and copy the `Cookie`
-request header for a facebook.com request, or export your cookies with a
-cookies.txt extension. The values that matter are `c_user`, `xs`, `datr`, and
-`fr`.
-
-## Supplying it
-
-fb reads the cookie from the first of these that is set:
-
-1. `--cookie "c_user=...; xs=..."`
-2. `--cookie-file <path>`
-3. `FACEBOOK_COOKIE` environment variable
-4. `FACEBOOK_COOKIE_FILE` environment variable
-
-The environment variable is usually the most convenient:
+fb does not log in. It reads the same server-rendered pages Facebook serves to
+search engines: the public version of a Page, profile, group, or post, with the
+text, counts, media, and a few preview comments baked into the HTML. There is no
+cookie, no password, and no browser to drive.
 
 ```sh
-export FACEBOOK_COOKIE="c_user=100000000000000; xs=...; datr=...; fr=..."
 fb whoami
 ```
 
 ```
-AUTHENTICATED  USER
-true           100000000000000
+MODE       USER_AGENT
+anonymous  Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 ```
 
-## Cookie file formats
+## What you get
 
-`--cookie-file` auto-detects three formats, so most exports just work:
+For a public Page, profile, group, or post, fb returns the same fields you would
+read on the page itself:
 
-- A **raw header line**: the value of the `Cookie:` header, with or without the
-  `Cookie:` prefix.
-- A **Netscape `cookies.txt`**: the tab-separated format browser extensions
-  export. fb keeps only the facebook.com cookies.
-- A **JSON export**: the array of `{name, value, domain}` objects extension
-  exports produce.
+- Page and profile records: name, about text, like and follower counts, avatar.
+- Posts: text, creation time, reaction, comment, and share counts, attached
+  media, and outbound links.
+- A handful of preview comments per post, with the commenter's name.
 
-```sh
-fb --cookie-file ~/fb-cookies.txt page nasa --posts
-```
+`fb id` classifies any URL or id offline and never touches the network.
 
-## What a session changes
+## The trade-off: depth
 
-| Without a session | With a session |
-| --- | --- |
-| Most reads exit `4` (login wall) | Full Pages, feeds, and threads |
-| `fb id` still works (no network) | `fb id` unchanged |
-| `fb whoami` reports `false` | `fb whoami` reports your uid |
+Reading the crawler surface keeps fb to a single binary with no login, at the
+cost of depth. Two limits are worth knowing:
+
+- **Recent posts only.** A feed exposes roughly the most recent posts, not the
+  full history. There is no deep pagination, so `--limit` above what the page
+  carries simply returns what is there.
+- **Preview comments only.** Each post carries a few preview comments, not the
+  full thread, and the commenter attribution is approximate. Comment timestamps
+  are not exposed on this surface.
+
+## What stays private
+
+Anything Facebook does not put on the public crawler page is not reachable: the
+content behind a login wall, private groups and profiles, full comment threads,
+and per-reactor lists. When a target is private or removed, fb exits `4` (login
+wall) or `3` (content unavailable) rather than guessing.
 
 ## Staying polite
 
-A real session is tied to your account, so fetch at a human pace. fb defaults to
-a two-second delay between requests (`--rate`) and caches responses on disk so
-re-runs do not hit Facebook again. Raising the rate or running many workers
-against one session risks a temporary block, which fb surfaces as exit `5`.
-
-## Security
-
-Treat a cookie like a password: it grants access to your account. Prefer
-`--cookie-file` or the environment variable over `--cookie` on the command line,
-since a literal flag value can land in your shell history. fb only ever sends the
-cookie to facebook.com hosts.
+fb defaults to a two-second delay between requests (`--rate`) and caches
+responses on disk, so re-runs do not hit Facebook again. Raising the rate or
+running many workers risks a temporary block, which fb surfaces as exit `5`.
+Fetch at a human pace.

@@ -3,6 +3,7 @@ package cli
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -32,8 +33,6 @@ type globalFlags struct {
 	limit     int
 	since     string
 	until     string
-	cookie    string
-	cookieF   string
 	rate      time.Duration
 	retries   int
 	timeout   time.Duration
@@ -62,10 +61,10 @@ func Root() *cobra.Command {
 		Short: "A delightful command line for Facebook",
 		Long: `fb turns facebook.com into a fast, scriptable command line.
 
-Resolve a Page, profile, or group to a rich record; stream its whole feed;
-pull every comment, reaction, photo, and event; and build datasets, all from
-one binary. Reads are anonymous where Facebook allows it and use your session
-cookie where it does not (pass --cookie or set FACEBOOK_COOKIE).
+Resolve a Page, profile, or group to a rich record; stream its recent posts;
+pull each post's preview comments, media, and counts; and build datasets, all
+from one binary. Reads are anonymous: fb crawls the same server-rendered pages
+Facebook serves to search engines, so there is no login and no browser.
 
 Quick start:
   fb page nasa                       a Page's full profile
@@ -87,8 +86,6 @@ Quick start:
 	pf.IntVarP(&g.limit, "limit", "n", 0, "max records emitted (0 = unlimited)")
 	pf.StringVar(&g.since, "since", "", "stop walking a feed older than this date (YYYY-MM-DD)")
 	pf.StringVar(&g.until, "until", "", "skip feed items newer than this date")
-	pf.StringVar(&g.cookie, "cookie", "", "cookie header value (c_user=...; xs=...)")
-	pf.StringVar(&g.cookieF, "cookie-file", "", "path to a cookie file (header | cookies.txt | JSON)")
 	pf.DurationVar(&g.rate, "rate", fb.DefaultDelay, "min delay between requests")
 	pf.IntVar(&g.retries, "retries", fb.DefaultRetries, "retry attempts on 429/5xx")
 	pf.DurationVar(&g.timeout, "timeout", fb.DefaultTimeout, "per-request timeout")
@@ -124,6 +121,7 @@ Quick start:
 		newIDCmd(app),
 		newSeedCmd(app),
 		newCrawlCmd(app),
+		newArchiveCmd(app),
 		newDBCmd(app),
 		newConfigCmd(app),
 		newCacheCmd(app),
@@ -136,8 +134,6 @@ Quick start:
 
 func (a *App) init(g *globalFlags) error {
 	cfg := fb.DefaultConfig()
-	cfg.Cookie = g.cookie
-	cfg.CookieFile = g.cookieF
 	cfg.Delay = g.rate
 	cfg.Retries = g.retries
 	cfg.Timeout = g.timeout
@@ -181,6 +177,14 @@ func parseDate(s string) time.Time {
 		}
 	}
 	return time.Time{}
+}
+
+// progress writes a status line to stderr unless --quiet is set.
+func (a *App) progress(format string, args ...any) {
+	if a.g != nil && a.g.quiet {
+		return
+	}
+	_, _ = fmt.Fprintf(os.Stderr, "[fb] "+format+"\n", args...)
 }
 
 // listOpts builds fb.ListOptions from the app's resolved flags.

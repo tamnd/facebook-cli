@@ -3,14 +3,12 @@
 # asserts each one either returns data or exits with a clean, documented code.
 # It is the living proof of the project goal: "all commands work."
 #
-# It runs once anonymously, and again authenticated when FACEBOOK_COOKIE (or
-# FACEBOOK_COOKIE_FILE) is set in the environment. Anonymous Facebook gates most
-# reads behind a login wall, so anonymously a command "passes" when it returns
-# data OR exits 4 (login wall) OR exits 3 (content unavailable). With a cookie,
-# the same commands are expected to return data.
+# fb reads Facebook anonymously, as a web crawler, with no login. Public targets
+# return data; private ones are walled. A command "passes" when it returns data
+# OR exits 4 (login wall) OR exits 3 (content unavailable), since Facebook serves
+# a given endpoint as an error shell on one request and a real page on the next.
 #
 #   FB=./bin/fb ./scripts/smoke.sh
-#   FACEBOOK_COOKIE="c_user=...; xs=..." FB=./bin/fb ./scripts/smoke.sh
 set -u
 
 FB="${FB:-fb}"
@@ -43,7 +41,7 @@ run() {
 		echo "ok    $desc (empty, valid)"
 		pass=$((pass + 1))
 	elif [ $rc -eq 4 ] || [ $rc -eq 3 ]; then
-		echo "wall  $desc (exit $rc, needs a session)"
+		echo "wall  $desc (exit $rc, not public)"
 		walled=$((walled + 1))
 	else
 		echo "FAIL  $desc (exit $rc)"
@@ -69,11 +67,7 @@ strict() {
 }
 
 echo "== fb smoke (FB=$FB) =="
-if [ -n "${FACEBOOK_COOKIE:-}${FACEBOOK_COOKIE_FILE:-}" ]; then
-	echo "   session: present"
-else
-	echo "   session: anonymous (login-walled reads are expected)"
-fi
+echo "   access: anonymous crawler (private reads are walled)"
 echo
 
 # --- offline-deterministic: must always pass ---
@@ -117,7 +111,7 @@ if [ -n "$GROUP" ]; then
 fi
 
 # A post/comment/reaction smoke needs a concrete post URL; derive one from the
-# page feed when a session is available, otherwise skip the per-post commands.
+# page feed, otherwise skip the per-post commands.
 POST="$("$FB" page "$PAGE" --posts -n 1 -o url --no-cache 2>/dev/null | head -1)"
 if [ -n "$POST" ]; then
 	run "post"              -- "$FB" post "$POST" -o json --no-cache
@@ -126,7 +120,7 @@ if [ -n "$POST" ]; then
 	run "comments"          -- "$FB" comments "$POST" -n 5 -o jsonl --no-cache
 	run "reactions"         -- "$FB" reactions "$POST" -o json --no-cache
 else
-	echo "skip  post/comments/reactions (no post url available anonymously)"
+	echo "skip  post/comments/reactions (no post url available)"
 fi
 
 echo

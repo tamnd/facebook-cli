@@ -37,7 +37,7 @@ func codeErr(code int, format string, args ...any) *CodeError {
 // Sentinel-style constructors for the common cases.
 var (
 	errLoginWall = func() *CodeError {
-		return codeErr(ExitLoginWall, "login wall: this content needs a session, pass --cookie or FACEBOOK_COOKIE")
+		return codeErr(ExitLoginWall, "login wall: facebook does not expose this content to anonymous crawlers")
 	}
 	errNotFound = func(what string) *CodeError {
 		return codeErr(ExitNotFound, "not found: %s", what)

@@ -1,6 +1,6 @@
 ---
 title: "Configuration"
-description: "Paths, cookies, request behavior, and every global flag."
+description: "Paths, request behavior, and every global flag."
 weight: 20
 ---
 
@@ -22,12 +22,12 @@ fb config show
 fb config path
 ```
 
-## Cookies
+## Access
 
-The session cookie is read from the first of these that is set: `--cookie`,
-`--cookie-file`, `FACEBOOK_COOKIE`, `FACEBOOK_COOKIE_FILE`. A cookie file may be
-a raw header, a Netscape `cookies.txt`, or a JSON export; the format is
-auto-detected. See [authentication](/guides/authentication/) for details.
+fb reads Facebook anonymously, as a web crawler, with no login and no cookie.
+`fb whoami` reports the mode and the user agent in use. See
+[how fb reads Facebook](/guides/authentication/) for what that surface exposes
+and what stays private.
 
 ## Request behavior
 
@@ -43,7 +43,7 @@ auto-detected. See [authentication](/guides/authentication/) for details.
 | `--user-agent` | rotating | Override the default UA set |
 
 The defaults are deliberately polite. Facebook is stricter than most targets, so
-the two-second rate and modest worker count keep a session out of trouble.
+the two-second rate and modest worker count keep the crawler out of trouble.
 
 ## Caching
 

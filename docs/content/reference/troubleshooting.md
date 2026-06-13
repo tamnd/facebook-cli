@@ -4,7 +4,7 @@ description: "Exit codes, the login wall, rate limits, and common errors."
 weight: 40
 ---
 
-fb uses distinct exit codes so scripts can tell apart "no session", "not found",
+fb uses distinct exit codes so scripts can tell apart "private", "not found",
 and a real failure. When something goes wrong, the exit code is the first thing
 to check.
 
@@ -16,37 +16,38 @@ to check.
 | `1` | Generic error |
 | `2` | Usage error (bad flags or arguments) |
 | `3` | Content not found or unavailable anonymously |
-| `4` | Login wall: a session cookie is required |
+| `4` | Login wall: the content is not public |
 | `5` | Rate limited |
 | `6` | Network error |
 
 ## "Login wall" (exit 4)
 
-The command needs a session and you have not supplied one, or the cookie has
-expired. Set a fresh cookie and confirm it loaded:
+Facebook only puts public content on the crawler surface fb reads. Exit `4`
+means the target is behind a login wall: a private profile or group, or a Page
+that is not visible to anonymous visitors. There is no cookie to set; the content
+is simply not reachable this way. Confirm fb is reading anonymously and check the
+URL it fetched:
 
 ```sh
-export FACEBOOK_COOKIE="c_user=...; xs=..."
 fb whoami
+fb page nasa -vv
 ```
 
-If `fb whoami` reports `false`, the cookie did not parse; see
-[authentication](/guides/authentication/) for the accepted formats. A cookie
-also expires when you log out of that browser session, so re-copy it if reads
-that worked yesterday now wall.
+See [how fb reads Facebook](/guides/authentication/) for what the crawler
+surface exposes and what stays private.
 
 ## "Content unavailable" (exit 3)
 
-Facebook returned an error or "not available" page. Anonymously this is the
-normal response for most content, so the usual fix is to add a session. With a
-session, exit `3` means the specific item is gone, private, or region-blocked.
+Facebook returned an error or "not available" page. The specific item is gone,
+private, or region-blocked. Add `-v` to see the URL fetched and confirm it is the
+one you meant.
 
 ## Rate limited (exit 5)
 
-Facebook is throttling the session. fb already retries with backoff; if it still
+Facebook is throttling the crawler. fb already retries with backoff; if it still
 exits `5`, slow down: raise `--rate`, lower `-j/--workers`, and avoid running
-several large crawls against one session at once. A session that is pushed too
-hard can be temporarily blocked.
+several large crawls at once. A crawler that is pushed too hard can be
+temporarily blocked.
 
 ## Nothing comes back, but exit 0
 

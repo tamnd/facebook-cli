@@ -16,24 +16,20 @@ import (
 	"github.com/tamnd/facebook-cli/pkg/fbid"
 )
 
-// Client speaks the Facebook consumer web surfaces (mbasic by default, m. for
-// GraphQL enrichment), rate-limited, cookie-aware, and resilient.
+// Client speaks the Facebook web surface as a crawler (the Googlebot user agent,
+// which Facebook answers with server-rendered HTML), rate-limited and resilient.
+// No login and no browser are involved.
 type Client struct {
 	cfg     Config
 	http    *http.Client
-	cookie  string
 	cache   *Cache
 	uas     []string
 	mu      sync.Mutex
 	lastReq time.Time
 }
 
-// NewClient builds a Client from cfg, resolving cookies and the proxy.
+// NewClient builds a Client from cfg, resolving the proxy.
 func NewClient(cfg Config) (*Client, error) {
-	cookie, err := resolveCookie(cfg)
-	if err != nil {
-		return nil, err
-	}
 	transport := &http.Transport{
 		MaxIdleConns:        16,
 		MaxConnsPerHost:     cfg.Workers + 2,
@@ -52,9 +48,8 @@ func NewClient(cfg Config) (*Client, error) {
 		uas = []string{cfg.UserAgent}
 	}
 	return &Client{
-		cfg:    cfg,
-		cookie: cookie,
-		uas:    uas,
+		cfg: cfg,
+		uas: uas,
 		http: &http.Client{
 			Timeout:   cfg.Timeout,
 			Transport: transport,
@@ -63,14 +58,20 @@ func NewClient(cfg Config) (*Client, error) {
 	}, nil
 }
 
-// Whoami reports the acting user id from the cookie, if any.
-func (c *Client) Whoami() (uid string, authenticated bool) {
-	uid = cookieUser(c.cookie)
-	return uid, uid != ""
+// UserAgent reports the crawler identity requests are sent with.
+func (c *Client) UserAgent() string {
+	if len(c.uas) == 0 {
+		return ""
+	}
+	return c.uas[0]
 }
 
-// Authenticated reports whether a session cookie is present.
-func (c *Client) Authenticated() bool { return c.cookie != "" }
+// getHTML fetches a URL as-is (no surface rewrite) and returns the response body
+// as a string. This is the crawler-HTML surface the SSR parsers read.
+func (c *Client) getHTML(ctx context.Context, rawURL string) (string, error) {
+	b, _, err := c.getBytes(ctx, rawURL)
+	return string(b), err
+}
 
 // surfaceHost rewrites a Facebook URL to the configured surface.
 func (c *Client) surfaceURL(raw string) string {
@@ -180,10 +181,7 @@ func (c *Client) doGet(ctx context.Context, target string) ([]byte, int, error) 
 		lang = "en-US"
 	}
 	req.Header.Set("Accept-Language", lang+","+strings.SplitN(lang, "-", 2)[0]+";q=0.9")
-	req.Header.Set("Referer", "https://mbasic.facebook.com/")
-	if c.cookie != "" {
-		req.Header.Set("Cookie", c.cookie)
-	}
+	req.Header.Set("Referer", "https://www.facebook.com/")
 	c.logf(2, "GET %s", target)
 	resp, err := c.http.Do(req)
 	if err != nil {
