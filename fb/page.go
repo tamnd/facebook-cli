@@ -132,11 +132,17 @@ func parseNextPageLink(doc *goquery.Document, pageURL string) string {
 	var next string
 	doc.Find("a[href]").EachWithBreak(func(_ int, a *goquery.Selection) bool {
 		txt := strings.ToLower(cleanText(a.Text()))
+		href := attr(a, "href")
 		if strings.Contains(txt, "see more posts") ||
 			strings.Contains(txt, "more stories") ||
 			strings.Contains(txt, "show more") ||
-			txt == "see more" {
-			next = fbid.ToMBasic(resolveRelative(pageURL, attr(a, "href")))
+			txt == "see more" ||
+			// href fallback: the timeline cursor link carries these params even
+			// when the label is localized or rendered without visible text.
+			strings.Contains(href, "timestart=") ||
+			strings.Contains(href, "&bacr=") ||
+			(strings.Contains(href, "cursor") && strings.Contains(href, "sectionLoadingID")) {
+			next = fbid.ToMBasic(resolveRelative(pageURL, href))
 			return false
 		}
 		return true
