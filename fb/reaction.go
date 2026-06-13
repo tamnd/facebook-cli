@@ -12,7 +12,8 @@ import (
 
 // Reactions returns the aggregate reaction summary for a post and a streaming
 // iterator over individual reactors. On the mbasic surface only the coarse total
-// is reliably available anonymously; the per-reactor list needs a session.
+// is reliably available to an anonymous crawler; the per-reactor list is not
+// exposed.
 func (c *Client) Reactions(ctx context.Context, postURL string) (*ReactionSummary, iter.Seq2[Reaction, error]) {
 	id := fbid.Classify(postURL)
 	target := id.MBasicURL

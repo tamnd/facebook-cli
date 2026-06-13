@@ -3,7 +3,6 @@ package fb
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 )
 
@@ -25,29 +24,27 @@ const (
 	DefaultWorkers = 2
 )
 
+// userAgents is the crawler identity Facebook answers with server-rendered HTML.
+// Presenting as Googlebot is what unlocks anonymous, no-browser access.
 var userAgents = []string{
-	"Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1",
-	"Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36",
-	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+	"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
 }
 
 // Config is the resolved runtime configuration for a Client.
 type Config struct {
-	Cookie     string
-	CookieFile string
-	Surface    Surface
-	Delay      time.Duration
-	Retries    int
-	Timeout    time.Duration
-	Workers    int
-	UserAgent  string
-	Proxy      string
-	Lang       string
-	CacheDir   string
-	NoCache    bool
-	CacheTTL   time.Duration
-	DataDir    string
-	Verbose    int
+	Surface   Surface
+	Delay     time.Duration
+	Retries   int
+	Timeout   time.Duration
+	Workers   int
+	UserAgent string
+	Proxy     string
+	Lang      string
+	CacheDir  string
+	NoCache   bool
+	CacheTTL  time.Duration
+	DataDir   string
+	Verbose   int
 }
 
 // DefaultConfig returns the built-in defaults with XDG paths filled in.
@@ -79,28 +76,4 @@ func dataHome() string {
 	}
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, ".local", "share")
-}
-
-// resolveCookie loads the cookie header from, in order: the explicit string, a
-// cookie file, the FACEBOOK_COOKIE env var, the FACEBOOK_COOKIE_FILE env var. It
-// auto-detects raw-header, Netscape cookies.txt, and JSON export formats.
-func resolveCookie(cfg Config) (string, error) {
-	if c := strings.TrimSpace(cfg.Cookie); c != "" {
-		return normalizeCookie(c), nil
-	}
-	file := strings.TrimSpace(cfg.CookieFile)
-	if file == "" {
-		if c := strings.TrimSpace(os.Getenv("FACEBOOK_COOKIE")); c != "" {
-			return normalizeCookie(c), nil
-		}
-		file = strings.TrimSpace(os.Getenv("FACEBOOK_COOKIE_FILE"))
-	}
-	if file == "" {
-		return "", nil
-	}
-	b, err := os.ReadFile(file)
-	if err != nil {
-		return "", codeErr(ExitGeneric, "read cookie file: %v", err)
-	}
-	return parseCookieFile(string(b)), nil
 }

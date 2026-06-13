@@ -61,7 +61,7 @@ func parseProfile(doc *goquery.Document, id fbid.Identity) *Profile {
 func (c *Client) ProfilePosts(ctx context.Context, idOrURL string, opt ListOptions) iter.Seq2[Post, error] {
 	id := fbid.Classify(idOrURL)
 	owner := firstNonEmpty(id.ProfileID, id.Slug)
-	return c.walkFeed(ctx, id.MBasicURL, owner, "profile", opt)
+	return c.walkFeed(ctx, wwwURL(id.MBasicURL, id), owner, "profile", opt)
 }
 
 func findLabeled(doc *goquery.Document, labels ...string) string {

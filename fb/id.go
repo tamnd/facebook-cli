@@ -36,9 +36,6 @@ func (c *Client) followRedirect(ctx context.Context, raw string) (string, error)
 		return "", err
 	}
 	req.Header.Set("User-Agent", c.uas[0])
-	if c.cookie != "" {
-		req.Header.Set("Cookie", c.cookie)
-	}
 	c.rateLimit()
 	resp, err := c.http.Do(req)
 	if err != nil {

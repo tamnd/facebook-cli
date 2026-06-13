@@ -53,5 +53,5 @@ func (c *Client) GroupPosts(ctx context.Context, idOrURL string, opt ListOptions
 	if gid == "" {
 		gid = id.Slug
 	}
-	return c.walkFeed(ctx, "https://mbasic.facebook.com/groups/"+gid, gid, "group", opt)
+	return c.walkFeed(ctx, "https://www.facebook.com/groups/"+gid, gid, "group", opt)
 }

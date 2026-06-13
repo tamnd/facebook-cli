@@ -2,22 +2,8 @@ package fb
 
 import (
 	"net/url"
-	"regexp"
 	"strings"
 )
-
-var phoneRe = regexp.MustCompile(`(?:\+?\d[\d\s().-]{7,}\d)`)
-
-// findPhone pulls the first plausible phone number out of a text blob.
-func findPhone(body string) string {
-	if i := strings.Index(strings.ToLower(body), "call"); i >= 0 {
-		window := body[i:min(i+40, len(body))]
-		if m := phoneRe.FindString(window); m != "" {
-			return strings.TrimSpace(m)
-		}
-	}
-	return ""
-}
 
 // resolveRelative resolves href against base.
 func resolveRelative(base, href string) string {

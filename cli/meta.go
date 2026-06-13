@@ -18,7 +18,6 @@ func newConfigCmd(a *App) *cobra.Command {
 		Short: "Print the effective configuration",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			defer func() { _ = a.Out.Flush() }()
-			uid, auth := a.Client.Whoami()
 			cfg := a.Cfg
 			rows := [][2]string{
 				{"surface", string(cfg.Surface)},
@@ -31,8 +30,6 @@ func newConfigCmd(a *App) *cobra.Command {
 				{"cache_ttl", cfg.CacheTTL.String()},
 				{"data_dir", cfg.DataDir},
 				{"no_cache", fmt.Sprint(cfg.NoCache)},
-				{"authenticated", fmt.Sprint(auth)},
-				{"user", uid},
 			}
 			for _, r := range rows {
 				if err := a.Out.Emit(Row{
@@ -90,14 +87,14 @@ func newCacheCmd(a *App) *cobra.Command {
 func newWhoamiCmd(a *App) *cobra.Command {
 	return &cobra.Command{
 		Use:   "whoami",
-		Short: "Report whether a session cookie is loaded and for which user",
+		Short: "Report how fb is accessing Facebook",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			defer func() { _ = a.Out.Flush() }()
-			uid, auth := a.Client.Whoami()
+			ua := a.Client.UserAgent()
 			return a.Out.Emit(Row{
-				Cols:  []string{"authenticated", "user"},
-				Vals:  []string{fmt.Sprint(auth), uid},
-				Value: map[string]any{"authenticated": auth, "user": uid},
+				Cols:  []string{"mode", "user_agent"},
+				Vals:  []string{"anonymous", ua},
+				Value: map[string]any{"mode": "anonymous", "user_agent": ua},
 			})
 		},
 	}
