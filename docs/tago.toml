@@ -1,0 +1,10 @@
+title       = "fb"
+baseURL     = "https://facebook-cli.tamnd.com/"
+description = "A delightful, scriptable command line for Facebook. Resolve a Page, profile, or group to a rich record, stream its whole feed, and pull every comment, reaction, photo, video, and event into clean structured data, all from one binary."
+contentDir  = "content"
+outputDir   = "public"
+theme       = "tago-doks"
+syntaxHighlight = "true"
+
+[params]
+github = "https://github.com/tamnd/facebook-cli"
