@@ -15,3 +15,4 @@ since it is what unlocks everything else.
 - [Media](/guides/media/): photos, videos, reels, and events.
 - [Search and discovery](/guides/search-and-discovery/): find entities and classify ids.
 - [Datasets](/guides/datasets/): seed, crawl, and query a local SQLite store.
+- [Archiving](/guides/archiving/): mirror a Page to an incremental tree of Markdown.

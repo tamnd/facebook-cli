@@ -33,6 +33,7 @@ session cookie where it does not; see [authentication](/guides/authentication/).
 | [`feed`](#feed) | Stream the feed of any handle, whatever its type |
 | [`id`](#id) | Classify any Facebook id or URL without a network call |
 | [`seed`](#seed) / [`crawl`](#crawl) | Expand a root into URLs, then fetch them into records and a DB |
+| [`archive`](#archive) | Mirror a Page's feed to incremental Markdown, indexed by month |
 | [`db`](#db) | Query the local SQLite store |
 | [`whoami`](#whoami) | Report the loaded session |
 | [`config`](#config) / [`cache`](#cache) | Inspect configuration, paths, and the cache |
@@ -302,6 +303,29 @@ thread.
 ```bash
 fb seed page nasa | fb crawl --db fb.db --comments
 cat urls.txt | fb crawl -o jsonl > records.jsonl
+```
+
+### archive
+
+```
+fb archive <page>... [flags]
+```
+
+Walks a Page's feed and writes it as an incremental tree of Markdown: one file
+per post (with its comments) under `<out>/<page>/YYYY/MM/`, plus a generated
+`README.md` index. Re-running skips posts already on disk and fetches only what
+is new. See the [Archiving]({{< relref "../guides/archiving.md" >}}) guide.
+
+| Flag | Meaning |
+|---|---|
+| `--out` | Root directory for the archive (default `~/data`) |
+| `--comments` | Fetch and embed each post's comments (default on) |
+| `--replies` | Expand reply threads under comments |
+| `--force` | Re-fetch and overwrite posts already on disk |
+
+```bash
+fb archive aivietnam.edu.vn --comments
+fb archive nasa --out ~/archives -n 100
 ```
 
 ### db

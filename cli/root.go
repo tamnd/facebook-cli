@@ -3,6 +3,7 @@ package cli
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -124,6 +125,7 @@ Quick start:
 		newIDCmd(app),
 		newSeedCmd(app),
 		newCrawlCmd(app),
+		newArchiveCmd(app),
 		newDBCmd(app),
 		newConfigCmd(app),
 		newCacheCmd(app),
@@ -181,6 +183,14 @@ func parseDate(s string) time.Time {
 		}
 	}
 	return time.Time{}
+}
+
+// progress writes a status line to stderr unless --quiet is set.
+func (a *App) progress(format string, args ...any) {
+	if a.g != nil && a.g.quiet {
+		return
+	}
+	_, _ = fmt.Fprintf(os.Stderr, "[fb] "+format+"\n", args...)
 }
 
 // listOpts builds fb.ListOptions from the app's resolved flags.
