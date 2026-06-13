@@ -21,25 +21,23 @@ works and is the fastest sanity check.
 {"input":"nasa","kind":"page","page_id":"nasa","slug":"nasa","canonical_url":"https://www.facebook.com/nasa","mbasic_url":"https://mbasic.facebook.com/nasa"}
 ```
 
-## 2. Add your session
+## 2. Confirm how fb reads Facebook
 
-Facebook shows almost nothing to a logged-out visitor, so set a cookie from a
-browser where you are logged in:
+fb reads anonymously, as a web crawler, with no login and no cookie:
 
 ```sh
-export FACEBOOK_COOKIE="c_user=...; xs=...; datr=...; fr=..."
 fb whoami
 ```
 
 ```
-AUTHENTICATED  USER
-true           4
+MODE       USER_AGENT
+anonymous  Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 ```
 
-If `fb whoami` reports `false`, the cookie did not load; see
-[authentication](/guides/authentication/) for the accepted formats. Without a
-session, the read commands below exit `4` with a login-wall hint instead of
-returning data.
+The read commands below work against public Pages, profiles, groups, and posts.
+When a target is private, fb exits `4` with a login-wall hint instead of guessing.
+See [how fb reads Facebook](/guides/authentication/) for what the crawler surface
+exposes.
 
 ## 3. Resolve a Page
 
@@ -64,12 +62,12 @@ Each line is one full post record. Pipe it into `jq`, a file, or another tool:
 fb page nasa --posts --limit 50 -o jsonl > nasa-posts.jsonl
 ```
 
-## 5. Go deep on a post
+## 5. Read a post in full
 
-Take a permalink from the feed and pull its comment thread and reactions:
+Take a permalink from the feed and pull its text, counts, and preview comments:
 
 ```sh
-fb post <url> --comments --reactions -o jsonl
+fb post <url> --comments -o jsonl
 ```
 
 ## 6. Build a small dataset
@@ -83,8 +81,8 @@ fb db --db nasa.db query "select owner_name, count(*) from posts group by 1"
 
 ## Where to go next
 
-- [Authentication](/guides/authentication/): cookie formats and what each
-  session unlocks.
+- [How fb reads Facebook](/guides/authentication/): the anonymous crawler model
+  and its limits.
 - [Pages and profiles](/guides/pages-and-profiles/): the entity commands.
 - [Posts and comments](/guides/posts-and-comments/): going deep on a story.
 - [Output formats](/reference/output/): tables, JSON, CSV, fields, templates.

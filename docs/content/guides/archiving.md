@@ -91,16 +91,17 @@ fb archive nasa -n 50                 # at most 50 posts
 fb archive nasa --since 2025-01-01    # stop once posts get older than this
 ```
 
-## Sessions
+## What gets archived
 
-Most Pages gate their feed behind a login wall for anonymous visitors, so a full
-archive needs your session cookie. Pass it with `--cookie`, point at a file with
-`--cookie-file`, or set `FACEBOOK_COOKIE` in the environment:
+`fb archive` reads the public crawler surface, so it works on any public Page
+with no login:
 
 ```sh
-export FACEBOOK_COOKIE="c_user=...; xs=..."
 fb archive aivietnam.edu.vn --comments
 ```
 
-See [Authentication]({{< relref "authentication.md" >}}) for how to obtain and
-store the cookie.
+The same surface sets the ceiling on depth. An archive captures the most recent
+posts a Page exposes rather than its entire history, and each post's preview
+comments rather than the full thread. Re-running picks up new posts incrementally
+and skips the ones already on disk. See
+[how fb reads Facebook]({{< relref "authentication.md" >}}) for the details.

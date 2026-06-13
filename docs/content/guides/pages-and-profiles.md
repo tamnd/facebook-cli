@@ -51,7 +51,7 @@ fb profile zuck --posts --limit 20 -o jsonl
 
 Profiles accept a username (`zuck`) or a numeric id
 (`profile.php?id=100000000000000`). What is visible depends on the person's
-privacy settings and your session.
+privacy settings; a profile that is not public to anonymous visitors exits `4`.
 
 ## Groups
 

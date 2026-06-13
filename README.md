@@ -2,8 +2,8 @@
 
 A delightful, scriptable command line for [Facebook](https://facebook.com). One
 binary that resolves a Page, profile, or group to a rich record, streams its
-whole feed, and pulls every comment, reaction, photo, video, and event into
-clean structured data you can pipe anywhere.
+recent feed, and pulls posts, comments, photos, videos, and events into clean
+structured data you can pipe anywhere, with no login and no browser.
 
 ```
 fb page nasa
@@ -20,14 +20,15 @@ Full documentation: [facebook-cli.tamnd.com](https://facebook-cli.tamnd.com).
 
 Pulling data out of Facebook usually means a headless browser, a brittle pile of
 selectors, or the Graph API with its app review and tokens. `fb` takes a
-different route: it reads the no-JavaScript HTML surface the same way a basic
-phone browser does, parses it into typed records, and renders them in the output
-format you ask for. One static binary, no browser, no API key.
+different route: it reads the public pages Facebook serves to search engines,
+parses the server-rendered HTML into typed records, and renders them in the
+output format you ask for. One static binary, no login, no browser, no API key.
 
-Facebook gates most of its content behind a login, so depth scales with your
-session: anonymous reads are limited and many return a clean login-wall exit,
-while a session cookie unlocks full pages, feeds, comments, and reactions. `fb`
-is explicit about this at every step rather than silently returning nothing.
+Because it reads the public crawler surface, `fb` sees what a search engine
+sees: full public Pages, profiles, groups, and posts, the most recent feed
+rather than the entire history, and a post's preview comments rather than its
+whole thread. Private content stays private, and `fb` is explicit about the wall
+rather than silently returning nothing.
 
 ## Install
 
@@ -55,29 +56,21 @@ fb post <url> --comments           # a post and its comment thread
 fb id <anything>                   # classify any Facebook id or URL
 ```
 
-## Authentication
+## How it reads Facebook
 
-Anonymous Facebook serves a login wall or a "content unavailable" shell for most
-reads. To unlock full data, pass a session cookie from a browser where you are
-logged in:
-
-```sh
-export FACEBOOK_COOKIE="c_user=...; xs=...; datr=...; fr=..."
-fb page nasa --posts --limit 50
-```
-
-The cookie can come from three places, in order: `--cookie`, `--cookie-file`,
-then the `FACEBOOK_COOKIE` / `FACEBOOK_COOKIE_FILE` environment variables. A
-cookie file is auto-detected: a raw `Cookie:` header, a Netscape `cookies.txt`,
-or a browser-extension JSON export all work.
+`fb` reads anonymously, as a web crawler, with no login and no cookie. It asks
+Facebook for the same server-rendered pages a search engine gets and parses what
+comes back.
 
 ```sh
-fb --cookie-file ~/fb-cookies.txt whoami
-fb whoami        # reports whether a session is loaded, and for which user
+fb whoami        # reports the access mode and user agent
 ```
 
-When a command genuinely needs a session it exits `4` with a one-line hint, so
-scripts can tell a login wall apart from a real error.
+This works on any public Page, profile, group, or post. When a target is
+private, or behind a login wall, `fb` exits `4` with a one-line hint so scripts
+can tell that apart from a real error. The trade-off is depth: a feed exposes the
+most recent posts rather than the full history, and a post carries a few preview
+comments rather than its whole thread.
 
 ## How it works
 
@@ -112,7 +105,7 @@ not surface anonymously simply stays empty rather than being guessed.
 | `seed` | Expand a root into a stream of URLs for crawling |
 | `crawl` | Fetch a stream of URLs into full records (and optionally a DB) |
 | `db` | Query the local SQLite store |
-| `whoami` | Report whether a session cookie is loaded and for which user |
+| `whoami` | Report how `fb` is accessing Facebook |
 | `config` | Show resolved configuration and paths |
 | `cache` | Inspect and clear the on-disk cache |
 | `completion` | Generate a shell completion script |
@@ -200,7 +193,6 @@ Useful global flags (all have sensible defaults):
 | --- | --- |
 | `-o, --output` | Output format (default auto) |
 | `-n, --limit` | Maximum records (`0` means unlimited) |
-| `--cookie` / `--cookie-file` | Session cookie for authenticated reads |
 | `--since` / `--until` | Stop or skip feed items by date |
 | `--rate` | Minimum delay between requests, to stay polite (default 2s) |
 | `--surface` | `mbasic`, `mobile`, or `auto` |
@@ -214,8 +206,8 @@ Useful global flags (all have sensible defaults):
 | `0` | Success |
 | `1` | Generic error |
 | `2` | Usage error |
-| `3` | Content not found or unavailable anonymously |
-| `4` | Login wall: a session cookie is required |
+| `3` | Content not found or unavailable |
+| `4` | Login wall: the content is not public |
 | `5` | Rate limited |
 | `6` | Network error |
 
@@ -229,9 +221,9 @@ make smoke   # run every command and assert it works or walls cleanly
 ```
 
 The code is layered. `cli/` is the command tree built on Cobra. `fb/` is the
-library it sits on: the HTTP client, cache, cookie handling, the HTML parsers
-for each record type, and the SQLite store. `pkg/fbid/` is a standalone
-URL/id classifier with no other dependencies, importable on its own.
+library it sits on: the HTTP client, cache, the server-rendered HTML parsers for
+each record type, and the SQLite store. `pkg/fbid/` is a standalone URL/id
+classifier with no other dependencies, importable on its own.
 
 ## License
 

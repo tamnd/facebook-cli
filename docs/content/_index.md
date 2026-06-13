@@ -20,9 +20,10 @@ fb post <url> --comments           # a post and its comment thread
 fb id <anything>                   # classify any Facebook id or URL
 ```
 
-The binary is pure Go with no runtime dependencies and no browser. Facebook
-gates most content behind a login, so depth scales with your session: fb is
-explicit about the login wall rather than silently returning nothing.
+The binary is pure Go with no runtime dependencies and no browser. fb reads the
+public pages Facebook serves to search engines, so there is no login and no
+cookie. When content is private, fb is explicit about the login wall rather than
+silently returning nothing.
 
 ## What you can do with it
 
@@ -31,8 +32,8 @@ explicit about the login wall rather than silently returning nothing.
   then into a full record.
 - **Stream feeds.** Walk a Page, profile, or group feed to any depth, stopping
   by `--limit` or by date with `--since`/`--until`.
-- **Go deep on a post.** Pull the whole comment thread with nested replies, and
-  the full reaction breakdown including who reacted and how.
+- **Read a post in full.** Pull a post's text, creation time, reaction, comment,
+  and share counts, its media, and the preview comments Facebook renders.
 - **Collect media.** Stream a handle's photos, videos, and reels, and resolve a
   single photo or video to its full metadata and playable sources.
 - **Build datasets.** Expand a root into a stream of URLs and crawl them into a
@@ -43,6 +44,6 @@ explicit about the login wall rather than silently returning nothing.
 - New here? Start with the [introduction](/getting-started/introduction/) for
   the mental model, then the [quick start](/getting-started/quick-start/).
 - Want to install it? See [installation](/getting-started/installation/).
-- Looking for a specific task? The [guides](/guides/) cover authentication,
-  pages and profiles, posts and comments, media, search, and datasets.
+- Looking for a specific task? The [guides](/guides/) cover how fb reads
+  Facebook, pages and profiles, posts and comments, media, search, and datasets.
 - Need every flag? The [CLI reference](/reference/cli/) is the full surface.

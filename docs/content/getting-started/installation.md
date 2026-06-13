@@ -44,13 +44,13 @@ page and install it with `dpkg -i` or `rpm -i`.
 ## Docker
 
 ```sh
-docker run --rm -e FACEBOOK_COOKIE ghcr.io/tamnd/fb page nasa
+docker run --rm ghcr.io/tamnd/fb page nasa
 ```
 
 Mount a volume to keep the cache and any datasets between runs:
 
 ```sh
-docker run --rm -e FACEBOOK_COOKIE -v ~/data/fb:/data ghcr.io/tamnd/fb \
+docker run --rm -v ~/data/fb:/data ghcr.io/tamnd/fb \
   page nasa --posts --limit 50 -o jsonl
 ```
 

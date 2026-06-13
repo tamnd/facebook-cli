@@ -102,7 +102,7 @@ func TestFindPostPermalinks(t *testing.T) {
 
 func TestLastNumericSegment(t *testing.T) {
 	cases := map[string]string{
-		"https://www.facebook.com/nasa/posts/123":     "123",
+		"https://www.facebook.com/nasa/posts/123":      "123",
 		"https://www.facebook.com/nasa/posts/123/?x=1": "123",
 		"https://www.facebook.com/nasa/posts/pfbid0":   "",
 	}

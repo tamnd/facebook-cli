@@ -10,28 +10,28 @@ the Graph API, which means registering an app, getting it reviewed, and managing
 tokens before you can read a single public post. fb closes that gap by reading
 the surface Facebook still serves to a plain browser.
 
-## The no-JavaScript surface
+## The crawler surface
 
-Facebook keeps a stripped-down, no-JavaScript version of the site at
-`mbasic.facebook.com`. It is plain HTML: a Page is a heading and some text, a
-feed is a list of posts with "see more" links, a comment thread is a list of
-comments with a "view more comments" link. fb fetches those pages and parses the
-HTML into typed records, the same way you would read them in an old phone
-browser, but turned into JSON, a table, or CSV.
+When a search engine fetches a Facebook page, Facebook serves it server-rendered
+HTML: the public version of a Page, profile, group, or post, with the text,
+counts, media, and a few preview comments baked into the page. fb reads that same
+surface. It presents itself as a web crawler, parses the rendered HTML into typed
+records, and turns them into JSON, a table, or CSV. There is no login, no cookie,
+and no browser to drive.
 
-There is a richer mobile surface at `m.facebook.com` for cases the basic surface
-cannot answer. fb picks the surface automatically; `--surface` overrides it.
+A few metadata reads still fall back to the stripped-down `mbasic.facebook.com`
+and `m.facebook.com` surfaces; fb picks the surface automatically and `--surface`
+overrides it.
 
-## The login wall is load-bearing
+## What is public, and what is not
 
-Facebook shows very little to a logged-out visitor. Anonymously, most reads
-return a login wall or a "content unavailable" shell, and fb reports that
-honestly with a distinct exit code rather than pretending there was no data.
-
-Depth scales with your session. Pass a cookie from a browser where you are
-logged in and the same commands return full Pages, feeds, comment threads, and
-reaction lists. See [authentication](/guides/authentication/) for how to supply
-one.
+fb only sees what Facebook puts on the public crawler surface. That is plenty for
+public Pages, profiles, groups, and posts, but it has limits: a feed exposes the
+most recent posts rather than the full history, and a post carries a few preview
+comments rather than its whole thread. Private profiles and groups, content
+behind a login wall, and per-reactor lists are not reachable, and fb reports that
+with a distinct exit code rather than pretending there was no data. See
+[how fb reads Facebook](/guides/authentication/) for the full picture.
 
 ## How fb models Facebook
 
