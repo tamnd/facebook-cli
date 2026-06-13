@@ -17,7 +17,7 @@ func newConfigCmd(a *App) *cobra.Command {
 		Use:   "show",
 		Short: "Print the effective configuration",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			uid, auth := a.Client.Whoami()
 			cfg := a.Cfg
 			rows := [][2]string{
@@ -51,9 +51,9 @@ func newConfigCmd(a *App) *cobra.Command {
 		Short: "Print the config, cache, and data directories",
 		Run: func(cmd *cobra.Command, _ []string) {
 			cfgDir, _ := os.UserConfigDir()
-			fmt.Fprintln(os.Stdout, "config:", cfgDir)
-			fmt.Fprintln(os.Stdout, "cache: ", a.Cfg.CacheDir)
-			fmt.Fprintln(os.Stdout, "data:  ", a.Cfg.DataDir)
+			_, _ = fmt.Fprintln(os.Stdout, "config:", cfgDir)
+			_, _ = fmt.Fprintln(os.Stdout, "cache: ", a.Cfg.CacheDir)
+			_, _ = fmt.Fprintln(os.Stdout, "data:  ", a.Cfg.DataDir)
 		},
 	})
 	return cmd
@@ -69,7 +69,7 @@ func newCacheCmd(a *App) *cobra.Command {
 		Short: "Print the cache directory",
 		Run: func(cmd *cobra.Command, _ []string) {
 			c := fb.NewCache(a.Cfg.CacheDir, !a.Cfg.NoCache, a.Cfg.CacheTTL)
-			fmt.Fprintln(os.Stdout, c.Dir())
+			_, _ = fmt.Fprintln(os.Stdout, c.Dir())
 		},
 	})
 	cmd.AddCommand(&cobra.Command{
@@ -80,7 +80,7 @@ func newCacheCmd(a *App) *cobra.Command {
 			if err := c.Clear(); err != nil {
 				return err
 			}
-			fmt.Fprintln(os.Stderr, "[fb] cache cleared:", c.Dir())
+			_, _ = fmt.Fprintln(os.Stderr, "[fb] cache cleared:", c.Dir())
 			return nil
 		},
 	})
@@ -92,7 +92,7 @@ func newWhoamiCmd(a *App) *cobra.Command {
 		Use:   "whoami",
 		Short: "Report whether a session cookie is loaded and for which user",
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			uid, auth := a.Client.Whoami()
 			return a.Out.Emit(Row{
 				Cols:  []string{"authenticated", "user"},
@@ -119,7 +119,7 @@ func newVersionCmd() *cobra.Command {
 		Use:   "version",
 		Short: "Print version, commit, and build date",
 		Run: func(cmd *cobra.Command, _ []string) {
-			fmt.Fprintf(os.Stdout, "fb %s (%s) built %s\n", Version, Commit, Date)
+			_, _ = fmt.Fprintf(os.Stdout, "fb %s (%s) built %s\n", Version, Commit, Date)
 		},
 	}
 }

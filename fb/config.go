@@ -81,14 +81,6 @@ func dataHome() string {
 	return filepath.Join(home, ".local", "share")
 }
 
-func configHome() string {
-	if d := os.Getenv("XDG_CONFIG_HOME"); d != "" {
-		return d
-	}
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config")
-}
-
 // resolveCookie loads the cookie header from, in order: the explicit string, a
 // cookie file, the FACEBOOK_COOKIE env var, the FACEBOOK_COOKIE_FILE env var. It
 // auto-detects raw-header, Netscape cookies.txt, and JSON export formats.

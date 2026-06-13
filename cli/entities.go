@@ -41,7 +41,7 @@ func newPageCmd(a *App) *cobra.Command {
   fb page nasa --posts --limit 20
   fb page nasa --photos -o jsonl`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			for _, arg := range readArgsOrStdin(args) {
 				if a.g.raw {
@@ -98,7 +98,7 @@ func newProfileCmd(a *App) *cobra.Command {
 		Example: `  fb profile zuck
   fb profile zuck --posts`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			arg := args[0]
 			if a.g.raw {
@@ -130,7 +130,7 @@ func newGroupCmd(a *App) *cobra.Command {
 		Example: `  fb group 123456789
   fb group 123456789 --posts --limit 50`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			arg := args[0]
 			if a.g.raw {

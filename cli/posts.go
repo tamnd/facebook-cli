@@ -15,7 +15,7 @@ func newPostCmd(a *App) *cobra.Command {
   fb post <url> --comments --replies
   fb post <url> --reactions`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			opt := fb.PostOptions{Comments: comments, Replies: replies, Reactions: reactions, NoDetail: noDetail}
 			for _, arg := range readArgsOrStdin(args) {
@@ -67,7 +67,7 @@ func newCommentsCmd(a *App) *cobra.Command {
 		Example: `  fb comments <post-url>
   fb comments <post-url> --replies --limit 500 -o jsonl`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			opt := fb.CommentOptions{Replies: replies, Order: order, Limit: a.Limit}
 			return emitSeq(a, a.Client.Comments(cmd.Context(), args[0], opt), commentRow)
 		},
@@ -87,7 +87,7 @@ func newReactionsCmd(a *App) *cobra.Command {
 		Example: `  fb reactions <post-url>
   fb reactions <post-url> --list --type love`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			sum, seq := a.Client.Reactions(cmd.Context(), args[0])
 			if !list {
 				return a.Out.Emit(reactionSummaryRow(sum))

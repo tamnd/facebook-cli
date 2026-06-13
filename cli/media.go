@@ -12,7 +12,7 @@ func newPhotosCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb photos nasa --limit 100 -o jsonl`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			return emitSeq(a, a.Client.Photos(cmd.Context(), args[0], a.listOpts()), photoRow)
 		},
 	}
@@ -26,7 +26,7 @@ func newPhotoCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb photo "fbid=10160000000000000"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			if a.g.raw {
 				return a.emitRaw(cmd.Context(), args[0])
 			}
@@ -47,7 +47,7 @@ func newVideosCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb videos nasa -o jsonl`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			return emitSeq(a, a.Client.Videos(cmd.Context(), args[0], a.listOpts()), videoRow)
 		},
 	}
@@ -62,7 +62,7 @@ func newVideoCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb video "https://fb.watch/xxxxx" --streams -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			if a.g.raw {
 				return a.emitRaw(ctx, args[0])
@@ -99,7 +99,7 @@ func newEventsCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb events nasa`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			return emitSeq(a, a.Client.Events(cmd.Context(), args[0], a.listOpts()), eventRow)
 		},
 	}
@@ -113,7 +113,7 @@ func newEventCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb event 1234567890`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			if a.g.raw {
 				return a.emitRaw(cmd.Context(), args[0])
 			}

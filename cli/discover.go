@@ -17,7 +17,7 @@ func newSearchCmd(a *App) *cobra.Command {
 		Example: `  fb search "climate"
   fb search "climate" --type page --limit 50`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			opt := fb.SearchOptions{Type: typ, Limit: a.Limit, Since: a.since, Until: a.until}
 			return emitSeq(a, a.Client.Search(cmd.Context(), args[0], opt), searchRow)
 		},
@@ -33,7 +33,7 @@ func newFeedCmd(a *App) *cobra.Command {
 		Args:    cobra.MinimumNArgs(1),
 		Example: `  fb feed nasa zuck --limit 20 -o jsonl`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			for _, arg := range readArgsOrStdin(args) {
 				if err := a.feedFor(ctx, arg); err != nil {
@@ -66,7 +66,7 @@ func newIDCmd(a *App) *cobra.Command {
 		Example: `  fb id nasa
   fb id "https://fb.watch/xxxxx"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			id, err := a.Client.Resolve(cmd.Context(), args[0])
 			if err != nil {
 				return err

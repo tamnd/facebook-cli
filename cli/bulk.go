@@ -25,9 +25,9 @@ func newSeedCmd(a *App) *cobra.Command {
 			ctx := cmd.Context()
 			kind, arg := args[0], args[1]
 			w := bufio.NewWriter(os.Stdout)
-			defer w.Flush()
+			defer func() { _ = w.Flush() }()
 			emit := func(url string) bool {
-				fmt.Fprintln(w, url)
+				_, _ = fmt.Fprintln(w, url)
 				return true
 			}
 			switch kind {
@@ -81,7 +81,7 @@ func newCrawlCmd(a *App) *cobra.Command {
 		Example: `  fb seed page nasa | fb crawl --db nasa.db --comments
   fb crawl --from queue.txt --db fb.db`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			ctx := cmd.Context()
 			urls, err := crawlInputs(from)
 			if err != nil {
@@ -93,7 +93,7 @@ func newCrawlCmd(a *App) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				defer store.Close()
+				defer func() { _ = store.Close() }()
 			}
 			count := 0
 			for _, u := range urls {
@@ -101,13 +101,13 @@ func newCrawlCmd(a *App) *cobra.Command {
 					break
 				}
 				if err := a.crawlOne(ctx, u, store, comments, reactions); err != nil {
-					fmt.Fprintf(os.Stderr, "[fb] skip %s: %v\n", u, err)
+					_, _ = fmt.Fprintf(os.Stderr, "[fb] skip %s: %v\n", u, err)
 					continue
 				}
 				count++
 			}
 			if store != nil {
-				fmt.Fprintf(os.Stderr, "[fb] crawled %d records into %s\n", count, dbPath)
+				_, _ = fmt.Fprintf(os.Stderr, "[fb] crawled %d records into %s\n", count, dbPath)
 			}
 			return nil
 		},
@@ -189,7 +189,7 @@ func crawlInputs(from string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		defer f.Close()
+		defer func() { _ = f.Close() }()
 		r = bufio.NewScanner(f)
 	} else {
 		r = bufio.NewScanner(os.Stdin)
@@ -221,12 +221,12 @@ func newDBCmd(a *App) *cobra.Command {
 		Args:    cobra.ExactArgs(1),
 		Example: `  fb db --db nasa.db query "select owner_name, count(*) from posts group by 1"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defer a.Out.Flush()
+			defer func() { _ = a.Out.Flush() }()
 			store, err := fb.OpenStore(dbPath)
 			if err != nil {
 				return err
 			}
-			defer store.Close()
+			defer func() { _ = store.Close() }()
 			cols, rows, err := store.Query(args[0])
 			if err != nil {
 				return err

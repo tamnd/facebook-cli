@@ -35,7 +35,7 @@ func OpenStore(path string) (*Store, error) {
 	}
 	s := &Store{db: db}
 	if err := s.init(); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, err
 	}
 	return s, nil
@@ -83,7 +83,7 @@ func (s *Store) Query(q string) ([]string, [][]string, error) {
 	if err != nil {
 		return nil, nil, codeErr(ExitGeneric, "query: %v", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	cols, err := rows.Columns()
 	if err != nil {
 		return nil, nil, err
