@@ -104,6 +104,8 @@ run "videos"                -- "$FB" videos "$PAGE" -n 5 -o jsonl --no-cache
 run "events"                -- "$FB" events "$PAGE" -o jsonl --no-cache
 run "search (all)"          -- "$FB" search "$SEARCH" -n 5 -o jsonl --no-cache
 run "search --type page"    -- "$FB" search "$SEARCH" --type page -n 5 -o jsonl --no-cache
+run "discover"              -- "$FB" discover "$PAGE" --depth 1 -n 5 -o jsonl --no-cache
+run "discover threads"      -- "$FB" discover "$PAGE" --follow threads --depth 2 -n 5 -o jsonl --no-cache
 
 if [ -n "$GROUP" ]; then
 	run "group"             -- "$FB" group "$GROUP" -o json --no-cache

@@ -118,6 +118,7 @@ Quick start:
 		newEventsCmd(app),
 		newSearchCmd(app),
 		newFeedCmd(app),
+		newDiscoverCmd(app),
 		newIDCmd(app),
 		newSeedCmd(app),
 		newCrawlCmd(app),

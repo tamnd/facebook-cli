@@ -62,3 +62,15 @@ fb id "https://fb.watch/xxxxx" -o json
 
 This is the one case where `fb id` makes a network request. Everything else is
 pure parsing.
+
+## Walking the graph
+
+`search` and `id` find a starting point; [`discover`](/guides/discovering/) walks
+outward from it. Given a seed it follows the object's edges (an actor's posts, a
+post's author, a post's comments) hop by hop, streaming one record per node. It is
+the tool for "show me this, and what it links to," and search results pipe
+straight in as seeds:
+
+```sh
+fb search "climate" -o url | fb discover - --depth 1
+```

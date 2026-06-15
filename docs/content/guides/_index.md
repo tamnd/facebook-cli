@@ -14,5 +14,6 @@ cannot see, since that shapes everything else.
 - [Posts and comments](/guides/posts-and-comments/): one story, its thread, and reactions.
 - [Media](/guides/media/): photos, videos, reels, and events.
 - [Search and discovery](/guides/search-and-discovery/): find entities and classify ids.
+- [Discovering](/guides/discovering/): walk the graph of pages, posts, authors, and comments.
 - [Datasets](/guides/datasets/): seed, crawl, and query a local SQLite store.
 - [Archiving](/guides/archiving/): mirror a Page to an incremental tree of Markdown.
