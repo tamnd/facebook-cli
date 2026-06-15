@@ -20,7 +20,9 @@ fb seed search "climate" --type page --limit 50
 ```
 
 Because it is just lines of URLs, you can filter, sort, or split the stream with
-ordinary tools before crawling.
+ordinary tools before crawling. [`discover`](/guides/discovering/) is another
+source of seeds: `fb discover nasa -o url` walks the graph and prints one link per
+node, so a walk can feed a crawl.
 
 ## Crawl: URLs into records
 

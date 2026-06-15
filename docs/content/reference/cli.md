@@ -31,6 +31,7 @@ search engines, with no login. See [how fb reads Facebook](/guides/authenticatio
 | [`events`](#events) / [`event`](#event) | A Page's events; one event, full |
 | [`search`](#search) | Search across pages, profiles, groups, posts, photos, videos, events |
 | [`feed`](#feed) | Stream the feed of any handle, whatever its type |
+| [`discover`](#discover) | Breadth-first walk of the graph linked from a seed |
 | [`id`](#id) | Classify any Facebook id or URL without a network call |
 | [`seed`](#seed) / [`crawl`](#crawl) | Expand a root into URLs, then fetch them into records and a DB |
 | [`archive`](#archive) | Mirror a Page's feed to incremental Markdown, indexed by month |
@@ -252,6 +253,31 @@ profile, or group; `fb` classifies it and walks the right surface.
 
 ```bash
 fb feed nasa zuck -n 25 -o jsonl
+```
+
+### discover
+
+```
+fb discover <id|url>... [flags]
+```
+
+Walks the graph linked from one or more seeds, breadth first, streaming one node
+per record. From an actor it follows `posts`; from a post it follows `author` and
+`comments`. `--follow` takes a preset (`content`, `threads`, `all`) or a
+comma-separated edge list. Aliases: `walk`, `graph`. See the
+[Discovering](/guides/discovering/) guide.
+
+| Flag | Meaning |
+|---|---|
+| `--depth` | Hops to follow from each seed (default `1`; `0` = seeds only) |
+| `--fanout` | Max neighbors to follow per edge (default `25`; `0` = unlimited) |
+| `--follow` | Edges to follow (default `content`): presets `content\|threads\|all`, edges `posts\|author\|comments` |
+
+```bash
+fb discover nasa --depth 2 -o jsonl > graph.jsonl
+fb discover "https://www.facebook.com/nasa/posts/123" --depth 2
+fb discover nasa --follow threads --depth 2
+fb search "climate" -o url | fb discover - --depth 1
 ```
 
 ### id
