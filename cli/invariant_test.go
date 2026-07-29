@@ -78,7 +78,7 @@ func TestEveryRoutedSurfaceExists(t *testing.T) {
 var networked = []string{
 	"page", "profile", "feed", "post", "comments", "reactions",
 	"photo", "photos", "video", "reel", "videos",
-	"group", "group feed", "event", "events", "discover", "search",
+	"group", "group feed", "event", "events", "discover", "search", "id --resolve",
 }
 
 func TestEveryNetworkedCommandIsRouted(t *testing.T) {
@@ -90,8 +90,8 @@ func TestEveryNetworkedCommandIsRouted(t *testing.T) {
 	// under its other name, so they route through it.
 	alias := map[string]string{"profile": "page", "reel": "video"}
 	for _, c := range networked {
-		want := c
-		if a, ok := alias[c]; ok {
+		want := baseCommand(c)
+		if a, ok := alias[want]; ok {
 			want = a
 		}
 		if !routed[want] {

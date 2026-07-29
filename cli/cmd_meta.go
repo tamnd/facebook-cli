@@ -139,15 +139,31 @@ func newExplainCmd() kit.Command {
 // way to answer "what is this thing" for the half-dozen shapes Facebook writes
 // an id in, including the two base64 ones.
 func newIDCmd() kit.Command {
+	var resolve bool
 	return kit.Command{
 		Use:   "id <anything>",
 		Short: "Classify a Facebook id, handle, story key or URL",
 		Long: "id decodes what you paste: a numeric id, a handle, a permalink, a story key, a pfbid, a " +
-			"base64 node id. It makes no request, so it costs nothing and works offline.",
+			"base64 node id. It makes no request, so it costs nothing and works offline. --resolve " +
+			"spends one, to turn a handle into the numeric id behind it, a pfbid into the story id, or " +
+			"a share link into whatever it redirects to.",
 		Args: kit.ExactArgs(1),
+		Flags: func(f *kit.FlagSet) {
+			f.BoolVar(&resolve, "resolve", false, "spend one request to turn a handle, a pfbid or a share link into a numeric id")
+		},
 		Run: func(ctx context.Context, args []string) error {
 			a := appFromCtx(ctx)
 			r := fbid.Parse(args[0])
+			if resolve {
+				e, err := a.engine()
+				if err != nil {
+					return a.fail(args[0], err)
+				}
+				r, err = e.Resolve(a.ctx(), args[0])
+				if err != nil {
+					return a.fail(args[0], err)
+				}
+			}
 			return a.emitOne(Row{
 				Cols:  []string{"kind", "id", "handle", "post_id", "author_id", "command", "url"},
 				Vals:  []string{r.Kind, r.ID, r.Handle, r.PostID, r.AuthorID, r.Command, r.URL},

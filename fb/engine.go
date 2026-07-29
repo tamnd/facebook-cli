@@ -294,6 +294,109 @@ func appendFeed(p *Profile, data any) {
 	p.PostsTruncated = digBool(units, "page_info", "has_next_page")
 }
 
+// Resolve spends one request to fill in what reading the string cannot.
+//
+// Three references are worth a request, and they are the three where taking the
+// string at face value stores something that will be wrong later.
+//
+// A handle is an alias. It names a profile until its owner renames it, and then
+// it names somebody else or nothing, so a graph keyed on a handle rots without
+// saying so. The numeric id behind it is the key, and one page fetch has it.
+//
+// A pfbid is per-render. The permalink you were given works, and the token in it
+// is not the post's identity and will not match the token in the next render of
+// the same post. The numeric story id arrives with the fetch.
+//
+// A share link is a redirect and nothing else. There is no way to know what
+// fb.watch/abc123 points at except to follow it.
+//
+// Everything else already carries a numeric id, so Resolve hands it straight
+// back rather than spending a request to confirm what parsing established.
+func (e *Engine) Resolve(ctx context.Context, ref string) (fbid.Ref, error) {
+	r := fbid.Parse(ref)
+	switch {
+	case r.Kind == fbid.KindHandle, (r.Kind == fbid.KindProfile || r.Kind == fbid.KindPage) && !numeric(r.ID):
+		p, err := e.get(ctx, profileURL(ref), "profile "+ref, "ProfileCometHeaderQuery", "ProfilePlusCometLoggedOutRootQuery")
+		if err != nil {
+			return r, err
+		}
+		out := parseProfile(p.Docs)
+		if out.ID == "" {
+			applyProfileHead(&out, p.Head)
+		}
+		if out.ID == "" {
+			return r, notFound("profile "+ref, "the page named no numeric id, so there is nothing to resolve to")
+		}
+		r.ID, r.Kind = out.ID, fbid.KindProfile
+		if out.Handle != "" {
+			r.Handle = out.Handle
+		}
+		if out.URL != "" {
+			r.URL = out.URL
+		}
+		r.Opaque = false
+		r.Note = "resolved from the handle: this numeric id is the one to key on"
+		return r, nil
+
+	case r.Kind == fbid.KindShare:
+		// The redirect is the answer, so the cheapest correct thing is to follow
+		// it and re-read where it landed.
+		p, err := e.c.Get(ctx, r.URL)
+		if err != nil {
+			return r, err
+		}
+		if p.FinalURL == "" || p.FinalURL == r.URL {
+			return r, notFound("share link "+ref, "it did not redirect anywhere")
+		}
+		out := fbid.Parse(canonURL(p.FinalURL))
+		out.Input = ref
+		out.Note = "resolved by following the redirect from " + r.URL
+		return out, nil
+
+	case r.Opaque || r.Kind == fbid.KindPost && !numeric(r.PostID):
+		if r.URL == "" {
+			return r, usage("%s is a pfbid on its own, and Facebook has no route that takes one without its author: pass the permalink, or the id with --author", ref)
+		}
+		p, err := e.get(ctx, r.URL, "post "+r.ID)
+		if err != nil {
+			return r, err
+		}
+		out := parsePost(p.Docs)
+		if out.ID == "" {
+			return r, notFound("post "+r.ID, "the permalink carried no story")
+		}
+		r.ID, r.PostID, r.Opaque = out.ID, out.ID, false
+		if out.StoryID != "" {
+			r.Note = "resolved from the pfbid: story key " + out.StoryID
+		} else {
+			r.Note = "resolved from the pfbid: this numeric id is the one to key on"
+		}
+		if !out.Author.Empty() && out.Author.ID != "" && numeric(out.Author.ID) {
+			r.AuthorID = out.Author.ID
+		}
+		return r, nil
+	}
+	if r.Kind == fbid.KindUnknown {
+		return r, noResults("fb cannot tell what %s is, so there is nothing to resolve", ref)
+	}
+	r.Note = "already a numeric id: nothing to resolve, and no request was made"
+	return r, nil
+}
+
+// numeric reports whether a string is all digits, which is what a real Facebook
+// id looks like and what a pfbid and a handle do not.
+func numeric(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
 // Post reads a post permalink.
 //
 // author is the --author flag, and it is not optional for a bare post id:

@@ -85,6 +85,7 @@ var Operations = []Operation{
 	{"event", surfaceComet, "EventCometPermalinkHeaderQuery", 0, "whole"},
 	{"group", surfaceComet, "CometGroupRootQuery", 0, "whole"},
 	{"group feed", surfaceGraphQL, "CometGroupDiscussionRootSuccessQuery", 0, "paged"},
+	{"id --resolve", surfaceComet, "ProfileCometHeaderQuery", 0, "one request"},
 	{"discover", surfaceDirectory, "", 0, "the index only"},
 	{"search", surfaceSession, "", 1, "not implemented yet"},
 }
@@ -116,5 +117,6 @@ var Routes = []Route{
 	{"a public event", []string{surfaceComet, surfaceOpenGraph}, []string{surfaceSession}, "surface 3 carries the RSVP counts, rounded"},
 	{"a profile picture", []string{surfacePicture}, []string{surfacePicture}, "by handle or id"},
 	{"media bytes", []string{surfaceCDN}, []string{surfaceCDN}, ""},
+	{"the numeric id behind a handle, a pfbid or a share link", []string{surfaceComet}, []string{surfaceSession}, "one request, and only for the three references that parsing cannot settle"},
 	{"discovery", []string{surfaceDirectory}, []string{surfaceSession}, "the index only, the letter pages are blocked"},
 }
