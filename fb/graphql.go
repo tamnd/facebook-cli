@@ -129,6 +129,7 @@ func (c *Client) postForm(ctx context.Context, endpoint string, form url.Values,
 		c.log("POST %s %s", endpoint, op)
 		resp, err := c.HTTP.Do(req)
 		if err != nil {
+			c.logRead(endpoint+"#"+op, surfaceGraphQL, 0, 0, err)
 			if attempt < c.Retries && AsNetwork(err) != nil {
 				if err := c.backoff(ctx, attempt); err != nil {
 					return nil, err
@@ -142,6 +143,12 @@ func (c *Client) postForm(ctx context.Context, endpoint string, form url.Values,
 		}
 		body, readErr := io.ReadAll(resp.Body)
 		resp.Body.Close()
+		// The operation goes in the audit log as a fragment on the endpoint.
+		// Twenty replays are twenty POSTs to the same URL, and a log that
+		// cannot tell them apart is a log nobody can check a record against.
+		// A fragment is never sent to a server, so writing one down here
+		// invents nothing about the request.
+		c.logRead(endpoint+"#"+op, surfaceGraphQL, resp.StatusCode, len(body), readErr)
 		if readErr != nil {
 			return nil, readErr
 		}

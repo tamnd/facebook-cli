@@ -49,6 +49,11 @@ type Client struct {
 	Rate    time.Duration // minimum gap between requests
 	Retries int
 	Verbose func(format string, args ...any)
+	// Log, when set, is called once per request with what came back. It is how
+	// the reads table gets filled, and it is the only place that knows a
+	// request happened at all: a cache hit is not a read, does not appear here,
+	// and does not count against a crawl's budget.
+	Log func(Read)
 
 	mu   sync.Mutex
 	last time.Time
@@ -123,6 +128,41 @@ func (c *Client) setPageHeaders(req *http.Request) {
 	}
 }
 
+// logRead hands one request to whoever is keeping the audit log.
+func (c *Client) logRead(rawURL, surface string, status, size int, err error) {
+	if c.Log == nil {
+		return
+	}
+	r := Read{URL: rawURL, Surface: surface, Status: status, Bytes: size, At: time.Now()}
+	if err != nil {
+		r.Error = err.Error()
+	}
+	c.Log(r)
+}
+
+// surfaceOf names the surface a URL belongs to.
+//
+// It is worked out from the URL rather than passed down, because every request
+// fb makes goes through one of three functions here and none of them knows what
+// the engine was trying to read. The tier is not in it: a signed-in read of a
+// profile is still the Comet page, and which cookies were on it is a fact about
+// the run rather than about the URL.
+func surfaceOf(rawURL string) string {
+	switch {
+	case strings.Contains(rawURL, "/api/graphql"):
+		return surfaceGraphQL
+	case strings.Contains(rawURL, "/plugins/"):
+		return surfaceEmbed
+	case strings.Contains(rawURL, "/directory/"):
+		return surfaceDirectory
+	case strings.Contains(rawURL, "graph.facebook.com"):
+		return surfacePicture
+	case strings.Contains(rawURL, "fbcdn.net"):
+		return surfaceCDN
+	}
+	return surfaceComet
+}
+
 // Get fetches a page, through the cache when there is one.
 func (c *Client) Get(ctx context.Context, rawURL string) (*Page, error) {
 	rawURL = canonURL(rawURL)
@@ -132,6 +172,25 @@ func (c *Client) Get(ctx context.Context, rawURL string) (*Page, error) {
 			return parsePage(rawURL, e.FinalURL, e.Status, e.Body), nil
 		}
 	}
+	body, finalURL, status, err := c.fetch(ctx, rawURL)
+	if err != nil {
+		return nil, err
+	}
+	if c.Cache != nil {
+		c.Cache.Put(rawURL, Entry{Body: body, FinalURL: finalURL, Status: status, At: time.Now()})
+	}
+	return parsePage(rawURL, finalURL, status, body), nil
+}
+
+// Fetch is Get with the cache read skipped, which is what `fb archive` wants.
+//
+// An archive is a statement about what Facebook is serving now. Answering it
+// from a page fetched twenty minutes ago would make the capture a statement
+// about the cache, and the timestamp in the meta file would say otherwise. What
+// it does still do is write the result into the cache, because the bytes are
+// fresh and the next read may as well have them.
+func (c *Client) Fetch(ctx context.Context, rawURL string) (*Page, error) {
+	rawURL = canonURL(rawURL)
 	body, finalURL, status, err := c.fetch(ctx, rawURL)
 	if err != nil {
 		return nil, err
@@ -202,10 +261,12 @@ func (c *Client) once(ctx context.Context, rawURL string) ([]byte, string, int, 
 	c.log("GET %s", rawURL)
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
+		c.logRead(rawURL, surfaceOf(rawURL), 0, 0, err)
 		return nil, "", 0, err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
+	c.logRead(rawURL, surfaceOf(rawURL), resp.StatusCode, len(body), err)
 	if err != nil {
 		return nil, "", resp.StatusCode, err
 	}

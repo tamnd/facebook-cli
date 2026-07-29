@@ -80,10 +80,13 @@ func (c *Client) Download(ctx context.Context, rawURL, path string) (int64, erro
 	switch {
 	case resp.StatusCode == http.StatusRequestedRangeNotSatisfiable:
 		// The file on disk is already the whole thing.
+		c.logRead(rawURL, surfaceCDN, resp.StatusCode, 0, nil)
 		return 0, nil
 	case resp.StatusCode == http.StatusForbidden:
+		c.logRead(rawURL, surfaceCDN, resp.StatusCode, 0, nil)
 		return 0, needAuth("the CDN refused %s, which is what an expired signature looks like: read the record again to get a fresh URL", path)
 	case resp.StatusCode >= 400:
+		c.logRead(rawURL, surfaceCDN, resp.StatusCode, 0, nil)
 		return 0, asHTTPStatus(resp.StatusCode, rawURL, "")
 	}
 
@@ -104,6 +107,7 @@ func (c *Client) Download(ctx context.Context, rawURL, path string) (int64, erro
 	if err := f.Close(); err != nil && cerr == nil {
 		cerr = err
 	}
+	c.logRead(rawURL, surfaceCDN, resp.StatusCode, int(n), cerr)
 	if cerr != nil {
 		return n, fmt.Errorf("write %s: %w", path, cerr)
 	}
