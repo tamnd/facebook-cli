@@ -91,6 +91,8 @@ var Operations = []Operation{
 	{"id --resolve", surfaceComet, "ProfileCometHeaderQuery", 0, "one request"},
 	{"discover", surfaceDirectory, "", 0, "the index only"},
 	{"search", surfaceSession, "", 1, "not implemented yet"},
+	{"edges", surfaceComet, "", 0, "whatever the reference routes to, once"},
+	{"graph", surfaceComet, "", 0, "one read per node, capped by --budget"},
 }
 
 // Route is one question and the surfaces that answer it at each tier.
@@ -123,4 +125,5 @@ var Routes = []Route{
 	{"media bytes", []string{surfaceCDN}, []string{surfaceCDN}, ""},
 	{"the numeric id behind a handle, a pfbid or a share link", []string{surfaceComet}, []string{surfaceSession}, "one request, and only for the three references that parsing cannot settle"},
 	{"discovery", []string{surfaceDirectory}, []string{surfaceSession}, "the index only, the letter pages are blocked"},
+	{"what a page claims about everything else", []string{surfaceComet}, []string{surfaceSession}, "no request of its own: the claims come out of the read the reference already routes to"},
 }

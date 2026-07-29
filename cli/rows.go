@@ -8,6 +8,7 @@ import (
 
 	"github.com/tamnd/facebook-cli/fb"
 	"github.com/tamnd/facebook-cli/pkg/fbid"
+	"github.com/tamnd/facebook-cli/pkg/graph"
 )
 
 // rows.go turns a record into a row: a curated column set for the eye, the
@@ -255,6 +256,20 @@ func fieldKindRow(kind string) Row {
 		Value: map[string]any{
 			"kind": kind, "fields": len(fields), "filled": filled,
 		},
+	}
+}
+
+// edgeRow prints one claim.
+//
+// The note is the last column and it is why the table is readable at all: a row
+// of three fb:// URIs tells nobody anything, and the same row with "NASA" on
+// the end tells them what they came for. The surface and the tier are in the
+// JSON, because somebody reading a hundred claims is reading the claims.
+func edgeRow(e graph.Edge) Row {
+	return Row{
+		Cols:  []string{"from", "predicate", "to", "note"},
+		Vals:  []string{e.From, e.Predicate, e.To, oneline(e.Note)},
+		Value: e,
 	}
 }
 

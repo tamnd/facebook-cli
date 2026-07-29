@@ -33,6 +33,8 @@ func readCommands() []kit.Command {
 		newEventsCmd(),
 		newDiscoverCmd(),
 		newSearchCmd(),
+		newEdgesCmd(),
+		newGraphCmd(),
 	}
 }
 
