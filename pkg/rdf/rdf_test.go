@@ -90,6 +90,92 @@ func TestATypeIsEmittedOncePerNode(t *testing.T) {
 	}
 }
 
+// TestAKnownKindBeatsTheOneOnTheURI is what a store buys an export. Both a Page
+// and a person live in the profile URI space, so without this every Page in a
+// dump is a schema:Person, which is wrong about NASA in a way that is hard to
+// notice and hard to undo.
+func TestAKnownKindBeatsTheOneOnTheURI(t *testing.T) {
+	edges := []graph.Edge{{
+		From: "fb://profile/1", Predicate: graph.Authored, To: "fb://post/2",
+		Source: "https://www.facebook.com/NASA",
+	}}
+	classOf := func(opt Options) string {
+		for _, tr := range Triples(edges, opt) {
+			if tr.Predicate == NSRDF+"type" && tr.Subject == "fb://profile/1" {
+				return tr.Object
+			}
+		}
+		return ""
+	}
+	if got := classOf(Options{Types: true}); got != NSSchema+"Person" {
+		t.Errorf("a profile with nothing else known about it is %q, want a Person", got)
+	}
+	want := NSSchema + "Organization"
+	got := classOf(Options{Types: true, Kinds: map[string]string{"fb://profile/1": graph.KindPage}})
+	if got != want {
+		t.Errorf("a node stored as a page is %q, want %q", got, want)
+	}
+}
+
+// TestAClaimTwoPagesAgreeOnIsAssertedOnce is the shape a store export has and a
+// single read does not: the same three parts from four sources. RDF has no way
+// to say a thing twice, so the assertion goes out once and every source is kept.
+func TestAClaimTwoPagesAgreeOnIsAssertedOnce(t *testing.T) {
+	agreed := []graph.Edge{
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/NASA"},
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/photo/?fbid=3"},
+	}
+	var b strings.Builder
+	if err := Write(&b, Triples(agreed, Options{}), "nt"); err != nil {
+		t.Fatal(err)
+	}
+	out := b.String()
+	plain, prov := 0, 0
+	for _, line := range strings.Split(strings.TrimSpace(out), "\n") {
+		if strings.HasPrefix(line, "<<") {
+			prov++
+		} else {
+			plain++
+		}
+	}
+	if plain != 1 {
+		t.Errorf("the same claim was asserted %d times:\n%s", plain, out)
+	}
+	if prov != 2 {
+		t.Errorf("%d sources survived, want both", prov)
+	}
+}
+
+// TestAgreementSurvivesAsGraphsInJSONLD is the other half. Named graphs are one
+// per source, so the claim belongs in each of them: dropping the repeat there
+// would be dropping the agreement itself.
+func TestAgreementSurvivesAsGraphsInJSONLD(t *testing.T) {
+	agreed := []graph.Edge{
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/NASA"},
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/photo/?fbid=3"},
+	}
+	var b strings.Builder
+	if err := Write(&b, Triples(agreed, Options{}), "jsonld"); err != nil {
+		t.Fatal(err)
+	}
+	if n := strings.Count(b.String(), "fb://photo/3"); n != 2 {
+		t.Errorf("the claim appears %d times across the graphs, want one per source:\n%s", n, b.String())
+	}
+}
+
+// TestWithoutProvenanceTheSameClaimIsOneLine: with the sources gone there is
+// nothing left to tell the copies apart, so keeping them would be padding.
+func TestWithoutProvenanceTheSameClaimIsOneLine(t *testing.T) {
+	agreed := []graph.Edge{
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/NASA"},
+		{From: "fb://post/2", Predicate: graph.Attaches, To: "fb://photo/3", Source: "https://www.facebook.com/photo/?fbid=3"},
+	}
+	ts := Triples(agreed, Options{NoProvenance: true})
+	if len(ts) != 1 {
+		t.Errorf("one claim from two sources made %d triples with no provenance", len(ts))
+	}
+}
+
 func TestProvenanceSurvivesEveryFormat(t *testing.T) {
 	ts := Triples(sample, Options{Types: true})
 	for _, f := range Formats {

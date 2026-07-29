@@ -39,8 +39,10 @@ func Write(w io.Writer, ts []Triple, format string) error {
 // not have to fit anywhere.
 func writeNT(w io.Writer, ts []Triple) error {
 	for _, t := range ts {
-		if _, err := fmt.Fprintf(w, "%s %s %s .\n", ntTerm(t.Subject, false), ntTerm(t.Predicate, false), ntTerm(t.Object, t.ObjectIsLiteral)); err != nil {
-			return err
+		if !t.Repeat {
+			if _, err := fmt.Fprintf(w, "%s %s %s .\n", ntTerm(t.Subject, false), ntTerm(t.Predicate, false), ntTerm(t.Object, t.ObjectIsLiteral)); err != nil {
+				return err
+			}
 		}
 		if t.Derived == "" {
 			continue
@@ -72,13 +74,22 @@ func writeTurtle(w io.Writer, ts []Triple) error {
 	// changed rather than what moved.
 	var order []string
 	bySubject := map[string][]Triple{}
+	// A claim two pages agree on is one line in the subject's block and one
+	// annotation per page, so the block stays readable and the sources all
+	// survive.
+	var annotated []Triple
 	for _, t := range ts {
+		if t.Derived != "" {
+			annotated = append(annotated, t)
+		}
+		if t.Repeat {
+			continue
+		}
 		if _, ok := bySubject[t.Subject]; !ok {
 			order = append(order, t.Subject)
 		}
 		bySubject[t.Subject] = append(bySubject[t.Subject], t)
 	}
-	var annotated []Triple
 	for _, s := range order {
 		group := bySubject[s]
 		if _, err := fmt.Fprintf(w, "%s\n", ntTerm(s, false)); err != nil {
@@ -98,9 +109,6 @@ func writeTurtle(w io.Writer, ts []Triple) error {
 			}
 			if _, err := fmt.Fprintf(w, "    %s %s %s\n", p, o, end); err != nil {
 				return err
-			}
-			if t.Derived != "" {
-				annotated = append(annotated, t)
 			}
 		}
 		fmt.Fprintln(w)

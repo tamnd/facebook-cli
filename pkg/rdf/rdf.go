@@ -105,6 +105,15 @@ type Triple struct {
 	// ObjectIsLiteral marks an object that is a string rather than a node.
 	ObjectIsLiteral bool
 	Derived         string
+	// Repeat marks a claim some earlier triple has already asserted, where only
+	// the source is new. A store holds one row per source on purpose, so a fact
+	// four pages agree on arrives here four times; RDF has no notion of saying
+	// the same thing twice, and writing it out four times makes a bigger file
+	// that means exactly the same. The formats that put everything in one graph
+	// write the assertion once and every source. The one that puts each source
+	// in its own named graph writes it in each, because there it is four
+	// statements in four graphs and dropping three would lose the agreement.
+	Repeat bool
 }
 
 // Options are what a caller gets to decide.
@@ -117,6 +126,14 @@ type Options struct {
 	// On by default at the caller's discretion, because a dump of bare
 	// relationships is much less use than one that says what the things are.
 	Types bool
+	// Kinds refines a node's type where the caller knows better than the URI
+	// does, keyed by URI. A Page and a person share the profile URI space on
+	// purpose, since Facebook gives them one id space and two spellings of one
+	// node would be a duplicate for every Page in the store. A caller that read
+	// the page and knows which it was says so here, and gets Organization
+	// instead of Person. A URI that is not in the map keeps the kind its URI
+	// already carries.
+	Kinds map[string]string
 }
 
 // Triples turns claims into triples, in the order the claims were asserted.
@@ -127,6 +144,7 @@ type Options struct {
 func Triples(edges []graph.Edge, opt Options) []Triple {
 	var out []Triple
 	typed := map[string]bool{}
+	asserted := map[Triple]bool{}
 	for _, e := range edges {
 		t, ok := terms[e.Predicate]
 		if !ok {
@@ -140,7 +158,19 @@ func Triples(edges []graph.Edge, opt Options) []Triple {
 		if t.invert {
 			s, o = o, s
 		}
-		out = append(out, Triple{Subject: s, Predicate: iri(t), Object: o, Derived: derived(e, opt)})
+		tr := Triple{Subject: s, Predicate: iri(t), Object: o}
+		key := tr
+		tr.Derived = derived(e, opt)
+		if asserted[key] {
+			// Nothing new to say: the same claim, the same three parts, and no
+			// source to hang on it.
+			if tr.Derived == "" {
+				continue
+			}
+			tr.Repeat = true
+		}
+		asserted[key] = true
+		out = append(out, tr)
 		if !opt.Types {
 			continue
 		}
@@ -152,6 +182,9 @@ func Triples(edges []graph.Edge, opt Options) []Triple {
 			kind, _, ok := graph.Split(n)
 			if !ok {
 				continue
+			}
+			if k := opt.Kinds[n]; k != "" {
+				kind = k
 			}
 			// A type triple carries no provenance, and that is deliberate.
 			// Facebook did not say the node is a schema:Person; fb worked
