@@ -113,6 +113,34 @@ func TestNothingServedWrites(t *testing.T) {
 	}
 }
 
+// TestTheStoreCommandsAreNotServed is the other half of the same rule. These
+// five read and write this machine's disk, and the serve and MCP surfaces are
+// both built from the operation table, so staying out of that table is what
+// keeps them off a network port.
+func TestTheStoreCommandsAreNotServed(t *testing.T) {
+	onDisk := map[string]bool{}
+	var walk func(prefix string, cmds []kit.Command)
+	walk = func(prefix string, cmds []kit.Command) {
+		for _, c := range cmds {
+			name := strings.Fields(c.Use)[0]
+			path := strings.TrimSpace(prefix + " " + name)
+			onDisk[path] = true
+			walk(path, c.Sub)
+		}
+	}
+	walk("", storeCommands())
+	for _, op := range New().Ops() {
+		m := op.Meta()
+		path := m.Name
+		if m.Parent != "" {
+			path = m.Parent + " " + m.Name
+		}
+		if onDisk[path] {
+			t.Errorf("`fb %s` touches this machine's disk and is registered as an operation, so it is reachable over serve and mcp", path)
+		}
+	}
+}
+
 // TestEveryOpIsAlsoACommand keeps the two vocabularies together: a tool an
 // agent can call under one name and a person cannot call at all is a tool
 // nobody can talk about.
