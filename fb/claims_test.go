@@ -66,6 +66,22 @@ func TestTheFrontierSkipsWhatHasNoPage(t *testing.T) {
 	}
 }
 
+func TestADelegatePageIsNotASecondRead(t *testing.T) {
+	// NASA's profile delegates to page 54971236771, and profile.php for that id
+	// answers with NASA's profile again. It is a claim worth keeping and a
+	// request worth not spending: a one-hop crawl of nasa read the same profile
+	// twice before this, which is a sixth of a small budget for nothing.
+	c := Claims{URI: "fb://profile/100044561550831", Edges: []graph.Edge{
+		{From: "fb://profile/100044561550831", Predicate: graph.DelegatesTo, To: "fb://page/54971236771"},
+		{From: "fb://profile/100044561550831", Predicate: graph.Owns, To: "fb://photo/1"},
+	}}
+	for _, n := range frontierOf(c, map[string]bool{"fb://profile/100044561550831": true}) {
+		if n.uri == "fb://page/54971236771" {
+			t.Errorf("the delegate page was queued as %q, and it reads back as the page that delegated to it", n.ref)
+		}
+	}
+}
+
 func TestANodeIsOnlyEverQueuedOnce(t *testing.T) {
 	// A page names its own owner in half its claims. Queuing that profile eight
 	// times is eight requests for one answer.

@@ -134,9 +134,11 @@ func (e *Engine) Graph(ctx context.Context, ref string, depth, budget int) ([]Cl
 	return out, nil
 }
 
-// node is one thing on the frontier: its identity, and the reference to fetch it
-// with, which is empty when there is nothing worth fetching.
-type node struct{ uri, ref string }
+// node is one thing on the frontier: its identity, the reference to fetch it
+// with, which is empty when there is nothing worth fetching, and the predicate
+// that named it, which is what the frontier's order uses to tell a photo in a
+// story from a profile picture.
+type node struct{ uri, ref, via string }
 
 // frontierOf is the nodes a read named that have not been read yet, in the order
 // they were asserted.
@@ -145,17 +147,25 @@ func frontierOf(c Claims, seen map[string]bool) []node {
 	// place the author is written down is the authored claim. Collect those
 	// first so the posts in the same batch can be fetched at all.
 	authors := map[string]string{}
+	// The delegate page is a second node and a first-class claim, but it is not
+	// a second read: Facebook answers `profile.php?id=<delegate>` with the page
+	// that delegated to it, so fetching one spends a request to be handed a
+	// record the walk already has. Collect them here and leave them off.
+	aliases := map[string]bool{}
 	for _, e := range c.Edges {
-		if e.Predicate == graph.Authored {
+		switch e.Predicate {
+		case graph.Authored:
 			if _, id, ok := graph.Split(e.From); ok {
 				authors[e.To] = id
 			}
+		case graph.DelegatesTo:
+			aliases[e.To] = true
 		}
 	}
 	var out []node
 	for _, e := range c.Edges {
 		for _, uri := range [2]string{e.From, e.To} {
-			if uri == "" || seen[uri] {
+			if uri == "" || seen[uri] || aliases[uri] {
 				continue
 			}
 			seen[uri] = true
@@ -163,7 +173,7 @@ func frontierOf(c Claims, seen map[string]bool) []node {
 			if !ok || !worthFetching(kind) {
 				continue
 			}
-			out = append(out, node{uri, refFor(kind, id, authors[uri])})
+			out = append(out, node{uri, refFor(kind, id, authors[uri]), e.Predicate})
 		}
 	}
 	return out
