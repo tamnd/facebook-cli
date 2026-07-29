@@ -79,7 +79,7 @@ var networked = []string{
 	"page", "profile", "feed", "post", "comments", "reactions",
 	"photo", "photos", "photos --album", "photo --download", "video", "video --download", "reel", "videos",
 	"group", "group feed", "event", "events", "discover", "search", "id --resolve",
-	"edges", "graph",
+	"edges", "graph", "rdf",
 }
 
 func TestEveryNetworkedCommandIsRouted(t *testing.T) {

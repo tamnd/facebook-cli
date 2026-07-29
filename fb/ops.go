@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/tamnd/any-cli/kit"
+	"github.com/tamnd/facebook-cli/pkg/graph"
 )
 
 // ops.go is the read surface as operations: one registration each, served over
@@ -41,6 +42,7 @@ func RegisterOps(app *kit.App, o OpOptions) {
 	registerGroupOps(app, o)
 	registerEventOps(app, o)
 	registerDirectoryOps(app, o)
+	registerGraphOps(app, o)
 }
 
 // handle registers one operation, applying the caller's surface choice, so no
@@ -426,6 +428,77 @@ func listDirectory(ctx context.Context, in letterRef, emit func(*DirectoryEntry)
 		e := DirectoryEntry{Name: t.Name, URL: t.URL, Letter: t.Name}
 		e.Envelope = d.Envelope
 		if err := emit(&e); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// --- claims ---
+
+// graphRef is the graph plane's input. Depth and budget are flags rather than
+// two operations, because a walk of depth zero is exactly `edges` and splitting
+// them would be two names for one thing.
+type graphRef struct {
+	Ref    string  `kit:"arg" help:"anything fb can read: a profile, post, photo, video, group or event"`
+	Depth  int     `kit:"flag" help:"how many hops out from the seed"`
+	Budget int     `kit:"flag" help:"how many requests the walk may spend"`
+	Engine *Engine `kit:"inject"`
+}
+
+func registerGraphOps(app *kit.App, o OpOptions) {
+	handle(app, o, kit.OpMeta{Name: "edges", Group: "read",
+		Summary: "Read the claims one page already makes about everything else",
+		Args:    []kit.Arg{{Name: "ref", Help: "anything fb can read"}}}, listEdges)
+
+	handle(app, o, kit.OpMeta{Name: "graph", Group: "read",
+		Summary: "Read the claims, then the claims of everything they named",
+		Args:    []kit.Arg{{Name: "ref", Help: "anything fb can read"}}}, listGraph)
+}
+
+func listEdges(ctx context.Context, in graphRef, emit func(*graph.Edge) error) error {
+	c, err := in.Engine.Edges(ctx, in.Ref)
+	if err != nil {
+		return MapErr(err)
+	}
+	if len(c.Edges) == 0 {
+		return MapErr(noResults("%s asserted nothing about anything else", in.Ref))
+	}
+	for i := range c.Edges {
+		if err := emit(&c.Edges[i]); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// listGraph defaults the budget rather than trusting a caller who left it at
+// zero to have meant zero. Over HTTP and MCP an unset field is indistinguishable
+// from a deliberate zero, and a walk that silently does nothing is worse than
+// one that spends a modest number of requests.
+func listGraph(ctx context.Context, in graphRef, emit func(*graph.Edge) error) error {
+	if in.Depth <= 0 {
+		in.Depth = 1
+	}
+	if in.Budget <= 0 {
+		in.Budget = 25
+	}
+	claims, err := in.Engine.Graph(ctx, in.Ref, in.Depth, in.Budget)
+	if err != nil {
+		return MapErr(err)
+	}
+	var seen graph.Set
+	for _, c := range claims {
+		for _, e := range c.Edges {
+			seen.Add(e)
+		}
+	}
+	if seen.Len() == 0 {
+		return MapErr(noResults("%s asserted nothing about anything else", in.Ref))
+	}
+	edges := seen.Edges()
+	for i := range edges {
+		if err := emit(&edges[i]); err != nil {
 			return err
 		}
 	}

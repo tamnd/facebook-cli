@@ -2,9 +2,14 @@ package cli
 
 import (
 	"context"
+	"os"
+	"slices"
+	"strings"
 
 	"github.com/tamnd/any-cli/kit"
+	"github.com/tamnd/facebook-cli/fb"
 	"github.com/tamnd/facebook-cli/pkg/graph"
+	"github.com/tamnd/facebook-cli/pkg/rdf"
 )
 
 // cmd_graph.go is the graph plane at the command line: `fb edges` for one read's
@@ -88,6 +93,63 @@ func newGraphCmd() kit.Command {
 				rows = append(rows, edgeRow(e))
 			}
 			return a.done(a.emit(rows))
+		},
+	}
+}
+
+func newRDFCmd() kit.Command {
+	var format string
+	var depth, budget int
+	var noProv bool
+	return kit.Command{
+		Use:   "rdf <ref>",
+		Short: "The claims as RDF, in a vocabulary something else can read",
+		Long: "rdf writes the same claims `fb edges` prints, in schema.org where schema.org has a term " +
+			"and in the fb namespace where it does not, with the namespace declared in the output " +
+			"rather than assumed. Provenance is on: every claim says which URL asserted it, so a dump " +
+			"is as auditable as the read it came from, and --no-provenance turns that off for anyone " +
+			"who would rather have the smaller file. --depth walks first, the same way `fb graph` does.",
+		Args: kit.ExactArgs(1),
+		Flags: func(f *kit.FlagSet) {
+			f.StringVar(&format, "format", "nt", "nt, turtle or jsonld")
+			f.IntVar(&depth, "depth", 0, "how many hops out from the seed before writing")
+			f.IntVar(&budget, "budget", 25, "how many requests the walk may spend")
+			f.BoolVar(&noProv, "no-provenance", false, "leave out which URL asserted each claim")
+		},
+		Run: func(ctx context.Context, args []string) error {
+			a := appFromCtx(ctx)
+			a.target = args[0]
+			// RDF is a serialisation, so -o has nothing to do here: asking for
+			// `--format turtle -o json` is two answers to one question.
+			if err := a.rawOutput("rdf"); err != nil {
+				return a.done(err)
+			}
+			// Checked before anything is fetched. Spending a request and then
+			// refusing to write the answer is the tool wasting somebody's rate
+			// limit on a typo.
+			if !slices.Contains(rdf.Formats, format) {
+				return a.done(fb.Usage("no rdf format %q; there is %s", format, strings.Join(rdf.Formats, ", ")))
+			}
+			eng, err := a.engine()
+			if err != nil {
+				return a.done(err)
+			}
+			claims, err := eng.Graph(a.ctx(), args[0], depth, budget)
+			if err != nil {
+				return a.done(err)
+			}
+			var seen graph.Set
+			for _, c := range claims {
+				a.warnMissed(c.Envelope)
+				for _, e := range c.Edges {
+					seen.Add(e)
+				}
+			}
+			ts := rdf.Triples(seen.Edges(), rdf.Options{NoProvenance: noProv, Types: true})
+			if len(ts) == 0 {
+				return a.done(fb.NoResults("%s asserted nothing worth writing down", args[0]))
+			}
+			return a.done(rdf.Write(os.Stdout, ts, format))
 		},
 	}
 }

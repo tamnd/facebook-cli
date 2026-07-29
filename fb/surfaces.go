@@ -93,6 +93,7 @@ var Operations = []Operation{
 	{"search", surfaceSession, "", 1, "not implemented yet"},
 	{"edges", surfaceComet, "", 0, "whatever the reference routes to, once"},
 	{"graph", surfaceComet, "", 0, "one read per node, capped by --budget"},
+	{"rdf", surfaceComet, "", 0, "the same claims, serialised"},
 }
 
 // Route is one question and the surfaces that answer it at each tier.

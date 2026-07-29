@@ -35,6 +35,7 @@ func readCommands() []kit.Command {
 		newSearchCmd(),
 		newEdgesCmd(),
 		newGraphCmd(),
+		newRDFCmd(),
 	}
 }
 
