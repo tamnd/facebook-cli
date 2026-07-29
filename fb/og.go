@@ -122,7 +122,6 @@ func firstNonEmpty(vals ...string) string {
 var (
 	reLikes        = regexp.MustCompile(`([\d.,KMB]+) likes`)
 	reTalkingAbout = regexp.MustCompile(`([\d.,KMB]+) talking about this`)
-	reWereHere     = regexp.MustCompile(`([\d.,KMB]+) were here`)
 	reInterested   = regexp.MustCompile(`([\d.,KMB]+) people interested`)
 	reGoing        = regexp.MustCompile(`([\d.,KMB]+) people going`)
 )

@@ -138,8 +138,3 @@ func slice16(units []uint16, offset, length int) string {
 	}
 	return string(utf16.Decode(units[offset:end]))
 }
-
-// sliceText is slice16 against a plain string, for callers that hold one span.
-func sliceText(s string, offset, length int) string {
-	return slice16(utf16.Encode([]rune(s)), offset, length)
-}

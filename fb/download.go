@@ -75,7 +75,7 @@ func (c *Client) Download(ctx context.Context, rawURL, path string) (int64, erro
 		}
 		return 0, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	switch {
 	case resp.StatusCode == http.StatusRequestedRangeNotSatisfiable:

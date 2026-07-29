@@ -188,8 +188,8 @@ func decodeKey(s string) (Ref, bool) {
 		r.AuthorID = parts[0]
 		r.Note = `base64 of "` + plain + `": the author id in it names a profile nobody fetched`
 		r.Command = "post --author"
-		switch {
-		case parts[1] == "VK":
+		switch parts[1] {
+		case "VK":
 			// VK is Facebook's marker for a story about a video or an event, and
 			// the id after it is the video or the event, not a post.
 			if len(parts) > 2 && allDigits(parts[2]) {

@@ -142,7 +142,7 @@ func (c *Client) postForm(ctx context.Context, endpoint string, form url.Values,
 			return nil, err
 		}
 		body, readErr := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		// The operation goes in the audit log as a fragment on the endpoint.
 		// Twenty replays are twenty POSTs to the same URL, and a log that
 		// cannot tell them apart is a log nobody can check a record against.

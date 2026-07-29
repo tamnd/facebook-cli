@@ -264,7 +264,7 @@ func (c *Client) once(ctx context.Context, rawURL string) ([]byte, string, int, 
 		c.logRead(rawURL, surfaceOf(rawURL), 0, 0, err)
 		return nil, "", 0, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(resp.Body)
 	c.logRead(rawURL, surfaceOf(rawURL), resp.StatusCode, len(body), err)
 	if err != nil {

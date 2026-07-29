@@ -68,7 +68,7 @@ func writeTurtle(w io.Writer, ts []Triple) error {
 		}
 	}
 	if len(prefixes) > 0 {
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	}
 	// Subjects in first-seen order, so a diff between two runs shows what
 	// changed rather than what moved.
@@ -111,7 +111,7 @@ func writeTurtle(w io.Writer, ts []Triple) error {
 				return err
 			}
 		}
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	}
 	for _, t := range annotated {
 		o := t.Object
