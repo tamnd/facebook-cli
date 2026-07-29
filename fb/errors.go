@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/tamnd/any-cli/kit/errs"
 )
 
 // errors.go is the typed error taxonomy the CLI turns into stable exit codes
@@ -242,3 +244,46 @@ func FailureOf(err error, target string, tier int) Failure {
 // NeedAuth is the exit-4 error for a caller outside this package. The message
 // has to end with the thing that would fix it, same as the internal one.
 func NeedAuth(format string, args ...any) error { return needAuth(format, args...) }
+
+// MapErr turns one of these errors into the kit error that carries the matching
+// exit code. Both callers use it: the hand-written commands in cli, and the
+// operations in ops.go that fill the serve and MCP surfaces.
+//
+// 4 and 7 are the pair that matter. 4 means a session would fix it and the
+// message says so. 7 means nothing serves this at any tier, so nobody should go
+// looking for a credential that would not help.
+func MapErr(err error) error {
+	if err == nil {
+		return nil
+	}
+	var (
+		ue *UsageError
+		nr *NoResultsError
+		na *NeedAuthError
+		rl *RateLimitedError
+		nf *NotFoundError
+		un *UnsupportedError
+		ne *NetworkError
+	)
+	switch {
+	case errors.As(err, &ue):
+		return errs.Usage("%s", ue.Error())
+	case errors.As(err, &nr):
+		return errs.NoResults("%s", nr.Error())
+	case errors.As(err, &na):
+		return errs.NeedAuth("%s", na.Error())
+	case errors.As(err, &rl):
+		return errs.RateLimited("%s", rl.Error())
+	case errors.As(err, &nf):
+		return errs.NotFound("%s", nf.Error())
+	case errors.As(err, &un):
+		return errs.Unsupported("%s", un.Error())
+	case errors.As(err, &ne):
+		return errs.Network("%s", ne.Error())
+	}
+	// A transport failure that never went through the client still gets 8.
+	if n := AsNetwork(err); n != nil {
+		return errs.Network("%s", n.Error())
+	}
+	return err
+}

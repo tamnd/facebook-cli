@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -315,44 +314,6 @@ func (a *App) warnOnce(note string) {
 }
 
 // mapErr turns an fb error into the kit error that carries the matching exit
-// code (doc 05 section 7): no results 3, needs auth 4, rate limited 5, not
-// found 6, unsupported 7, network 8.
-//
-// 4 and 7 are the pair that matter. 4 means a session would fix it and the
-// message says so. 7 means nothing serves this at any tier, so nobody should go
-// looking for a credential.
-func mapErr(err error) error {
-	if err == nil {
-		return nil
-	}
-	var (
-		ue *fb.UsageError
-		nr *fb.NoResultsError
-		na *fb.NeedAuthError
-		rl *fb.RateLimitedError
-		nf *fb.NotFoundError
-		un *fb.UnsupportedError
-		ne *fb.NetworkError
-	)
-	switch {
-	case errors.As(err, &ue):
-		return errs.Usage("%s", ue.Error())
-	case errors.As(err, &nr):
-		return errs.NoResults("%s", nr.Error())
-	case errors.As(err, &na):
-		return errs.NeedAuth("%s", na.Error())
-	case errors.As(err, &rl):
-		return errs.RateLimited("%s", rl.Error())
-	case errors.As(err, &nf):
-		return errs.NotFound("%s", nf.Error())
-	case errors.As(err, &un):
-		return errs.Unsupported("%s", un.Error())
-	case errors.As(err, &ne):
-		return errs.Network("%s", ne.Error())
-	}
-	// A transport failure that never went through the client still gets 8.
-	if n := fb.AsNetwork(err); n != nil {
-		return errs.Network("%s", n.Error())
-	}
-	return err
-}
+// code. The mapping itself lives in fb, because the operations in fb/ops.go
+// need the same one and two copies would drift.
+func mapErr(err error) error { return fb.MapErr(err) }

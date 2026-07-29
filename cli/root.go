@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"context"
 	"time"
 
 	"github.com/tamnd/any-cli/kit"
+	"github.com/tamnd/facebook-cli/fb"
 )
 
 // Build metadata, stamped with -ldflags. goreleaser targets
@@ -50,6 +52,19 @@ func New() *kit.App {
 	for _, c := range configCommands() {
 		app.AddCommand(c)
 	}
+
+	// The same reads again, as operations, which is what `fb serve` and `fb mcp`
+	// answer with. Everything above is a kit escape hatch, and an escape hatch
+	// is a command and nothing else, so without this both surfaces are empty.
+	//
+	// NoCLI keeps them off the command line, where they would shadow the
+	// commands above. The difference is not cosmetic: the hand-written ones
+	// render the eight fields somebody typing `fb page nasa` wants, while a
+	// reflected Profile is forty columns with JSON in the cells.
+	app.SetClient(func(_ context.Context, kc kit.Config) (any, error) {
+		return fb.NewEngine(fbConfig(kc))
+	})
+	fb.RegisterOps(app, fb.OpOptions{NoCLI: true})
 	return app
 }
 
