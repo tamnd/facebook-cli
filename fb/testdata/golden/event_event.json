@@ -1,0 +1,144 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s1",
+    "s3"
+  ],
+  "via": {
+    "going": "s3",
+    "interested": "s3"
+  },
+  "id": "1526795995494848",
+  "name": "NASA's Artemis III Announcement",
+  "url": "https://www.facebook.com/events/1526795995494848/",
+  "host": {
+    "kind": "profile",
+    "id": "100044561550831",
+    "name": "NASA - National Aeronautics and Space Administration"
+  },
+  "hosts": [
+    {
+      "kind": "profile",
+      "id": "100044561550831",
+      "handle": "NASA",
+      "name": "NASA - National Aeronautics and Space Administration",
+      "url": "https://www.facebook.com/NASA",
+      "verified": true
+    }
+  ],
+  "host_page_id": "54971236771",
+  "start": "2026-06-09T15:30:00Z",
+  "timezone": "EDT",
+  "day_time_sentence": "Tuesday 9 June 2026 at 11:30 EDT",
+  "place": {
+    "kind": "freeform",
+    "name": "Online event"
+  },
+  "is_online": true,
+  "online_kind": "FB_LIVE",
+  "is_past": true,
+  "kind": "PUBLIC_TYPE",
+  "rsvp_style": "PUBLIC_RSVP_STYLE",
+  "description": {
+    "text": "Meet the astronauts of Artemis III!\n \nWe're providing an update on Artemis III, and we’ll introduce the mission’s four crew members.\nDuring the test flight, the crew will lift off aboard NASA's Space Launch System rocket and remain in low Earth orbit where they’ll test our ability to meet and dock the Orion spacecraft with commercial human landers, operations which are needed to land astronauts on the Moon."
+  },
+  "cover": {
+    "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/716611012_1543680343794003_4145822493229394164_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx2048x1152\u0026ctp=s2048x1152\u0026_nc_cat=104\u0026ccb=1-7\u0026_nc_sid=75d36f\u0026_nc_ohc=WPNB_jhnmwgQ7kNvwEa0ab0\u0026_nc_oc=AdrTbQt0cMwZ7PifxBMKEwfEXrVOIra62R_tpnhIkQDRmS87J1pJNmWeN8pAb-_GjVW_s1FBE1YwxZj5nqTiewVq\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=Pj4gPFH1atfU6qxMA5liaQ\u0026_nc_ss=7d289\u0026oh=00_AQD0OIxMdr-S5XGT4BQPranDWeNWffLskgBnFVmUEIZ3YA\u0026oe=6A6F4DAA",
+    "width": 2048,
+    "height": 1152,
+    "alt": "No photo description available.",
+    "blurred": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/716611012_1543680343794003_4145822493229394164_n.jpg?stp=dst-jpg_fb50_s320x320_tt6\u0026_nc_cat=104\u0026ccb=1-7\u0026_nc_sid=75d36f\u0026_nc_ohc=WPNB_jhnmwgQ7kNvwEa0ab0\u0026_nc_oc=AdrTbQt0cMwZ7PifxBMKEwfEXrVOIra62R_tpnhIkQDRmS87J1pJNmWeN8pAb-_GjVW_s1FBE1YwxZj5nqTiewVq\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=Pj4gPFH1atfU6qxMA5liaQ\u0026_nc_ss=7d289\u0026oh=00_AQBGP2Tz4NxTForySL7e2jZzYtB1L6oFrErRrc5jT6leLw\u0026oe=6A6F4DAA",
+    "focus": {
+      "x": 0.5,
+      "y": 0.50226757369615
+    },
+    "signed": true
+  },
+  "flags": [
+    {
+      "label": "Online",
+      "url": "https://www.facebook.com/events/?discover_tab=ONLINE\u0026event_flags%5B0%5D=online"
+    },
+    {
+      "label": "Live video",
+      "url": "https://www.facebook.com/events/?event_flags%5B0%5D=online_setup_live_video"
+    }
+  ],
+  "frequency": "SINGLE",
+  "interested": 2300,
+  "going": 324,
+  "rsvp_text": "Event by NASA - National Aeronautics and Space Administration on Tuesday, June 9 2026 with 2.3K people interested and 324 people going.",
+  "announced_by": "UzpfSTEwMDA0NDU2MTU1MDgzMTpWSzoxNTI2Nzk1OTk1NDk0ODQ4",
+  "suggested": [
+    {
+      "id": "2107745723386359",
+      "name": "Tim Peake ASTRONAUTS: The Quest to Explore Space Tour 2026",
+      "url": "https://www.facebook.com/events/2107745723386359/",
+      "start": "2026-10-04T13:00:00Z",
+      "when_text": "Sun, 4 Oct at 14:00 BST",
+      "place": {
+        "kind": "page",
+        "id": "194904263884859",
+        "name": "Rose Theatre",
+        "city": {
+          "kind": "page",
+          "id": "107886532565618",
+          "name": "Kingston upon Thames, United Kingdom"
+        }
+      },
+      "kind": "PUBLIC_TYPE",
+      "interested": 261,
+      "going": 5,
+      "social_text": "256 interested · 5 going",
+      "image": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/616460233_1340272614807959_6271220611546443002_n.jpg?stp=c204.0.523.523a_dst-jpg_tt6\u0026cstp=mx523x523\u0026ctp=s523x523\u0026_nc_cat=110\u0026ccb=1-7\u0026_nc_sid=80b81f\u0026_nc_ohc=fMKboybQ4vQQ7kNvwH2bJ6g\u0026_nc_oc=Adpx-Hs-got5ELAIT70OMbKcWQEQGGvO61nEtatMXRmte6JXEsH6uen7kKB9jRJcrkPeeVa5_sXI4Qcmvo1g7_ya\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=YcKtQosNaG5u_kK_xyAKPQ\u0026_nc_ss=7d289\u0026oh=00_AQDatNxZF2U4Kmuk5vuMFmj7HG1IfNwyfoBtoKEGpr8cQg\u0026oe=6A6F4EB1",
+        "signed": true
+      }
+    },
+    {
+      "id": "804135188868081",
+      "name": "Professor Brian Cox: Emergence World Tour",
+      "url": "https://www.facebook.com/events/804135188868081/",
+      "start": "2026-10-09T17:30:00Z",
+      "when_text": "Fri, 9 Oct at 18:30 BST",
+      "place": {
+        "kind": "page",
+        "id": "101053791314877",
+        "name": "Co-op Live",
+        "city": {
+          "kind": "page",
+          "id": "114629675219759",
+          "name": "Manchester, United Kingdom"
+        }
+      },
+      "kind": "PUBLIC_TYPE",
+      "interested": 230,
+      "going": 39,
+      "social_text": "193 interested · 39 going",
+      "image": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/556841766_1245723927596162_2085994000800557321_n.jpg?stp=c448.0.1152.1152a_dst-jpg_tt6\u0026cstp=mx1152x1152\u0026ctp=s720x720\u0026_nc_cat=110\u0026ccb=1-7\u0026_nc_sid=80b81f\u0026_nc_ohc=t18M0zVyRUsQ7kNvwGkuJIb\u0026_nc_oc=Adr55NM8sXiR29NUYPvIyUHEnHM84sStWU6PQUaYFgzaJgr6ZtSKoU0YUDrAL3j-5gAOPFPNwgSNB4BhfgfFQPJo\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=YcKtQosNaG5u_kK_xyAKPQ\u0026_nc_ss=7d289\u0026oh=00_AQDmVVR3HVpBhkTmVjkEQADsSREa_9W-nZe267GOxkOifA\u0026oe=6A6F353A",
+        "signed": true
+      }
+    },
+    {
+      "id": "1228860259120633",
+      "name": "WHIPLASH - METALLICA CELEBRATION - ALL AGES AFTERNOON SHOW",
+      "url": "https://www.facebook.com/events/1228860259120633/",
+      "start": "2026-09-20T13:00:00Z",
+      "when_text": "Sun, 20 Sep at 14:00 BST",
+      "place": {
+        "kind": "freeform",
+        "id": "1645630370896039",
+        "name": "Oh Yeah Music Centre"
+      },
+      "kind": "PUBLIC_TYPE",
+      "interested": 66,
+      "going": 5,
+      "social_text": "61 interested · 5 going",
+      "image": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/737528811_1645630094229400_8598583218270145648_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1500x1500\u0026ctp=s720x720\u0026_nc_cat=110\u0026ccb=1-7\u0026_nc_sid=80b81f\u0026_nc_ohc=lxnSE2IlVhEQ7kNvwFP4vUR\u0026_nc_oc=Adp165UhCxvjmy2hsEPx8-VMHmBbMpjTE_pEhFszAeqfvZ63Faf9oP-ZlQeDdVEWmcsCw2hJ-jU2rmYVD3Q8_iax\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=YcKtQosNaG5u_kK_xyAKPQ\u0026_nc_ss=7d289\u0026oh=00_AQB2O-ESNITLKw0T8N9wEB_r4Qe3WzYAD1r_al4ixg-fzA\u0026oe=6A6F380B",
+        "signed": true
+      }
+    }
+  ]
+}

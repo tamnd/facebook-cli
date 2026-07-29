@@ -1,0 +1,129 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s7"
+  ],
+  "url": "https://www.facebook.com/directory/pages/",
+  "index": [
+    {
+      "name": "People",
+      "url": "https://www.facebook.com/directory/people/"
+    },
+    {
+      "name": "Pages",
+      "url": "https://www.facebook.com/directory/pages/"
+    },
+    {
+      "name": "Places",
+      "url": "https://www.facebook.com/directory/places/"
+    },
+    {
+      "name": "A",
+      "url": "https://www.facebook.com/directory/pages/A"
+    },
+    {
+      "name": "B",
+      "url": "https://www.facebook.com/directory/pages/B"
+    },
+    {
+      "name": "C",
+      "url": "https://www.facebook.com/directory/pages/C"
+    },
+    {
+      "name": "D",
+      "url": "https://www.facebook.com/directory/pages/D"
+    },
+    {
+      "name": "E",
+      "url": "https://www.facebook.com/directory/pages/E"
+    },
+    {
+      "name": "F",
+      "url": "https://www.facebook.com/directory/pages/F"
+    },
+    {
+      "name": "G",
+      "url": "https://www.facebook.com/directory/pages/G"
+    },
+    {
+      "name": "H",
+      "url": "https://www.facebook.com/directory/pages/H"
+    },
+    {
+      "name": "I",
+      "url": "https://www.facebook.com/directory/pages/I"
+    },
+    {
+      "name": "J",
+      "url": "https://www.facebook.com/directory/pages/J"
+    },
+    {
+      "name": "K",
+      "url": "https://www.facebook.com/directory/pages/K"
+    },
+    {
+      "name": "L",
+      "url": "https://www.facebook.com/directory/pages/L"
+    },
+    {
+      "name": "M",
+      "url": "https://www.facebook.com/directory/pages/M"
+    },
+    {
+      "name": "N",
+      "url": "https://www.facebook.com/directory/pages/N"
+    },
+    {
+      "name": "O",
+      "url": "https://www.facebook.com/directory/pages/O"
+    },
+    {
+      "name": "P",
+      "url": "https://www.facebook.com/directory/pages/P"
+    },
+    {
+      "name": "Q",
+      "url": "https://www.facebook.com/directory/pages/Q"
+    },
+    {
+      "name": "R",
+      "url": "https://www.facebook.com/directory/pages/R"
+    },
+    {
+      "name": "S",
+      "url": "https://www.facebook.com/directory/pages/S"
+    },
+    {
+      "name": "T",
+      "url": "https://www.facebook.com/directory/pages/T"
+    },
+    {
+      "name": "U",
+      "url": "https://www.facebook.com/directory/pages/U"
+    },
+    {
+      "name": "V",
+      "url": "https://www.facebook.com/directory/pages/V"
+    },
+    {
+      "name": "W",
+      "url": "https://www.facebook.com/directory/pages/W"
+    },
+    {
+      "name": "X",
+      "url": "https://www.facebook.com/directory/pages/X"
+    },
+    {
+      "name": "Y",
+      "url": "https://www.facebook.com/directory/pages/Y"
+    },
+    {
+      "name": "Z",
+      "url": "https://www.facebook.com/directory/pages/Z"
+    },
+    {
+      "name": "@",
+      "url": "https://www.facebook.com/directory/pages/others"
+    }
+  ]
+}

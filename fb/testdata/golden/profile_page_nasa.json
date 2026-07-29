@@ -1,0 +1,115 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s1",
+    "s3"
+  ],
+  "via": {
+    "followers": "s1",
+    "likes": "s3",
+    "talking_about": "s3"
+  },
+  "id": "100044561550831",
+  "handle": "NASA",
+  "name": "NASA - National Aeronautics and Space Administration",
+  "url": "https://www.facebook.com/NASA",
+  "kind": "page",
+  "delegate_page_id": "54971236771",
+  "verified": true,
+  "bio": {
+    "text": "Explore the universe and discover our home planet. \nThere's space for everybody. ✨"
+  },
+  "category": [
+    "Government organisation"
+  ],
+  "category_raw": "Page · Government organisation",
+  "likes": 28660812,
+  "talking_about": 78461,
+  "followers": 28000000,
+  "websites": [
+    "https://www.nasa.gov/nasa-app/",
+    "https://www.nasa.gov/"
+  ],
+  "email": "public-inquiries@hq.nasa.gov",
+  "contact_other": [
+    {
+      "kind": "unknown",
+      "text": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION",
+      "icon": "https://static.xx.fbcdn.net/rsrc.php/yr/r/-qVLUm6nlD9.webp",
+      "renderer": "ContextItemDefaultRenderer"
+    }
+  ],
+  "avatar": {
+    "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-1/243095782_416661036495945_3843362260429099279_n.png?stp=cp0_dst-png\u0026cstp=mx800x800\u0026ctp=s80x80\u0026_nc_cat=1\u0026ccb=1-7\u0026_nc_sid=2d3e12\u0026_nc_ohc=rc5kNRYek84Q7kNvwG3aNB5\u0026_nc_oc=AdqT3k2N6mmnywjbWktWGq2aG7R1YH4zK3cSKLE3TozVeHXIEa56AsMo8DrNmLXEEO1XF37TTj-8LhAFle8ZOiTw\u0026_nc_zt=24\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=C2dHE4jG2XwM33M8dmnkOQ\u0026_nc_ss=7d289\u0026oh=00_AQC-Cb-_A8sBQCxD014VcMBi5FPW70CM9UXTkQXvXv1v9Q\u0026oe=6A6F4455",
+    "signed": true
+  },
+  "cover": {
+    "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-6/663298991_1496429661852405_5171518456419416626_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx2048x1366\u0026ctp=s2048x1366\u0026_nc_cat=105\u0026ccb=1-7\u0026_nc_sid=cc71e4\u0026_nc_ohc=qTuXCYf3o_IQ7kNvwGee4TT\u0026_nc_oc=AdqdreuvV7QV1N6HOJ065I6E59PRT2qGXZ4JG5fCkh3ePrfbAQp4OLBTtr6CHtSEG5zPKV85rDtRCfU8G4F4JuHj\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=C2dHE4jG2XwM33M8dmnkOQ\u0026_nc_ss=7d289\u0026oh=00_AQA8PUqO28VyvTvBWDIKKDD46dNFuCIEaRpPJKwEtjs3_g\u0026oe=6A6F5923",
+    "width": 2048,
+    "height": 1366,
+    "focus": {
+      "x": 0.5,
+      "y": 0.49911971830986
+    },
+    "signed": true
+  },
+  "tabs": [
+    {
+      "name": "About",
+      "url": "https://www.facebook.com/NASA/about",
+      "id": "YXBwX3NlY3Rpb246MTAwMDQ0NTYxNTUwODMxOjIzMjcxNTgyMjc="
+    },
+    {
+      "name": "Photos",
+      "url": "https://www.facebook.com/NASA/photos",
+      "id": "YXBwX3NlY3Rpb246MTAwMDQ0NTYxNTUwODMxOjIzMDUyNzI3MzI="
+    }
+  ],
+  "posts": [
+    {
+      "tier": 0,
+      "id": "1587860636042640",
+      "story_id": "UzpfSTEwMDA0NDU2MTU1MDgzMToxNTg3ODYwNjM2MDQyNjQwOjE1ODc4NjA2MzYwNDI2NDA=",
+      "url": "https://www.facebook.com/NASA/posts/pfbid02nHshyUHVP3E31ZwC7J8s5cqncL8PRg88aXG6RU5JDkqXGQywc9Ei85fWBq458aSMl",
+      "author": {
+        "kind": "profile",
+        "id": "100044561550831",
+        "handle": "NASA",
+        "name": "NASA - National Aeronautics and Space Administration",
+        "url": "https://www.facebook.com/NASA"
+      },
+      "created_at": "2026-07-27T21:35:22Z",
+      "message": {
+        "text": "We've finished fueling up our Nancy Grace Roman Space Telescope, bringing it one step closer to its targeted liftoff on Aug. 30.\n\nLearn more about the process and find out what's next for our mystery-solving mission: https://go.nasa.gov/3RWg5e8"
+      },
+      "seo_title": "We've finished fueling up our Nancy Grace Roman Space Telescope, bringing it one step closer to its targeted liftoff on Aug",
+      "counts": {
+        "reactions": 12368,
+        "reactions_text": "12K",
+        "by_type": {
+          "Angry": 8,
+          "Care": 139,
+          "Haha": 92,
+          "Like": 10414,
+          "Love": 1641,
+          "Sad": 3,
+          "Wow": 71
+        },
+        "comments": 512,
+        "shares": 1013,
+        "shares_text": "1K"
+      },
+      "attachments": [
+        {
+          "kind": "photo",
+          "media": {
+            "kind": "photo",
+            "id": "1587860609375976"
+          }
+        }
+      ]
+    }
+  ],
+  "posts_cursor": "Cg8Ob3JnYW5pY19jdXJzb3IJAAACREFRSFNuX0JhM0F4UjlTbU5GVFZxeTR5OUxNcXRSRGFPNkxpb3pEVDZubXF1TGhhNk9na1VLdE5yX3o3VWNfX0poTTRLbEZqcEt3OW40VURnVmpFUDU0TUo3QUh1a2RPWjEyMXBOWVdHX1A0UFR0aGNUWm4ydkVaWWRRU1RfMXFTeTd3RDFacGJrd0FRZ1pBRnMwNEMyTEtHZUZKTlVRODVtR0puUU5qcTljS0Faei1ZX1dYXzEzZFBwdWdWTkp4dW5nUEhvVy1XR0g1c1FVMVNubHVtQTZjVVJwbWw1dGNMQVFrUS1BcDNZR1NuRjFqNEJtdDlxdEt1Nm14eS01QnNIMC1VbXgydjlVeEQtYmo2MjlKQk5YSnJVMU9SRlhLMDVERUViS0VhOWhlTTNSd3VoTVljYkdzaUE2Sy0xMGVaS0pNenJidmZMTV9DRDlUTGRKa0xuVFBtS1NTX0tUNl9qbW02V19ZdzVVS1N0MVVIdEo1VzYxb29BV251dG91cWN4cF9BRHJpbjZ6YUNjelhZbFZMMmZMb3R6TmV6bVRQdWViRWV6V1NzU3Y4MFp2Mm9KNEFMbHRZbmttMnAzRnRTRG5Hc3dPZFlOVzZVZzdUOFpqSWFyZ1cxeUVvZ0VrYWlRbEl0Z1JwY254cExMa2w3YVIwc09JZWg0akVJWlRNYmpCZGF5ckNZYk96QUF3bjZmSzRWOFc3bV84ZkNuYXJnX1h2QVVfUEMya1VVNWxkb1lFYXpOQlVtV3hXVFJxQ210aG0PCWFkX2N1cnNvcg4PD2dsb2JhbF9wb3NpdGlvbgIADwZvZmZzZXQCAA8QbGFzdF9hZF9wb3NpdGlvbgL/AQ==",
+  "posts_truncated": true
+}

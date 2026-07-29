@@ -1,0 +1,15 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s7"
+  ],
+  "missed": [
+    {
+      "surface": "s7",
+      "reason": "Facebook served its security interstitial for this letter"
+    }
+  ],
+  "url": "https://www.facebook.com/directory/pages/A",
+  "letter": "A",
+  "blocked": true
+}
