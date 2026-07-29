@@ -78,7 +78,7 @@ func newCrawlCmd() kit.Command {
 			if err != nil {
 				return a.done(err)
 			}
-			defer st.Close()
+			defer func() { _ = st.Close() }()
 
 			m, err := eng.Crawl(a.ctx(), st, fb.CrawlOptions{
 				Seeds: args, Depth: depth, Budget: budget,
@@ -124,7 +124,7 @@ func newDBCmd() kit.Command {
 				if err != nil {
 					return a.done(err)
 				}
-				defer st.Close()
+				defer func() { _ = st.Close() }()
 				stats, err := st.Stats()
 				if err != nil {
 					return a.done(err)
@@ -159,7 +159,7 @@ func newQueryCmd() kit.Command {
 			if err != nil {
 				return a.done(err)
 			}
-			defer st.Close()
+			defer func() { _ = st.Close() }()
 			res, err := st.Query(a.ctx(), args[0])
 			if err != nil {
 				return a.done(err)
@@ -206,7 +206,7 @@ func newExportCmd() kit.Command {
 			if err != nil {
 				return a.done(err)
 			}
-			defer st.Close()
+			defer func() { _ = st.Close() }()
 			edges, err := st.AllClaims(a.ctx())
 			if err != nil {
 				return a.done(err)

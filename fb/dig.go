@@ -151,29 +151,6 @@ func sortedKeys(m map[string]any) []string {
 	return out
 }
 
-// findFirst walks a subtree for the first map carrying the given __typename.
-// Used where Facebook nests a renderer at a depth that changes between routes.
-func findFirst(v any, typename string) map[string]any {
-	switch t := v.(type) {
-	case map[string]any:
-		if s, _ := t["__typename"].(string); s == typename {
-			return t
-		}
-		for _, k := range sortedKeys(t) {
-			if m := findFirst(t[k], typename); m != nil {
-				return m
-			}
-		}
-	case []any:
-		for _, sub := range t {
-			if m := findFirst(sub, typename); m != nil {
-				return m
-			}
-		}
-	}
-	return nil
-}
-
 // findKey walks a subtree for the first map that has the given key set to a
 // non-nil value, and returns that map.
 func findKey(v any, key string) map[string]any {

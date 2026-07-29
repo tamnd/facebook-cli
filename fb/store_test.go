@@ -19,7 +19,7 @@ func openTestStore(t *testing.T) *Store {
 	if err != nil {
 		t.Fatalf("open: %v", err)
 	}
-	t.Cleanup(func() { st.Close() })
+	t.Cleanup(func() { _ = st.Close() })
 	return st
 }
 
@@ -138,13 +138,13 @@ func TestAQueryCannotWrite(t *testing.T) {
 	if _, err := st.PutClaims([]graph.Edge{claim("fb://profile/1", graph.Authored, "fb://post/2", "u")}); err != nil {
 		t.Fatalf("put: %v", err)
 	}
-	st.Close()
+	_ = st.Close()
 
 	ro, err := OpenStoreRO(path)
 	if err != nil {
 		t.Fatalf("open read-only: %v", err)
 	}
-	defer ro.Close()
+	defer func() { _ = ro.Close() }()
 	if _, err := ro.Query(context.Background(), "delete from claims"); err == nil {
 		t.Fatal("a read-only store accepted a delete")
 	}

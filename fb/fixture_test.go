@@ -21,7 +21,7 @@ func fixture(t *testing.T, name string) []byte {
 	if err != nil {
 		t.Fatalf("open fixture %s: %v", name, err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	zr, err := gzip.NewReader(f)
 	if err != nil {
 		t.Fatalf("gunzip %s: %v", name, err)

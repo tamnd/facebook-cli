@@ -4,7 +4,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/fs"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -24,18 +24,30 @@ import (
 // packageFiles parses every non-test file in the package once.
 func packageFiles(t *testing.T) (*token.FileSet, map[string]*ast.File) {
 	t.Helper()
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, ".", func(fi fs.FileInfo) bool {
-		return !strings.HasSuffix(fi.Name(), "_test.go")
-	}, 0)
+	entries, err := os.ReadDir(".")
 	if err != nil {
-		t.Fatalf("parse the package: %v", err)
+		t.Fatalf("read the package directory: %v", err)
 	}
-	p, ok := pkgs["fb"]
-	if !ok {
+	fset := token.NewFileSet()
+	files := map[string]*ast.File{}
+	for _, e := range entries {
+		name := e.Name()
+		if e.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			continue
+		}
+		f, err := parser.ParseFile(fset, name, nil, 0)
+		if err != nil {
+			t.Fatalf("parse %s: %v", name, err)
+		}
+		if f.Name.Name != "fb" {
+			t.Fatalf("%s is package %s, which means this test is reading the wrong directory", name, f.Name.Name)
+		}
+		files[name] = f
+	}
+	if len(files) == 0 {
 		t.Fatal("no fb package here, which means this test is reading the wrong directory")
 	}
-	return fset, p.Files
+	return fset, files
 }
 
 // methodOf pulls the request method out of a call to http.NewRequest or

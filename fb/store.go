@@ -77,7 +77,7 @@ func OpenStore(path string) (*Store, error) {
 		return nil, err
 	}
 	if _, err := db.Exec(schema); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("%s: %w", path, err)
 	}
 	return &Store{db: db, Path: path}, nil
@@ -100,7 +100,7 @@ func OpenStoreRO(path string) (*Store, error) {
 		return nil, err
 	}
 	if err := db.Ping(); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("%s: %w", path, err)
 	}
 	return &Store{db: db, Path: path}, nil
@@ -169,7 +169,7 @@ func (s *Store) PutClaims(edges []graph.Edge) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 	st, err := tx.Prepare(`
 INSERT INTO claims (from_uri, predicate, to_uri, source, surface, tier, seen_at) VALUES (?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(from_uri, predicate, to_uri, source) DO UPDATE SET
@@ -177,7 +177,7 @@ ON CONFLICT(from_uri, predicate, to_uri, source) DO UPDATE SET
 	if err != nil {
 		return 0, err
 	}
-	defer st.Close()
+	defer func() { _ = st.Close() }()
 	now := time.Now().Unix()
 	n := 0
 	for _, e := range edges {
@@ -243,7 +243,7 @@ func (s *Store) Stats() ([]Stat, error) {
 		for rows.Next() {
 			var st Stat
 			if err := rows.Scan(&st.Key, &st.Count); err != nil {
-				rows.Close()
+				_ = rows.Close()
 				return nil, err
 			}
 			st.Section = sec.name
@@ -251,10 +251,10 @@ func (s *Store) Stats() ([]Stat, error) {
 			out = append(out, st)
 		}
 		if err := rows.Err(); err != nil {
-			rows.Close()
+			_ = rows.Close()
 			return nil, err
 		}
-		rows.Close()
+		_ = rows.Close()
 		out = append(out, Stat{Section: sec.name, Key: "all", Count: total})
 	}
 	return out, nil
@@ -281,7 +281,7 @@ func (s *Store) Query(ctx context.Context, q string) (*Result, error) {
 	if err != nil {
 		return nil, usage("that query did not run: %v", err)
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	cols, err := rows.Columns()
 	if err != nil {
 		return nil, err
@@ -323,7 +323,7 @@ ORDER BY from_uri, predicate, to_uri, source`)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	var out []graph.Edge
 	for rows.Next() {
 		var e graph.Edge
@@ -342,7 +342,7 @@ func (s *Store) Kinds(ctx context.Context) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 	out := map[string]string{}
 	for rows.Next() {
 		var uri, kind string

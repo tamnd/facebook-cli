@@ -50,14 +50,6 @@ func (p *Page) has(op string) bool {
 	return ok && d != nil && len(d.Data) > 0
 }
 
-// doc returns an operation's stitched document, or nil.
-func (p *Page) doc(op string) *Document {
-	if p == nil {
-		return nil
-	}
-	return p.Docs[op]
-}
-
 // ops lists the operations the page shipped, for `fb explain` and for the
 // message on a page fb could not read.
 func (p *Page) ops() []string {

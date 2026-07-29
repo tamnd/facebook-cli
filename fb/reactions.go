@@ -25,10 +25,6 @@ var reactionNames = map[string]string{
 	"613557422527858":  "Care",
 }
 
-// reactionOrder is the order a breakdown is printed in: most common first,
-// which is also the order Facebook's own picker uses.
-var reactionOrder = []string{"Like", "Love", "Care", "Haha", "Wow", "Sad", "Angry"}
-
 // reactionName resolves an id, falling back to the localized name Facebook sent
 // and then to the id itself. An id we do not know is reported by the live test
 // rather than silently dropped, so a new reaction shows up as a failing test
