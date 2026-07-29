@@ -26,6 +26,9 @@ func parseProfile(docs map[string]*Document) Profile {
 	if d := docs["ProfileCometTimelineFeedQuery"]; d != nil {
 		applyTimeline(&p, d.Data)
 	}
+	if d := docs["ProfileCometAboutAppSectionQuery"]; d != nil {
+		applyAbout(&p, d.Data)
+	}
 	return p
 }
 
@@ -102,6 +105,111 @@ func applyHeader(p *Profile, data any) {
 			ID:   digStr(n, "id"),
 		})
 	}
+	applySocialContext(p, u)
+}
+
+// applySocialContext reads the "28M followers · 28M likes" line under the name.
+//
+// It is the only place a signed-out page says how many followers a profile has,
+// and it is rounded, so the number lands on the record and the sentence it was
+// read from lands beside it.
+func applySocialContext(p *Profile, u map[string]any) {
+	for _, item := range digMaps(u, "profile_social_context", "content") {
+		text := digStr(item, "text", "text")
+		switch {
+		case strings.Contains(text, "followers"), strings.Contains(text, "follower"):
+			if n, _ := approxCount(strings.Fields(text)[0]); n > 0 {
+				p.Followers = n
+				p.setVia("followers", surfaceComet)
+			}
+		case strings.Contains(text, "likes"):
+			// The head carries this one exactly, so it only fills a gap.
+			if p.Likes == 0 {
+				if n, _ := approxCount(strings.Fields(text)[0]); n > 0 {
+					p.Likes = n
+					p.setVia("likes", surfaceComet)
+				}
+			}
+		}
+	}
+}
+
+// applyAbout reads the /about page.
+//
+// The About section is a list of field sections, each a list of rendered
+// fields, and the field type is the only thing that says what a value means:
+// the text of a category, an email and a website are all just text. So the
+// switch is on field_type, and an unknown type still lands on the record as a
+// contact item rather than being dropped.
+func applyAbout(p *Profile, data any) {
+	sections := digMaps(data, "user", "about_app_sections", "nodes")
+	if len(sections) == 0 {
+		if m := findKey(data, "about_app_sections"); m != nil {
+			sections = digMaps(m, "about_app_sections", "nodes")
+		}
+	}
+	for _, sec := range sections {
+		for _, coll := range digMaps(sec, "activeCollections", "nodes") {
+			for _, fs := range digMaps(coll, "style_renderer", "profile_field_sections") {
+				for _, f := range digMaps(fs, "profile_fields", "nodes") {
+					applyAboutField(p, f)
+				}
+			}
+		}
+	}
+}
+
+func applyAboutField(p *Profile, f map[string]any) {
+	title := parseText(digMap(f, "title"))
+	text := strings.TrimSpace(title.Text)
+	if text == "" {
+		return
+	}
+	switch digStr(f, "field_type") {
+	case "category":
+		if len(p.Category) == 0 {
+			p.Category = []string{text}
+		} else if !hasString(p.Category, text) {
+			p.Category = append(p.Category, text)
+		}
+		if p.CategoryRaw == "" {
+			p.CategoryRaw = text
+		}
+	case "profile_email":
+		if p.Email == "" {
+			p.Email = text
+		}
+	case "profile_phone":
+		if p.Phone == "" {
+			p.Phone = text
+		}
+	case "website":
+		// The rendered text is the URL itself here, and link_url is Facebook's
+		// redirect shim around it, so the text is the better source.
+		if !hasString(p.Websites, text) {
+			p.Websites = append(p.Websites, text)
+		}
+	case "address", "profile_address":
+		if p.Address == "" {
+			p.Address = text
+		}
+	default:
+		p.ContactOther = append(p.ContactOther, ContextItem{
+			Kind: digStr(f, "field_type"),
+			Text: text,
+			URL:  unshim(digStr(f, "link_url")),
+			Icon: digStr(f, "icon", "uri"),
+		})
+	}
+}
+
+func hasString(list []string, s string) bool {
+	for _, got := range list {
+		if got == s {
+			return true
+		}
+	}
+	return false
 }
 
 // applyTiles reads the intro section: bio, category, websites, contact.

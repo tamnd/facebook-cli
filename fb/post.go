@@ -11,6 +11,45 @@ import (
 // is buried and which comet_sections the route filled in, so the parser digs
 // rather than following one path.
 
+// parsePost reads a post permalink page.
+//
+// The permalink ships one operation and the story is the whole of its result,
+// under node_v2. The lookup is by name first and by shape second, because the
+// same story arrives under node on the routes that render a post inside
+// something else, and a reader that insisted on one path would report a post
+// that exists as missing.
+func parsePost(docs map[string]*Document) Post {
+	for _, op := range []string{
+		"CometSinglePostDialogContentQuery",
+		"CometSinglePostContentQuery",
+		"CometPermalinkQuery",
+	} {
+		d := docs[op]
+		if d == nil {
+			continue
+		}
+		if n := storyNode(d.Data); n != nil {
+			p := parseStory(n)
+			if p.ID != "" || p.StoryID != "" {
+				p.addSurface(surfaceComet)
+				return p
+			}
+		}
+	}
+	return Post{}
+}
+
+// storyNode finds the story in a permalink document.
+func storyNode(data any) map[string]any {
+	if n := firstOf(data, []string{"node_v2"}, []string{"node"}, []string{"story"}); n != nil {
+		return n
+	}
+	if m := findKey(data, "node_v2"); m != nil {
+		return digMap(m, "node_v2")
+	}
+	return nil
+}
+
 // parseStory reads one feed unit or story node.
 func parseStory(n map[string]any) Post {
 	if n == nil {
