@@ -71,7 +71,7 @@ var Routes = []Route{
 	{"a video", []string{surfaceComet}, []string{surfaceSession}, "/reel/{id} first, /watch/?v= for the transcript"},
 	{"a reel", []string{surfaceComet}, []string{surfaceSession}, "/reel/{id}"},
 	{"a profile's photos", []string{surfaceGraphQL}, []string{surfaceSession}, "8 per section fetch"},
-	{"a profile's videos", []string{surfaceComet, surfaceGraphQL}, []string{surfaceSession}, "56 at a time"},
+	{"a profile's videos", []string{surfaceComet, surfaceGraphQL}, []string{surfaceSession}, "the grid and the show playlists beside it, 21 on NASA"},
 	{"a profile's events", []string{surfaceGraphQL}, []string{surfaceSession}, "8 per section fetch"},
 	{"a profile's About", []string{surfaceComet}, []string{surfaceSession, surfaceGraphQL}, "the /about page only logged out: the About query is refused"},
 	{"a public group", []string{surfaceComet}, []string{surfaceSession}, "by numeric id logged out, by slug too at tier 1"},
