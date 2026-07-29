@@ -69,14 +69,39 @@ func needSession(t *testing.T) {
 	}
 }
 
+// mustRead fails on a read that went wrong and skips on one Facebook refused.
+//
+// The difference matters more here than anywhere else in the package. Run this
+// suite twice in an hour from one address and the second run gets the log-in
+// wall for every page, and a wall is not a shape moving: it is the site
+// declining to talk to this machine right now. A suite that goes red for that
+// is a suite somebody turns off, and then it is not watching for the thing it
+// exists to watch for.
+//
+// The skip says which it was, so a run where everything skipped does not read
+// as a run where everything passed.
+func mustRead(t *testing.T, what string, err error) {
+	t.Helper()
+	if err == nil {
+		return
+	}
+	switch ExitCode(err) {
+	case 4:
+		t.Skipf("Facebook wants a session for %s: %v. That is throttling or a checkpoint, not a shape change", what, err)
+	case 5:
+		t.Skipf("Facebook is rate limiting %s: %v", what, err)
+	case 8:
+		t.Skipf("could not reach Facebook for %s: %v", what, err)
+	}
+	t.Fatalf("read %s: %v", what, err)
+}
+
 // TestLiveProfile is the load-bearing one. Every other read starts from a page
 // fetch, so if the Comet blocks stop being found here they stop being found
 // everywhere, and this is the test that says so first.
 func TestLiveProfile(t *testing.T) {
 	p, err := liveEngine(t).Profile(liveCtx(t), "nasa", ProfileOptions{})
-	if err != nil {
-		t.Fatalf("read nasa: %v", err)
-	}
+	mustRead(t, "nasa", err)
 	if !numeric(p.ID) {
 		t.Errorf("id = %q, want a numeric node id", p.ID)
 	}
@@ -108,9 +133,7 @@ func TestLiveProfile(t *testing.T) {
 // an error.
 func TestLiveProfileAbout(t *testing.T) {
 	p, err := liveEngine(t).Profile(liveCtx(t), "nasa", ProfileOptions{About: true, NoPosts: true})
-	if err != nil {
-		t.Fatalf("read nasa about: %v", err)
-	}
+	mustRead(t, "the nasa About page", err)
 	if len(p.Category) == 0 && p.Bio.Empty() && len(p.Websites) == 0 {
 		t.Error("the About page produced no category, no bio and no website, so the section is not being parsed")
 	}
@@ -121,9 +144,7 @@ func TestLiveProfileAbout(t *testing.T) {
 // that has posted once.
 func TestLiveFeed(t *testing.T) {
 	f, err := liveEngine(t).Feed(liveCtx(t), "nasa", 5)
-	if err != nil {
-		t.Fatalf("read the nasa feed: %v", err)
-	}
+	mustRead(t, "the nasa feed", err)
 	if len(f.Posts) == 0 {
 		t.Fatal("no posts at all")
 	}
@@ -143,13 +164,12 @@ func TestLiveFeed(t *testing.T) {
 // that carries comments.
 func TestLivePost(t *testing.T) {
 	f, err := liveEngine(t).Feed(liveCtx(t), "nasa", 1)
-	if err != nil || len(f.Posts) == 0 {
-		t.Skipf("no post to read: %v", err)
+	mustRead(t, "the nasa feed", err)
+	if len(f.Posts) == 0 {
+		t.Skip("the feed came back with no post to read")
 	}
 	p, err := liveEngine(t).Post(liveCtx(t), f.Posts[0].URL, "")
-	if err != nil {
-		t.Fatalf("read %s: %v", f.Posts[0].URL, err)
-	}
+	mustRead(t, f.Posts[0].URL, err)
 	if p.ID == "" {
 		t.Error("no id")
 	}
@@ -166,9 +186,7 @@ func TestLivePost(t *testing.T) {
 // media plane going quiet.
 func TestLivePhotoSection(t *testing.T) {
 	s, err := liveEngine(t).Photos(liveCtx(t), "nasa", 8)
-	if err != nil {
-		t.Fatalf("read the nasa photos: %v", err)
-	}
+	mustRead(t, "the nasa photo tab", err)
 	if len(s.Photos) == 0 {
 		t.Fatal("no photos")
 	}
@@ -186,9 +204,7 @@ func TestLivePhotoSection(t *testing.T) {
 // stitched into one record and the most likely of the sections to half break.
 func TestLiveVideoSection(t *testing.T) {
 	s, err := liveEngine(t).Videos(liveCtx(t), "nasa", 8)
-	if err != nil {
-		t.Fatalf("read the nasa videos: %v", err)
-	}
+	mustRead(t, "the nasa video tab", err)
 	if len(s.Videos) == 0 {
 		t.Fatal("no videos")
 	}
@@ -204,9 +220,10 @@ func TestLiveVideoSection(t *testing.T) {
 // parse when there are cards.
 func TestLiveEvents(t *testing.T) {
 	s, err := liveEngine(t).Events(liveCtx(t), "nasa", 8)
-	if err != nil {
-		t.Skipf("no events to read: %v", err)
+	if ExitCode(err) == 3 {
+		t.Skip("nasa has no upcoming events today")
 	}
+	mustRead(t, "the nasa events tab", err)
 	if len(s.Events) == 0 {
 		t.Skip("nasa has no upcoming events today")
 	}
@@ -221,9 +238,7 @@ func TestLiveEvents(t *testing.T) {
 // starts from and the one surface with no profile behind it.
 func TestLiveDirectory(t *testing.T) {
 	d, err := liveEngine(t).Discover(liveCtx(t), "")
-	if err != nil {
-		t.Fatalf("read the directory index: %v", err)
-	}
+	mustRead(t, "the directory index", err)
 	if len(d.Index) == 0 {
 		t.Fatal("the index names no letters, so there is nowhere to walk to")
 	}
@@ -239,9 +254,7 @@ func TestLiveDirectory(t *testing.T) {
 // should name two URIs fb can key on.
 func TestLiveEdges(t *testing.T) {
 	c, err := liveEngine(t).Edges(liveCtx(t), "nasa")
-	if err != nil {
-		t.Fatalf("read the nasa edges: %v", err)
-	}
+	mustRead(t, "the nasa edges", err)
 	if len(c.Edges) == 0 {
 		t.Fatal("nasa asserted nothing about anything")
 	}
@@ -261,8 +274,9 @@ func TestLiveEdges(t *testing.T) {
 // it under its raw id.
 func TestLiveReactionIdsAreAllKnown(t *testing.T) {
 	f, err := liveEngine(t).Feed(liveCtx(t), "nasa", 1)
-	if err != nil || len(f.Posts) == 0 {
-		t.Skipf("no post to read: %v", err)
+	mustRead(t, "the nasa feed", err)
+	if len(f.Posts) == 0 {
+		t.Skip("the feed came back with no post to read")
 	}
 	for kind, n := range f.Posts[0].Counts.ByType {
 		if numeric(kind) {
@@ -277,9 +291,7 @@ func TestLiveReactionIdsAreAllKnown(t *testing.T) {
 func TestLiveGroupNeedsASession(t *testing.T) {
 	needSession(t)
 	g, err := liveEngine(t).Group(liveCtx(t), "9218157864")
-	if err != nil {
-		t.Fatalf("read the group: %v", err)
-	}
+	mustRead(t, "the group", err)
 	if g.ID == "" || g.Name == "" {
 		t.Errorf("group id %q name %q", g.ID, g.Name)
 	}
