@@ -66,6 +66,11 @@ func noResults(format string, args ...any) error {
 	return &NoResultsError{Msg: fmt.Sprintf(format, args...)}
 }
 
+// NoResults is the exit-3 error for a caller outside this package. A command
+// that read something and found the list empty raises it, so the empty list and
+// the failed read exit differently.
+func NoResults(format string, args ...any) error { return noResults(format, args...) }
+
 // UsageError marks a bad argument (exit code 2).
 type UsageError struct{ Msg string }
 
@@ -233,3 +238,7 @@ func FailureOf(err error, target string, tier int) Failure {
 	}
 	return f
 }
+
+// NeedAuth is the exit-4 error for a caller outside this package. The message
+// has to end with the thing that would fix it, same as the internal one.
+func NeedAuth(format string, args ...any) error { return needAuth(format, args...) }

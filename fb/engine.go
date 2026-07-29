@@ -404,9 +404,6 @@ func (e *Engine) Photo(ctx context.Context, ref string) (Photo, error) {
 	if out.ID == "" {
 		return Photo{}, notFound("photo "+r.ID, "the permalink carried no media")
 	}
-	if d := p.Docs["CometPhotoTagLayerQuery"]; d != nil {
-		out.Tags = append(out.Tags, photoTags(d)...)
-	}
 	e.stamp(&out.Envelope, p)
 	return out, nil
 }

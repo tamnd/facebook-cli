@@ -132,3 +132,27 @@ func (c *Cache) Clear() error {
 	}
 	return nil
 }
+
+// Size is what is in the cache: how many bytes across how many files. `fb
+// cache` prints it, which is the whole reason a read-only tool has a command
+// that talks about disk at all.
+func (c *Cache) Size() (bytes int64, files int) {
+	if c == nil {
+		return 0, 0
+	}
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	entries, err := os.ReadDir(c.Dir)
+	if err != nil {
+		return 0, 0
+	}
+	for _, e := range entries {
+		info, err := e.Info()
+		if err != nil {
+			continue
+		}
+		bytes += info.Size()
+		files++
+	}
+	return bytes, files
+}

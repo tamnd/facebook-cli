@@ -52,6 +52,43 @@ func SurfaceByID(id string) (Surface, bool) {
 	return Surface{}, false
 }
 
+// Operation is one command's route: the surface it reads, the Comet operation
+// it replays there, the tier that reaches it, and how deep it gets.
+//
+// `fb routes` prints this, and the invariant test checks it both ways: every
+// row names a command fb has and an operation a parser reads, and every command
+// that goes to the network has a row. A table that drifts from the code fails
+// the build.
+type Operation struct {
+	Command string `json:"command"`
+	Surface string `json:"surface"`
+	Op      string `json:"operation,omitempty"`
+	Tier    int    `json:"tier"`
+	Depth   string `json:"depth"`
+}
+
+// Operations is the command-to-operation table from spec 3004 doc 05 section 3.
+var Operations = []Operation{
+	{"page", surfaceComet, "ProfileCometHeaderQuery", 0, "whole"},
+	{"page --about", surfaceComet, "ProfileCometAboutAppSectionQuery", 0, "whole"},
+	{"feed", surfaceComet, "ProfileCometTimelineFeedQuery", 0, "1 post"},
+	{"feed", surfaceGraphQL, "ProfileCometTimelineFeedQuery", 1, "paged"},
+	{"post", surfaceComet, "CometSinglePostDialogContentQuery", 0, "whole"},
+	{"comments", surfaceComet, "CometSinglePostDialogContentQuery", 0, "20 shipped"},
+	{"reactions", surfaceComet, "CometSinglePostDialogContentQuery", 0, "all seven types"},
+	{"photo", surfaceComet, "CometPhotoRootContentQuery", 0, "whole"},
+	{"photos", surfaceGraphQL, "ProfileCometTopAppSectionQuery", 0, "8 per page"},
+	{"video", surfaceComet, "FBReelsRootWithEntrypointQuery", 0, "whole"},
+	{"video --transcript", surfaceComet, "CometVideoHomeNewPermalinkHeroUnitQuery", 0, "plus the transcript"},
+	{"videos", surfaceGraphQL, "CometProfilePlusVideosRootQuery", 0, "21 per page"},
+	{"events", surfaceGraphQL, "ProfileCometTopAppSectionQuery", 0, "8 per page"},
+	{"event", surfaceComet, "EventCometPermalinkHeaderQuery", 0, "whole"},
+	{"group", surfaceComet, "CometGroupRootQuery", 0, "whole"},
+	{"group feed", surfaceGraphQL, "CometGroupDiscussionRootSuccessQuery", 0, "paged"},
+	{"discover", surfaceDirectory, "", 0, "the index only"},
+	{"search", surfaceSession, "", 1, "not implemented yet"},
+}
+
 // Route is one question and the surfaces that answer it at each tier.
 type Route struct {
 	Question string   `json:"question"`
