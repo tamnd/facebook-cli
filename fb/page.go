@@ -117,10 +117,10 @@ func (p *Page) classify(what string, wanted ...string) error {
 		return notFound(what, "no response")
 	}
 	if p.blocked() {
-		return needAuth("Facebook blocked the request for %s: try --cookies", what)
+		return needAuth("Facebook blocked the request for %s: import a session with `fb auth import`", what)
 	}
 	if p.loginWall() {
-		return needAuth("%s is behind the log-in wall: try --cookies", what)
+		return needAuth("Facebook answered every request for %s with the log-in page: import a session with `fb auth import`", what)
 	}
 	for _, op := range wanted {
 		if p.has(op) {

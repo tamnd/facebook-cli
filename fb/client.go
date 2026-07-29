@@ -166,6 +166,9 @@ func (c *Client) attempt(ctx context.Context, rawURL string) (body []byte, final
 		}
 		body, finalURL, status, err = c.once(ctx, rawURL)
 		if err == nil && status < 400 {
+			if loginBounce(rawURL, finalURL) {
+				c.log("login bounce on %s, landed on %s", rawURL, finalURL)
+			}
 			return body, finalURL, status, nil
 		}
 		if attempt >= c.Retries || !retryable(status, err) {
@@ -211,6 +214,22 @@ func (c *Client) once(ctx context.Context, rawURL string) ([]byte, string, int, 
 		final = resp.Request.URL.String()
 	}
 	return body, final, resp.StatusCode, nil
+}
+
+// loginBounce reports whether Facebook answered a page request with the log-in
+// page instead of the page.
+//
+// Nothing else catches it: the bounce is a 302 to a 200, so the status code says
+// the request succeeded and only where it landed says otherwise. It is logged
+// rather than retried, on measurement. Asking again does not help and makes it
+// worse: the bounce is a decision Facebook makes about the caller rather than
+// about the request, and three requests in quick succession is what provokes it.
+// See the note on Group in engine.go for what that looked like.
+func loginBounce(rawURL, finalURL string) bool {
+	if finalURL == "" || finalURL == rawURL || strings.Contains(rawURL, "/login") {
+		return false
+	}
+	return strings.Contains(finalURL, "/login/") || strings.HasSuffix(finalURL, "/login")
 }
 
 // retryable says whether trying again could plausibly help. A 429 and a 5xx

@@ -216,7 +216,7 @@ func refusal(op string, errs []gqlError) error {
 	for _, e := range errs {
 		if e.Code == refusalCode {
 			// Not a rate limit. See the comment on refusalCode.
-			return needAuth("facebook does not serve %s to a signed-out caller: run it again with --cookies", op)
+			return needAuth("facebook does not serve %s to a signed-out caller: import a session with `fb auth import` and run it again", op)
 		}
 	}
 	if len(errs) > 0 {

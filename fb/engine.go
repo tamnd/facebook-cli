@@ -2,6 +2,7 @@ package fb
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
@@ -556,6 +557,27 @@ func (e *Engine) Video(ctx context.Context, ref string, transcript bool) (Video,
 	return out, nil
 }
 
+// groupWall adds what is worth knowing when a group read hits the log-in page.
+//
+// Spec 3004 captured groups at tier 0 and they do read in full: a fresh
+// signed-out client gets the header, the description, the member count, the tabs
+// and the pinned post. What the spec did not capture is that Facebook gives up
+// on the group route quickly. Roughly thirty requests to /groups/ turned a route
+// that had just answered into one that bounced to /login every time, on every
+// group id, and it had not lifted nine minutes later, while profile reads over
+// the same connection carried on as normal.
+//
+// So the group route is honest at tier 0 and it is not dependable there, and
+// somebody who gets this error deserves to know which of the two they are
+// looking at rather than assuming they picked a private group.
+func groupWall(what string, err error) error {
+	var na *NeedAuthError
+	if !errors.As(err, &na) {
+		return err
+	}
+	return needAuth("Facebook answered every request for %s with the log-in page. It cuts a signed-out reader off from the group route after a few dozen requests, whatever the group, and it does not lift for a while: wait, or import a session with `fb auth import`", what)
+}
+
 // Group reads a group.
 func (e *Engine) Group(ctx context.Context, ref string) (Group, error) {
 	r, err := fbid.Group(ref)
@@ -564,7 +586,7 @@ func (e *Engine) Group(ctx context.Context, ref string) (Group, error) {
 	}
 	p, err := e.get(ctx, r.URL, "group "+r.ID, "CometGroupRootQuery", "GroupsCometDiscussionLayoutRootQuery")
 	if err != nil {
-		return Group{}, err
+		return Group{}, groupWall("group "+r.ID, err)
 	}
 	out := parseGroup(p.Docs)
 	if out.ID == "" {
@@ -589,7 +611,7 @@ func (e *Engine) GroupFeed(ctx context.Context, ref string, limit int) (Group, e
 	}
 	p, err := e.get(ctx, r.URL, "the feed of group "+r.ID, "CometGroupDiscussionRootSuccessQuery", "CometGroupRootQuery")
 	if err != nil {
-		return Group{}, err
+		return Group{}, groupWall("the feed of group "+r.ID, err)
 	}
 	out := parseGroup(p.Docs)
 	if out.ID == "" {
