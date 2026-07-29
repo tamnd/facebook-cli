@@ -74,8 +74,24 @@ func TestVideoTab(t *testing.T) {
 	if s.Kind != "videos" {
 		t.Fatalf("kind = %q, want videos", s.Kind)
 	}
-	if len(s.Videos) != 9 {
-		t.Fatalf("got %d videos, want the 9 the tab ships", len(s.Videos))
+	// Nine in the grid and twelve more inside the three shows. Taking the grid
+	// alone would drop more videos than it kept.
+	if len(s.Videos) != 21 {
+		t.Fatalf("got %d videos, want the 21 the tab ships", len(s.Videos))
+	}
+	if len(s.Playlists) != 3 {
+		t.Fatalf("got %d shows, want 3", len(s.Playlists))
+	}
+	for _, p := range s.Playlists {
+		if p.ID == "" || p.Count == 0 || len(p.VideoIDs) == 0 {
+			t.Errorf("empty show: %+v", p)
+		}
+	}
+	inShow := map[string]bool{}
+	for _, p := range s.Playlists {
+		for _, id := range p.VideoIDs {
+			inShow[id] = true
+		}
 	}
 	for _, v := range s.Videos {
 		if v.ID == "" || v.URL == "" || v.Title == "" {
@@ -84,14 +100,16 @@ func TestVideoTab(t *testing.T) {
 		if v.CreatedAt.IsZero() {
 			t.Errorf("video %s has no publish time", v.ID)
 		}
-		if v.SDURL == "" {
-			t.Errorf("video %s came back without its media URL", v.ID)
-		}
 		if v.Width == 0 || v.Height == 0 {
 			t.Errorf("video %s has no dimensions", v.ID)
 		}
 		if v.Owner.ID == "" {
 			t.Errorf("video %s has no owner", v.ID)
+		}
+		// Old show episodes come back with playable_url null, which is Facebook's
+		// answer and not a parse failure. The grid always has one.
+		if v.SDURL == "" && !inShow[v.ID] {
+			t.Errorf("video %s came back without its media URL", v.ID)
 		}
 	}
 	// The whole point of the videos tab over the photos tab: the items arrive

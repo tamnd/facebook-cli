@@ -9,9 +9,9 @@ import "github.com/tamnd/facebook-cli/pkg/fbid"
 // /nasa/events both ship ProfileCometTopAppSectionQuery, and the only difference
 // is section_type and which renderer the collection carries. The videos tab is
 // its own operation, CometProfilePlusVideosRootQuery, and it is by far the most
-// generous of the three: nine videos with their media URLs, titles, messages and
-// full reaction breakdowns in one page fetch, where the photo tab gives eight
-// thumbnails and an id.
+// generous of the three: twenty-one videos with their media URLs, titles,
+// messages and reaction breakdowns in one page fetch, where the photo tab gives
+// eight thumbnails and an id.
 //
 // All three page the same way, through the cursor on the connection, which is
 // why the engine can walk any of them with one loop.
@@ -28,15 +28,30 @@ import "github.com/tamnd/facebook-cli/pkg/fbid"
 // cursor to the end.
 type Section struct {
 	Envelope
-	Kind   string      `json:"kind"`
-	Name   string      `json:"name,omitempty"`
-	URL    string      `json:"url,omitempty"`
-	Owner  Ref         `json:"owner,omitempty"`
-	Photos []Photo     `json:"photos,omitempty"`
-	Events []EventCard `json:"events,omitempty"`
-	Videos []Video     `json:"videos,omitempty"`
-	Cursor string      `json:"cursor,omitempty"`
-	More   bool        `json:"more,omitempty"`
+	Kind      string      `json:"kind"`
+	Name      string      `json:"name,omitempty"`
+	URL       string      `json:"url,omitempty"`
+	Owner     Ref         `json:"owner,omitempty"`
+	Photos    []Photo     `json:"photos,omitempty"`
+	Events    []EventCard `json:"events,omitempty"`
+	Videos    []Video     `json:"videos,omitempty"`
+	Playlists []Playlist  `json:"playlists,omitempty"`
+	Cursor    string      `json:"cursor,omitempty"`
+	More      bool        `json:"more,omitempty"`
+}
+
+// Playlist is one of the shows a page groups its videos into.
+//
+// It is on the videos tab beside the grid, and the videos in it are not in the
+// grid, so a reader that took the grid alone would miss twelve of NASA's
+// twenty-one videos and never know it. The videos themselves go in Videos with
+// the rest, and this records which show they came from.
+type Playlist struct {
+	ID          string   `json:"id"`
+	Title       string   `json:"title,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Count       int      `json:"count,omitempty"`
+	VideoIDs    []string `json:"video_ids,omitempty"`
 }
 
 // Len is how many items came back, whichever kind they are.
@@ -176,7 +191,7 @@ func parseEventItem(n map[string]any) EventCard {
 	return c
 }
 
-// parseVideoSection reads the videos tab.
+// parseVideoSection reads the videos tab: the grid, and the shows beside it.
 func parseVideoSection(data any, owner Ref) Section {
 	s := Section{Kind: "videos", Owner: owner}
 	s.addSurface(surfaceComet)
@@ -190,13 +205,49 @@ func parseVideoSection(data any, owner Ref) Section {
 			conn = digMap(m, "all_videos")
 		}
 	}
-	for _, e := range digMaps(conn, "edges") {
-		if v := parseVideoItem(digMap(e, "node")); v.ID != "" {
-			s.Videos = append(s.Videos, v)
+	seen := map[string]bool{}
+	add := func(n map[string]any) string {
+		v := parseVideoItem(n)
+		if v.ID == "" || seen[v.ID] {
+			return v.ID
 		}
+		seen[v.ID] = true
+		s.Videos = append(s.Videos, v)
+		return v.ID
+	}
+	for _, e := range digMaps(conn, "edges") {
+		add(digMap(e, "node"))
 	}
 	s.Cursor = digStr(conn, "page_info", "end_cursor")
 	s.More = digBool(conn, "page_info", "has_next_page")
+	for _, e := range digMaps(page, "page_video", "shows", "edges") {
+		vl := digMap(e, "node", "channel_tab_series_card_renderer", "videolist")
+		p := Playlist{
+			ID:          digStr(vl, "id"),
+			Title:       digStr(vl, "video_list_title", "text"),
+			Description: digStr(vl, "video_list_description", "text"),
+			Count:       digInt(vl, "series_videos_count"),
+		}
+		// A show is either a flat series or split into seasons, and the two
+		// spell the same thing differently.
+		lists := []map[string]any{digMap(vl, "series_videos")}
+		for _, season := range digMaps(vl, "show_seasons", "nodes") {
+			lists = append(lists, digMap(season, "video_list_view_model", "video_list_videos"))
+		}
+		for _, l := range lists {
+			for _, ve := range digMaps(l, "edges") {
+				if id := add(digMap(ve, "node")); id != "" {
+					p.VideoIDs = append(p.VideoIDs, id)
+				}
+			}
+		}
+		if p.Count == 0 {
+			p.Count = len(p.VideoIDs)
+		}
+		if p.ID != "" {
+			s.Playlists = append(s.Playlists, p)
+		}
+	}
 	return s
 }
 
@@ -209,6 +260,8 @@ func parseVideoSection(data any, owner Ref) Section {
 //
 // What it does not have is the comment and share counts: the feedback on a tab
 // item carries reactions and nothing else. `fb video` on the id fills those in.
+// Old show episodes come back with playable_url null too, so a video with no
+// media URL here is Facebook declining rather than the parser missing.
 func parseVideoItem(n map[string]any) Video {
 	vid := digMap(n, "channel_tab_thumbnail_renderer", "video")
 	if vid == nil {
