@@ -1,11 +1,12 @@
 ---
 title: "Getting started"
 linkTitle: "Getting started"
-description: "Install fb and pull your first Page out of Facebook in under a minute."
+description: "Install fb and read a Facebook page as structured data in under a minute."
 weight: 10
 featured: true
 ---
 
-Three short pages: how fb thinks about Facebook and the role your login plays,
-how to install the binary, and a guided first run that ends with a Page's feed
-on your terminal as clean structured data.
+Three short pages.
+[Introduction](/getting-started/introduction/) is where the data comes from and what the two tiers mean, and it is worth reading before anything else.
+[Installation](/getting-started/installation/) is the binary.
+[Quick start](/getting-started/quick-start/) is a first run that ends with a page, a post and a small graph on your terminal.

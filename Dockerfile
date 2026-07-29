@@ -21,12 +21,14 @@ COPY $TARGETPLATFORM/fb /usr/bin/fb
 USER fb
 WORKDIR /data
 
-# Pass your session cookie through the environment to unlock authenticated
-# reads, and keep the cache and any datasets under a mounted volume:
+# FB_DATA_DIR is where fb keeps the page cache, any store and the session file,
+# so mounting /data is what makes all three survive between runs:
 #
-#   docker run -e FACEBOOK_COOKIE -v ~/data/fb:/data ghcr.io/tamnd/fb page nasa
-ENV XDG_CACHE_HOME=/data/cache \
-    XDG_DATA_HOME=/data/share
+#   docker run --rm -v ~/data/fb:/data ghcr.io/tamnd/fb page nasa
+#
+# Reads need nothing at all. A session, if you want one, is two cookies imported
+# once into the mounted volume with `fb auth import`.
+ENV FB_DATA_DIR=/data
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/bin/fb"]

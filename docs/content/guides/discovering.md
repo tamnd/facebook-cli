@@ -1,144 +1,153 @@
 ---
-title: "Discovering"
-description: "Walk the graph of pages, posts, authors, and comments breadth first, streaming one record per node."
-weight: 55
+title: "The claim graph"
+description: "Every read makes claims about other things. fb edges prints them, fb graph walks them, and fb rdf writes them in a vocabulary something else can read."
+weight: 60
 ---
 
-Every other command answers one question about one object: a Page's feed, a
-post's comments, the author of a story. `discover` chains them. From a seed it
-follows the object's edges, and from each neighbor it follows theirs, hop by hop,
-streaming one record per node as the node is reached.
+A record is what one page said about itself.
+A claim is what it said about something else, and that is the part that composes.
 
-```bash
-fb discover nasa
+## fb edges
+
+```sh
+fb edges nasa --fields predicate,to,note
 ```
 
-A seed is anything `fb` can resolve to a page, profile, group, or post: a slug,
-a numeric id, or any Facebook URL.
-
-## The graph
-
-There are five kinds of node. Three are **actors** that own a feed, and two are
-the content hanging off them:
-
-| Kind | What it is |
-|---|---|
-| `page` | a Page (org, brand, public figure) |
-| `profile` | a person's public profile |
-| `group` | a group |
-| `post` | one story |
-| `comment` | one preview comment under a post |
-
-Between them `discover` follows three edges:
-
-| Edge | From to | What it follows |
-|---|---|---|
-| `posts` | actor to post | an actor's recent feed |
-| `author` | post to actor | the actor that posted a story |
-| `comments` | post to comment | a post's preview comments (a leaf) |
-
-You rarely name edges one at a time. `--follow` takes a **preset**:
-
-| Preset | Expands to | Walk shape |
-|---|---|---|
-| `content` *(default)* | `posts` + `author` | actors and their posts, and from a post seed back to its author and on through their feed |
-| `threads` | `posts` + `comments` | posts and the preview comments under them |
-| `all` | every edge | the whole reachable neighborhood |
-
-```bash
-fb discover nasa                              # content (the default)
-fb discover nasa --follow threads --depth 2   # posts, then their comments
-fb discover nasa --follow all --depth 2
+```
+╭──────────────┬────────────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────╮
+│ PREDICATE    │ TO                                                                             │ NOTE                                                 │
+├──────────────┼────────────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────┤
+│ delegates_to │ fb://page/54971236771                                                          │ NASA - National Aeronautics and Space Administration │
+│ covers       │ fb://photo/1496429661852405                                                    │                                                      │
+│ covers       │ fb://photo/416661036495945                                                     │                                                      │
+│ links_to     │ fb://external/5bc0ad51cb2d1c745e141f87a537df877be241e909da9e7059bd133937fc133a │ https://www.nasa.gov/nasa-app/                       │
+│ links_to     │ fb://external/639a6da94698ad1a2274a8d490f69c4a97615e451e0f70ebbf0d35b4c43c7a5f │ https://www.nasa.gov/                                │
+│ authored     │ fb://post/1587860636042640                                                     │ NASA - National Aeronautics and Space Administration │
+│ attaches     │ fb://photo/1587860609375976                                                    │                                                      │
+╰──────────────┴────────────────────────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────╯
 ```
 
-`--follow` also takes a single edge name, or a comma-separated mix of presets and
-edges, so you can be exact:
+`fb edges` makes no request of its own.
+It routes the reference the way the ordinary read command would, does that one read, and prints the claims instead of the record.
 
-```bash
-fb discover "https://www.facebook.com/nasa/posts/123" --follow author
-fb discover nasa --follow posts,comments
+### URIs
+
+Everything gets a `fb://kind/id` URI, including things nobody fetched.
+That is the point: the same photo referenced from a post and from an album is one node, and it stays one node across two runs and across two machines.
+
+An external site gets one too, hashed from the URL, so a link to nasa.gov off two different pages joins.
+
+### The note
+
+`note` carries what the claim knew that the two URIs do not: the name of a profile nobody fetched, the URL behind an external node.
+It is deliberately not part of the claim's key, because a name is a fact about the node and not about the claim.
+
+### Who said so
+
+Every claim also carries `source`, `surface` and `tier`: the URL that asserted it, which of the eight surfaces it came off, and at which tier.
+
+The source is part of the claim's identity rather than metadata hanging off it.
+Two surfaces asserting the same edge stay two rows, so when they disagree the disagreement is something you can query instead of something the last write silently resolved.
+
+Duplicates within one source are dropped, because a post's author appears in the story header, in every comment's parent and in the feedback node, and seeing `authored` three times tells you nothing the first told you.
+
+## The predicates
+
+Nineteen of them, and that is the whole list:
+
+```
+authored        profile -> post          mentions      post -> profile
+links_to        post -> external         attaches      post -> photo, video
+in_album        photo -> album           next_in_album photo -> photo
+comments_on     comment -> post          commented     profile -> comment
+posted_in       post -> group            hosts         profile -> event
+announced_by    event -> post            located_at    event -> place
+in_city         place -> place           suggests      event -> event
+delegates_to    profile -> page          shares        post -> post
+owns            profile -> photo, video  tagged_in     profile -> photo
+covers          profile, group, event -> photo
 ```
 
-## Why comments need depth 2
+## fb graph
 
-`fb` reads the public pages Facebook serves to search engines, with no login (see
-[how fb reads Facebook](/guides/authentication/)). That surface is a shallow star:
-actors, their recent posts, and a few preview comments under each post. Three
-things follow from that, and they shape every walk:
-
-- **Comments are leaves.** A preview comment exposes the commenter's name and
-  text, but no id or profile to hop to, so `discover` emits a comment and stops
-  there. It never expands a comment.
-- **A feed post's author points back where you came from.** When `discover` reads
-  an actor's feed it tags each post with that actor as owner, so the `author` edge
-  from a feed post lands on the actor you already have, and the walk dedups it.
-- **`author` is a real hop from a post seed.** When the seed is a post URL, the
-  owner is encoded in the URL, not something you walked to. Here `author` reaches
-  a new actor, and one hop further `posts` reaches the rest of their feed. That is
-  what `content` is tuned for.
-
-The practical rule: comments sit one hop below their post. To reach them from an
-actor seed, ask for `--depth 2`; seed a post directly and `--depth 1` is enough.
-
-```bash
-fb discover nasa --follow threads --depth 2                      # actor: needs depth 2
-fb discover "https://www.facebook.com/nasa/posts/123" --follow threads  # post seed: depth 1
+```sh
+fb graph nasa --depth 2 --budget 25
 ```
 
-## Bounding the walk
+`fb edges` plus a walk.
+`--depth` is how many hops out, and `--budget` caps the requests.
 
-Three independent limits keep a walk finite, so an unbounded `discover` always
-terminates instead of spidering forever:
+The budget is counted in requests rather than nodes, and that is on purpose: requests are the unit Facebook's throttling is written in, and a walk that promises you twenty nodes spends an unknown number of requests to get there.
 
-- `--depth` is how many hops to follow (default `1`; `0` emits only the seeds).
-- `--fanout` caps neighbors per edge (default `25`; `0` means unlimited).
-- `-n` caps the total nodes streamed (default `500`).
+A node that will not read is recorded as a miss and the walk carries on:
 
-```bash
-fb discover nasa --depth 2 --fanout 10 -n 200
+```
+warn: s1: could not read fb://photo/1496429661852405: photo 1496429661852405 was not found:
+      the permalink carried no media
 ```
 
-## Reading the output
+An album has no page a signed-out reader can fetch, a group behind the wall stays behind it, and neither is a reason to stop the walk.
 
-Each row is a node tagged with how it was reached: how deep, by which edge, and
-the object itself. The full typed record rides along for `-o json` and `-o jsonl`,
-and `-o url` prints one link per node:
+## fb rdf
 
-```bash
-fb discover nasa                 # the readable table
-fb discover nasa -o jsonl        # one lossless object per line
-fb discover nasa -o url          # one URL per node, to pipe onward
+```sh
+fb rdf nasa --format turtle
+fb rdf nasa --format nt
+fb rdf nasa --format jsonld
+fb rdf nasa --depth 2 --budget 25 --format turtle
 ```
 
-Seeds can come from stdin via `-`, so any command that emits URLs feeds a walk:
+The same claims, in a vocabulary something else can read.
 
-```bash
-fb search "climate" -o url | fb discover - --depth 1
+```turtle
+@prefix fb: <https://tamnd.github.io/facebook-cli/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <https://schema.org/> .
+
+<fb://profile/100044561550831>
+    fb:delegatesTo <fb://page/54971236771> ;
+    rdf:type schema:Person ;
+    schema:image <fb://photo/1496429661852405> ;
+    schema:citation <fb://external/639a6da94698ad1a2274a8d490f69c4a97615e451e0f70ebbf0d35b4c43c7a5f> .
+
+<fb://post/1587860636042640>
+    schema:author <fb://profile/100044561550831> ;
+    rdf:type schema:SocialMediaPosting ;
+    schema:associatedMedia <fb://photo/1587860609375976> .
 ```
 
-## When an edge is gated
+### Why schema.org
 
-A page that does not render for the anonymous crawler, or a feed that gets rate
-limited mid-walk, is not fatal. The walk treats the two cases differently:
+Facebook already publishes OpenGraph on its own pages, and OpenGraph is RDFa, so there is a vendor-blessed vocabulary here before fb invents anything.
+Where `og:` runs out, schema.org carries on.
+That is also what [x-cli](https://github.com/tamnd/x-cli) exports into, so a store built from both tools joins rather than sitting in two piles.
 
-- A **seed** that cannot be fetched fails the walk, like any bad id.
-- An edge that fails **deeper** in the walk becomes a one-line note on stderr and
-  the walk carries on with the other edges. `-q` silences the notes.
+The kinds map straight across: a profile is a `schema:Person`, a page or group is an `Organization`, a post is a `SocialMediaPosting`, a comment is a `Comment`, a photo is an `ImageObject`, a video is a `VideoObject`, an event is an `Event`, a place is a `Place`, an album is an `ImageGallery`.
+An external URL gets no class at all, because it is somebody else's page and guessing what kind would be inventing a fact.
 
-## discover or crawl?
+Some predicates turn round on the way.
+fb writes `profile authored post`, because that is how a page reads.
+schema.org defines `author` on the posting, so the triple comes out as `post schema:author profile`.
 
-Both walk the graph from seeds, but they are built for different jobs:
+Predicates schema.org has no term for go in the `fb:` namespace: `fb:delegatesTo`, `fb:inAlbum`, `fb:nextInAlbum`, `fb:announcedBy`, `fb:suggests`.
+The namespace is declared in the output rather than assumed, so somebody who has never heard of `fb:inAlbum` can work out where to look without asking.
 
-- **`discover`** streams one record per node to stdout. It is for exploring,
-  piping, and rendering in any output format. To keep a walk, redirect it:
-  `fb discover nasa --depth 2 -o jsonl > graph.jsonl`.
-- **`crawl`** fetches a queue of URLs into full records and a SQLite store,
-  pulling attached data like comments. It is for building a dataset on disk. See
-  [Datasets](/guides/datasets/).
+### Provenance
 
-`fb discover - -o url` is the bridge between them: a walk can produce the very URL
-stream that `crawl` consumes.
+Provenance is on by default.
+In N-Triples it uses RDF-star, so each claim is annotated with the URL that asserted it:
 
-```bash
-fb discover nasa --depth 1 -o url | fb crawl --db nasa.db --comments
 ```
+<fb://profile/100044561550831> <…#delegatesTo> <fb://page/54971236771> .
+<< <fb://profile/100044561550831> <…#delegatesTo> <fb://page/54971236771> >>
+   <http://www.w3.org/ns/prov#wasDerivedFrom> <https://www.facebook.com/profile.php?id=100044561550831> .
+```
+
+A dump is then as auditable as the read it came from.
+`--no-provenance` turns it off for anyone who would rather have the smaller file.
+
+## Where next
+
+`fb graph` walks and prints.
+[`fb crawl`](/guides/datasets/) walks and keeps, into a SQLite store you can query with SQL and export whole.

@@ -1,107 +1,88 @@
 ---
-title: "Archiving"
-description: "Save a Page's whole feed as a browsable, incremental tree of Markdown files: one file per post with its comments, indexed by month."
+title: "Capturing a read"
+description: "fb archive writes one read to disk whole: the HTML, every Relay payload, the request headers, and the record fb parsed out."
 weight: 70
 ---
 
-`archive` turns a Page into a folder of Markdown you can read, grep, or commit to
-git. Each post becomes its own file, comments are embedded inline, and a
-generated `README.md` indexes everything by month. The archive is incremental:
-re-running only fetches posts that are not already on disk, so you can keep a
-Page mirrored over time with the same command.
-
-## A first archive
+Every other command prints what fb understood.
+`fb archive` writes down what fb was given.
 
 ```sh
-fb archive aivietnam.edu.vn --comments
+fb archive nasa --dir ./capture
 ```
 
-By default the tree is written under `~/data/<page>`. Point `--out` somewhere
-else to choose the root:
+```json
+{"dir":"./capture","url":"https://www.facebook.com/profile.php?id=100044561550831",
+ "final_url":"https://www.facebook.com/NASA/","status":200,"bytes":1117683,
+ "operations":["ProfileCometHeaderQuery","ProfileCometTimelineFeedQuery",
+               "ProfilePlusCometLoggedOutRootQuery","useCometLogInFormQuery"],
+ "kind":"page","claims":7,"at":"2026-07-29T18:01:37.70869Z"}
+```
+
+## What lands on disk
+
+```
+capture/
+  page.html            the bytes, 1.1 MB of them
+  meta.json            the request, the response, and what was found in it
+  record.json          the record fb parsed
+  relay/
+    ProfileCometHeaderQuery.json
+    ProfileCometTimelineFeedQuery.json
+    ProfilePlusCometLoggedOutRootQuery.json
+    useCometLogInFormQuery.json
+```
+
+One file per Relay operation is the part that makes this useful.
+A Comet page ships four or five query results inline in one HTML document, and reading them apart is most of the work of understanding a surface.
+`relay/` has already done that: each file is one operation's payload, named after the operation, formatted so a diff between two captures is readable.
+
+`meta.json` carries the URL asked for, the URL landed on after redirects, the status, the byte count, the tier, the timestamp, the user agent, the request headers exactly as sent, the operation list, the preloads with their doc ids and variables, and the OpenGraph head:
+
+```json
+"preloads": [{"op":"ProfileCometHeaderQuery","doc_id":"27168670956143595",
+              "variables":{"scale":1,"selectedID":"100044561550831",
+                           "selectedSpaceType":"profile","userID":"100044561550831"}}]
+```
+
+Those doc ids rotate every few weeks.
+Having the one that was live when the capture was taken is the difference between a bug report you can act on and a bug report you can only sympathise with.
+
+## The cookie is redacted
+
+`request_headers` is in the capture because half the questions about a read are questions about what was sent.
+The `Cookie` header is redacted on the way out, and a test asserts it, because an archive is a thing people paste into issues.
+
+## Never from the cache
+
+`fb archive` bypasses the page cache unconditionally, and there is no flag to change that.
+A capture of a cached page is a capture of what the cache had, which is not the question anybody archiving a page is asking.
+
+That also means archiving spends a real request every time, so it is the one command to be careful with when the throttle is close.
+
+## A page that will not parse still archives
+
+This is the case the command exists for.
+
+If fb cannot make a record out of the page, the parse error is written in beside the bytes rather than the command failing and leaving you with nothing.
+You get the HTML, the Relay payloads, the headers, and the error, which is everything needed to work out whether Facebook changed the shape or fb read it wrong.
+
+## Where the fixtures came from
+
+Every fixture in the repository is an `fb archive` capture with the volatile parts scrubbed.
+The parser tests read those captures back and assert against the records, so the tests exercise the same bytes Facebook actually served rather than a hand-written approximation of them.
+
+That is also the shape a good bug report takes here: run `fb archive` on the page that misbehaved, look through `meta.json` for anything you would rather not publish, and attach the directory.
+
+## Where it writes
+
+`--dir` picks the directory.
+Without it, the capture goes to a dated directory under the data directory, which is `~/.local/share/fb` unless `FB_DATA_DIR` says otherwise.
 
 ```sh
-fb archive nasa --out ~/archives -n 100 --comments
+fb archive nasa
+fb archive 'https://www.facebook.com/NASA/posts/1587860636042640/' --dir ./post-capture
+fb archive 1526795995494848 --dir ./event-capture
 ```
 
-The layout is browsable on disk and on any git host:
-
-```
-~/data/aivietnam.edu.vn/
-  README.md                              index, grouped by year and month
-  index.json                             state used for incremental runs
-  2025/
-    11/
-      2025-11-03_khoa-hoc-ai-mien-phi.md one file per post, with its comments
-      2025-11-01_thong-bao-tuyen-sinh.md
-    10/
-      ...
-```
-
-Each post file carries its title, date and engagement counts, a link back to
-Facebook, the post text, images, external links, and the full comment thread.
-Post slugs are transliterated to ASCII, so Vietnamese (and other accented)
-titles produce clean file names.
-
-## Comments and replies
-
-`--comments` is on by default and embeds each post's comment thread under a
-`## Comments` heading. Add `--replies` to walk the reply threads too; replies are
-indented under the comment they answer:
-
-```sh
-fb archive aivietnam.edu.vn --replies
-```
-
-Turn comments off for a faster, text-only archive:
-
-```sh
-fb archive aivietnam.edu.vn --comments=false
-```
-
-## Incremental runs
-
-The archive remembers what it has already saved in `index.json`. On the next
-run, any post whose Markdown file is still on disk is skipped, and only new posts
-are fetched and written:
-
-```sh
-# first run: pulls the recent feed
-fb archive aivietnam.edu.vn
-
-# a week later: only the new posts are fetched, README is regenerated
-fb archive aivietnam.edu.vn
-```
-
-The index file and each post are written as the crawl proceeds, so an
-interrupted run loses nothing: re-running picks up exactly where it stopped.
-
-Pass `--force` to re-fetch and overwrite posts that are already archived, for
-example to refresh engagement counts or pull newly added comments:
-
-```sh
-fb archive aivietnam.edu.vn --force
-```
-
-## Bounding the crawl
-
-The same global flags that bound a feed apply here:
-
-```sh
-fb archive nasa -n 50                 # at most 50 posts
-fb archive nasa --since 2025-01-01    # stop once posts get older than this
-```
-
-## What gets archived
-
-`fb archive` reads the public crawler surface, so it works on any public Page
-with no login:
-
-```sh
-fb archive aivietnam.edu.vn --comments
-```
-
-The same surface sets the ceiling on depth. An archive captures the most recent
-posts a Page exposes rather than its entire history, and each post's preview
-comments rather than the full thread. Re-running picks up new posts incrementally
-and skips the ones already on disk. See
-[how fb reads Facebook]({{< relref "authentication.md" >}}) for the details.
+Any reference the read commands take, `fb archive` takes.

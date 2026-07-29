@@ -1,14 +1,14 @@
 ---
 title: "Reference"
 linkTitle: "Reference"
-description: "The complete command surface, configuration, output formats, and troubleshooting."
+description: "Every command, the configuration, the output system, and what each exit code means."
 weight: 30
 ---
 
-The reference is the full map: every command and flag, the configuration and
-paths, the output system, and what each exit code and error means.
+The guides explain how fb reads Facebook.
+The reference is the map: every command, everything configurable, every format, and what to do when a read fails.
 
-- [CLI](/reference/cli/): every command and the flags that matter.
-- [Configuration](/reference/configuration/): paths, request behavior, and global flags.
-- [Output](/reference/output/): formats, fields, and templates.
-- [Troubleshooting](/reference/troubleshooting/): exit codes and common errors.
+- [CLI](/reference/cli/): every command, its own flags, and the global flags they all share.
+- [Configuration](/reference/configuration/): the data directory, the request defaults, the cache, and `--tier`.
+- [Output](/reference/output/): ten formats, `--fields`, templates, and the envelope on every record.
+- [Troubleshooting](/reference/troubleshooting/): the nine exit codes, the wall, and how to file a bug.
