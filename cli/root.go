@@ -43,6 +43,9 @@ func New() *kit.App {
 	for _, c := range readCommands() {
 		app.AddCommand(c)
 	}
+	for _, c := range storeCommands() {
+		app.AddCommand(c)
+	}
 	for _, c := range metaCommands() {
 		app.AddCommand(c)
 	}

@@ -273,6 +273,71 @@ func edgeRow(e graph.Edge) Row {
 	}
 }
 
+// statRow prints one line of `fb db stats`.
+func statRow(s fb.Stat) Row {
+	return Row{
+		Cols:  []string{"section", "key", "count"},
+		Vals:  []string{s.Section, s.Key, strconv.Itoa(s.Count)},
+		Value: s,
+	}
+}
+
+// manifestRow is the account of a crawl.
+//
+// Spent and stopped are the two columns worth having on one line. A crawl that
+// stopped on its budget and one that ran out of graph leave stores that look
+// alike, and this is where the difference is written down.
+func manifestRow(m fb.Manifest, path string) Row {
+	return Row{
+		Cols: []string{"seeds", "depth", "spent", "read", "nodes", "claims", "stopped", "refused", "manifest"},
+		Vals: []string{
+			strconv.Itoa(len(m.Seeds)), strconv.Itoa(m.Depth), strconv.Itoa(m.Spent),
+			strconv.Itoa(m.NodesRead), count(m.Nodes), count(m.Claims),
+			m.Stopped, strconv.Itoa(len(m.Refusals)), path,
+		},
+		Value: m,
+	}
+}
+
+func archivedRow(a fb.Archived) Row {
+	return Row{
+		Cols: []string{"dir", "status", "bytes", "operations", "kind", "claims"},
+		Vals: []string{
+			a.Dir, strconv.Itoa(a.Status), count(a.Bytes),
+			strconv.Itoa(len(a.Ops)), a.Kind, strconv.Itoa(a.Claims),
+		},
+		Value: a,
+	}
+}
+
+// queryRow prints one row of whatever SQL somebody wrote. The columns are the
+// ones the database named, in the order it named them, because the query said
+// what it wanted and rearranging that would be answering a different one.
+func queryRow(cols []string, row map[string]any) Row {
+	vals := make([]string, len(cols))
+	for i, c := range cols {
+		vals[i] = cell(row[c])
+	}
+	return Row{Cols: cols, Vals: vals, Value: row}
+}
+
+// cell renders one SQL value. A NULL prints as nothing rather than as the word
+// null: an empty cell is what a person reading a table means by it, and -o json
+// still has the real value.
+func cell(v any) string {
+	switch t := v.(type) {
+	case nil:
+		return ""
+	case string:
+		return oneline(t)
+	case []byte:
+		return oneline(string(t))
+	case time.Time:
+		return stamp(t)
+	}
+	return oneline(fmt.Sprint(v))
+}
+
 func statusRow(s fb.Status) Row {
 	return Row{
 		Cols:  []string{"present", "account", "imported", "path"},

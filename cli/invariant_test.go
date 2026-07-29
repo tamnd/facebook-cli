@@ -31,6 +31,7 @@ func commandPaths() map[string]bool {
 		}
 	}
 	walk("", readCommands())
+	walk("", storeCommands())
 	walk("", metaCommands())
 	walk("", authCommands())
 	walk("", configCommands())
@@ -79,7 +80,7 @@ var networked = []string{
 	"page", "profile", "feed", "post", "comments", "reactions",
 	"photo", "photos", "photos --album", "photo --download", "video", "video --download", "reel", "videos",
 	"group", "group feed", "event", "events", "discover", "search", "id --resolve",
-	"edges", "graph", "rdf",
+	"edges", "graph", "rdf", "crawl", "archive",
 }
 
 func TestEveryNetworkedCommandIsRouted(t *testing.T) {

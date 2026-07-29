@@ -94,6 +94,8 @@ var Operations = []Operation{
 	{"edges", surfaceComet, "", 0, "whatever the reference routes to, once"},
 	{"graph", surfaceComet, "", 0, "one read per node, capped by --budget"},
 	{"rdf", surfaceComet, "", 0, "the same claims, serialised"},
+	{"crawl", surfaceComet, "", 0, "one read per node, capped by --budget"},
+	{"archive", surfaceComet, "", 0, "one read, never from the cache"},
 }
 
 // Route is one question and the surfaces that answer it at each tier.
@@ -127,4 +129,6 @@ var Routes = []Route{
 	{"the numeric id behind a handle, a pfbid or a share link", []string{surfaceComet}, []string{surfaceSession}, "one request, and only for the three references that parsing cannot settle"},
 	{"discovery", []string{surfaceDirectory}, []string{surfaceSession}, "the index only, the letter pages are blocked"},
 	{"what a page claims about everything else", []string{surfaceComet}, []string{surfaceSession}, "no request of its own: the claims come out of the read the reference already routes to"},
+	{"a walk over many nodes", []string{surfaceComet}, []string{surfaceSession, surfaceDirectory}, "one read per node, ordered by what a fetch is worth, budgeted in requests"},
+	{"one read written down whole", []string{surfaceComet}, []string{surfaceSession}, "never from the cache: an archive is a statement about what Facebook is serving now"},
 }
