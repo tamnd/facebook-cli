@@ -1,120 +1,150 @@
 package fb
 
 import (
-	"context"
-	"iter"
+	"bytes"
+	"fmt"
 	"strings"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/tamnd/facebook-cli/pkg/fbid"
 )
 
-// Page fetches a Page's metadata from its crawler page.
-func (c *Client) Page(ctx context.Context, idOrURL string) (*Page, error) {
-	id := fbid.Classify(idOrURL)
-	slug := id.Slug
-	if slug == "" {
-		slug = id.PageID
-	}
-	doc, err := c.getHTML(ctx, "https://www.facebook.com/"+slug+"/")
-	if err != nil {
-		return nil, err
-	}
-	return parsePageSSR(doc, slug), nil
+// page.go is one fetched Comet page, both of its planes, and what it says about
+// itself.
+//
+// Surface 1 answers 200 for a page that does not exist, so the HTTP status is
+// not the not-found signal and a client that trusts it emits empty records for
+// deleted posts. Spec 3004 doc 02 section 9 sets the order this file follows:
+// the final URL first, then which operations came back, then the errors array,
+// and the status code last.
+
+// Page is a fetched HTML page with its Relay documents and its meta head.
+type Page struct {
+	URL      string // the URL that was requested
+	FinalURL string // where the redirects ended, which is often the answer
+	Status   int
+	HTML     []byte
+	Docs     map[string]*Document
+	Head     Head
+	Preloads []Preload // the operations this page shipped, for replay
 }
 
-// PagePosts streams the posts the Page's crawler page exposes (its most recent
-// stories), fetching each post's detail.
-func (c *Client) PagePosts(ctx context.Context, idOrURL string, opt ListOptions) iter.Seq2[Post, error] {
-	id := fbid.Classify(idOrURL)
-	slug := id.Slug
-	if slug == "" {
-		slug = id.PageID
-	}
-	return c.walkFeed(ctx, "https://www.facebook.com/"+slug+"/", slug, "page", opt)
-}
-
-// walkFeed is shared by page/profile/group feeds: it reads the post permalinks
-// embedded in the crawler page and fetches each post's detail. The crawler
-// surface exposes the most recent stories rather than the full history.
-func (c *Client) walkFeed(ctx context.Context, feedURL, ownerID, ownerType string, opt ListOptions) iter.Seq2[Post, error] {
-	return func(yield func(Post, error) bool) {
-		doc, err := c.getHTML(ctx, feedURL)
-		if err != nil {
-			yield(Post{}, err)
-			return
-		}
-		emitted := 0
-		seen := map[string]bool{}
-		for _, link := range findPostPermalinks(doc) {
-			pid := fbid.Classify(link).PostID
-			if pid == "" || seen[pid] {
-				continue
-			}
-			seen[pid] = true
-			post, perr := c.Post(ctx, link, PostOptions{})
-			if perr != nil {
-				// a single bad post should not abort the whole feed
-				c.logf(1, "skip post %s: %v", pid, perr)
-				continue
-			}
-			if post.OwnerID == "" {
-				post.OwnerID = ownerID
-			}
-			if post.OwnerType == "" {
-				post.OwnerType = ownerType
-			}
-			if !opt.Until.IsZero() && !post.CreatedAt.IsZero() && post.CreatedAt.After(opt.Until) {
-				continue
-			}
-			if !opt.Since.IsZero() && !post.CreatedAt.IsZero() && post.CreatedAt.Before(opt.Since) {
-				return // feeds are reverse-chronological; stop once we cross the floor
-			}
-			if !yield(*post, nil) {
-				return
-			}
-			emitted++
-			if opt.Limit > 0 && emitted >= opt.Limit {
-				return
-			}
-		}
+// parsePage runs both planes over fetched bytes.
+func parsePage(url, finalURL string, status int, html []byte) *Page {
+	blocks := dataSJS(html)
+	decoded := decodeBlocks(blocks)
+	return &Page{
+		URL:      url,
+		FinalURL: finalURL,
+		Status:   status,
+		HTML:     html,
+		Docs:     documents(relayPayloads(decoded)),
+		Head:     parseHead(html),
+		Preloads: preloads(decoded),
 	}
 }
 
-func stripTitleSuffix(s string) string {
-	for _, sep := range []string{" | Facebook", " - Facebook", " | Posts", " | "} {
-		if i := strings.Index(s, sep); i > 0 {
-			return strings.TrimSpace(s[:i])
-		}
+// has reports whether the page shipped an operation's results.
+func (p *Page) has(op string) bool {
+	if p == nil {
+		return false
 	}
-	return s
+	d, ok := p.Docs[op]
+	return ok && d != nil && len(d.Data) > 0
 }
 
-func extractAbout(doc *goquery.Document, body string) string {
-	if v := cleanText(doc.Find(`div#bio, div[data-sigil="profile-intro-card-bio"]`).First().Text()); v != "" {
-		return v
+// doc returns an operation's stitched document, or nil.
+func (p *Page) doc(op string) *Document {
+	if p == nil {
+		return nil
 	}
-	return body
+	return p.Docs[op]
 }
 
-func findAvatar(doc *goquery.Document) string {
-	src := ""
-	doc.Find("img").EachWithBreak(func(_ int, img *goquery.Selection) bool {
-		s := attr(img, "src")
-		if strings.Contains(s, "scontent") || strings.Contains(s, "fbcdn") {
-			src = s
+// ops lists the operations the page shipped, for `fb explain` and for the
+// message on a page fb could not read.
+func (p *Page) ops() []string {
+	out := make([]string, 0, len(p.Docs))
+	for op := range p.Docs {
+		out = append(out, op)
+	}
+	return out
+}
+
+// loginWall reports whether Facebook answered with the log-in page.
+//
+// It is not an error page: it is a 200 with a real Comet payload in it, whose
+// only operation is the log-in form. Treated as a parse failure it looks like
+// "this profile has no name"; treated as what it is, it is exit 4.
+func (p *Page) loginWall() bool {
+	if p == nil {
+		return false
+	}
+	if strings.Contains(p.FinalURL, "/login") || strings.Contains(p.FinalURL, "/checkpoint") {
+		return true
+	}
+	if len(p.Docs) == 0 {
+		return false
+	}
+	// The log-in query rides along on every signed-out page, so it only means a
+	// wall when it is the only thing that came back.
+	for op := range p.Docs {
+		if op != "useCometLogInFormQuery" && op != "CometHomeRootQuery" {
 			return false
 		}
-		return true
-	})
-	return src
+	}
+	return true
 }
 
-func firstNonZero(vals ...int64) int64 {
-	for _, v := range vals {
-		if v != 0 {
-			return v
+// blockMarker is the sentence Facebook's security interstitial renders. It is
+// matched on the body rather than on a status code because the interstitial
+// answers 200.
+const blockMarker = "blocked by our security systems"
+
+// blocked reports whether Facebook answered with its security interstitial.
+//
+// It is a 200 with no Relay payload and one sentence in the body. Every letter
+// page of every directory answers this way signed out, and without this check
+// it looks like a page that parsed to nothing.
+func (p *Page) blocked() bool {
+	return p != nil && bytes.Contains(p.HTML, []byte(blockMarker))
+}
+
+// classify turns a fetched page into the error it represents, or nil when the
+// page is readable.
+//
+// wanted names the operations the caller needs. A page that shipped none of
+// them and no log-in wall either is a not-found, whatever its status was.
+func (p *Page) classify(what string, wanted ...string) error {
+	if p == nil {
+		return notFound(what, "no response")
+	}
+	if p.blocked() {
+		return needAuth("Facebook blocked the request for %s: try --cookies", what)
+	}
+	if p.loginWall() {
+		return needAuth("%s is behind the log-in wall: try --cookies", what)
+	}
+	for _, op := range wanted {
+		if p.has(op) {
+			return nil
 		}
 	}
-	return 0
+	if len(wanted) == 0 && len(p.Docs) > 0 {
+		return nil
+	}
+	// A deleted or private object redirects to the home page or to a "content
+	// not available" route, and that redirect is the clearest signal there is.
+	if p.FinalURL != "" && p.FinalURL != p.URL {
+		switch {
+		case strings.HasSuffix(p.FinalURL, "facebook.com/"),
+			strings.Contains(p.FinalURL, "/content_not_found"),
+			strings.Contains(p.FinalURL, "unsupportedbrowser"):
+			return notFound(what, "the page redirected to "+p.FinalURL)
+		}
+	}
+	if p.Status >= 400 {
+		return notFound(what, fmt.Sprintf("HTTP %d", p.Status))
+	}
+	if len(p.Docs) == 0 {
+		return notFound(what, "the page carried no Relay results")
+	}
+	return notFound(what, "the page shipped "+strings.Join(p.ops(), ", ")+" and none of the operations "+what+" needs")
 }
