@@ -64,7 +64,7 @@ nfpms:
     vendor: tamnd
     homepage: https://github.com/tamnd/facebook-cli
     maintainer: Duc-Tam Nguyen <tamnd87@gmail.com>
-    description: A delightful, scriptable command line for Facebook.
+    description: A fast, read-only command line for Facebook. Reads the public Relay data, no API token.
     license: Apache-2.0
     formats:
       - deb
@@ -91,7 +91,7 @@ dockers_v2:
       - linux/arm64
     labels:
       org.opencontainers.image.title: "{{ .ProjectName }}"
-      org.opencontainers.image.description: "A delightful, scriptable command line for Facebook"
+      org.opencontainers.image.description: "A fast, read-only command line for Facebook"
       org.opencontainers.image.url: "https://github.com/tamnd/facebook-cli"
       org.opencontainers.image.source: "https://github.com/tamnd/facebook-cli"
       org.opencontainers.image.version: "{{ .Version }}"
@@ -109,7 +109,7 @@ homebrew_casks:
       token: '{{ envOrDefault "HOMEBREW_TAP_GITHUB_TOKEN" "" }}'
     directory: Casks
     homepage: https://github.com/tamnd/facebook-cli
-    description: A delightful, scriptable command line for Facebook
+    description: A fast, read-only command line for Facebook
     skip_upload: '{{ if envOrDefault "HOMEBREW_TAP_GITHUB_TOKEN" "" }}false{{ else }}true{{ end }}'
     commit_author:
       name: Duc-Tam Nguyen
@@ -122,7 +122,7 @@ scoops:
       name: scoop-bucket
       token: '{{ envOrDefault "SCOOP_BUCKET_GITHUB_TOKEN" "" }}'
     homepage: https://github.com/tamnd/facebook-cli
-    description: A delightful, scriptable command line for Facebook
+    description: A fast, read-only command line for Facebook
     license: Apache-2.0
     skip_upload: '{{ if envOrDefault "SCOOP_BUCKET_GITHUB_TOKEN" "" }}false{{ else }}true{{ end }}'
     commit_author:
