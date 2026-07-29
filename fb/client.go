@@ -37,6 +37,10 @@ func userAgent() string {
 	return "fb/" + Version + " (+https://github.com/tamnd/facebook-cli)"
 }
 
+// errTooManyRedirects ends a www to web bounce. Five is generous: the honest
+// chain is one hop.
+var errTooManyRedirects = errors.New("too many redirects")
+
 // Client fetches pages and replays operations.
 type Client struct {
 	HTTP    *http.Client
@@ -60,8 +64,8 @@ func NewClient() *Client {
 			// A redirect is often the answer, so the final URL is kept and the
 			// chain is followed no further than a browser would.
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				if len(via) >= 10 {
-					return errors.New("too many redirects")
+				if len(via) >= 5 {
+					return errTooManyRedirects
 				}
 				return nil
 			},
@@ -138,8 +142,24 @@ func (c *Client) Get(ctx context.Context, rawURL string) (*Page, error) {
 	return parsePage(rawURL, finalURL, status, body), nil
 }
 
-// fetch does one page request with the retry loop around it.
-func (c *Client) fetch(ctx context.Context, rawURL string) (body []byte, finalURL string, status int, err error) {
+// fetch does one page request with the retry loop around it, and one fallback
+// to the mirror when www and web will not stop handing the request to each
+// other.
+func (c *Client) fetch(ctx context.Context, rawURL string) ([]byte, string, int, error) {
+	body, finalURL, status, err := c.attempt(ctx, rawURL)
+	if !errors.Is(err, errTooManyRedirects) {
+		return body, finalURL, status, err
+	}
+	mirror := mirrorOf(rawURL)
+	if mirror == "" {
+		return body, finalURL, status, err
+	}
+	c.log("redirect loop on %s, asking %s directly", rawURL, mirror)
+	return c.attempt(ctx, mirror)
+}
+
+// attempt does the request with the retry loop around it.
+func (c *Client) attempt(ctx context.Context, rawURL string) (body []byte, finalURL string, status int, err error) {
 	for attempt := 0; ; attempt++ {
 		if err := c.wait(ctx); err != nil {
 			return nil, "", 0, err
@@ -198,6 +218,11 @@ func (c *Client) once(ctx context.Context, rawURL string) ([]byte, string, int, 
 // worse citizen.
 func retryable(status int, err error) bool {
 	if err != nil {
+		// A bounce repeats, so the same request costs the same argument again.
+		// fetch has a better answer for it than waiting.
+		if errors.Is(err, errTooManyRedirects) {
+			return false
+		}
 		return AsNetwork(err) != nil
 	}
 	return status == http.StatusTooManyRequests || status >= 500

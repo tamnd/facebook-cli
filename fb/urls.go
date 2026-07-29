@@ -16,6 +16,30 @@ import (
 // canonHost is the host every facebook.com URL is rewritten to.
 const canonHost = "www.facebook.com"
 
+// mirrorHost is where www.facebook.com sends a signed-out reader. It serves the
+// same Comet page, and it is the way out of the bounce described on mirrorOf.
+const mirrorHost = "web.facebook.com"
+
+// mirrorOf is the URL www.facebook.com redirects to, asked for directly.
+//
+// The redirect is normally one hop: www answers 302 to web with _rdc=1&_rdr and
+// web answers 200. Some of the time web sends it straight back and the two
+// hosts bounce until the client gives up. Asking web for the page with the
+// parameters it wanted ends the argument, and the body is the same page.
+func mirrorOf(raw string) string {
+	u, err := url.Parse(raw)
+	if err != nil || !fbHosts[strings.ToLower(u.Host)] || strings.EqualFold(u.Host, mirrorHost) {
+		return ""
+	}
+	u.Host = mirrorHost
+	q := u.Query()
+	q.Del("_rdr")
+	q.Set("_rdc", "1")
+	u.RawQuery = q.Encode()
+	// _rdr is a bare flag rather than a pair, so it goes on by hand.
+	return u.String() + "&_rdr"
+}
+
 // fbHosts are the hosts that mean facebook.com.
 var fbHosts = map[string]bool{
 	"www.facebook.com":    true,
@@ -34,7 +58,7 @@ var trackingParams = map[string]bool{
 	"__cft__[0]": true, "__cft__[1]": true, "__tn__": true,
 	"fref": true, "mibextid": true, "rdid": true, "ref": true,
 	"refsrc": true, "hc_ref": true, "share_url": true, "eav": true,
-	"paipv": true, "_rdr": true, "notif_t": true, "notif_id": true,
+	"paipv": true, "_rdr": true, "_rdc": true, "notif_t": true, "notif_id": true,
 	"acontext": true, "source": true, "sfnsn": true, "wtsid": true,
 	"idorvanity": true, "extid": true, "locale2": true,
 }
