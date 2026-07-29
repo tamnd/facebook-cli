@@ -517,6 +517,68 @@ func (e *Engine) Photos(ctx context.Context, ref string, limit int) (Section, er
 	return e.section(ctx, ref, "photos", "ProfileCometTopAppSectionQuery", e.limit(limit, 8))
 }
 
+// Album walks a set of photos through the neighbour chain.
+//
+// A set has no cursor. What it has is a doubly linked list: every photo
+// permalink carries the id of the photo after it and the one before, which is
+// how the arrows in the viewer work, and walking that is the only way to
+// enumerate a set at tier 0. One request per photo, which is why it takes a
+// limit and honours it exactly.
+//
+// The seed is a photo in the set rather than the album id, because the album's
+// own page has nothing in it: /media/set/?set=a.416661013162614 answered 200
+// with 118KB and no Relay payload at all, measured 2026-07-29, and adding
+// &set= to a photo permalink that works on its own breaks that too. Any photo
+// in the set is a valid starting point, and `fb photo <id>` prints the album id
+// so it is easy to tell which set you are standing in.
+//
+// The walk goes forward only. The chain runs on past the end of a set into the
+// owner's other media, so the album id is the stop sign rather than the end of
+// the list.
+func (e *Engine) Album(ctx context.Context, seed string, limit int) ([]Photo, error) {
+	limit = e.limit(limit, 25)
+	r, err := fbid.Photo(seed)
+	if err != nil {
+		if a := fbid.Parse(seed); a.Kind == fbid.KindAlbum {
+			return nil, unsupported("album "+a.ID,
+				"there is nothing to start the walk from, because the album page ships no Relay payload to a signed-out reader; pass any photo in the album instead, and `fb photo <id>` prints the album id to check it is the right set")
+		}
+		return nil, usage("%s", err.Error())
+	}
+	var out []Photo
+	seen := map[string]bool{}
+	album := ""
+	for id := r.ID; id != "" && len(out) < limit; {
+		if seen[id] {
+			break
+		}
+		seen[id] = true
+		p, err := e.Photo(ctx, id)
+		if err != nil {
+			if len(out) == 0 {
+				return nil, err
+			}
+			out[len(out)-1].miss(surfaceComet, "the chain stopped at photo "+id+": "+err.Error())
+			break
+		}
+		if album == "" {
+			album = p.AlbumID
+		}
+		if album != "" && p.AlbumID != "" && p.AlbumID != album {
+			break
+		}
+		out = append(out, p)
+		if p.Next == nil {
+			break
+		}
+		id = p.Next.ID
+	}
+	if len(out) == 0 {
+		return nil, noResults("nothing came back for the set starting at %s", seed)
+	}
+	return out, nil
+}
+
 // Events reads a profile's events tab.
 func (e *Engine) Events(ctx context.Context, ref string, limit int) (Section, error) {
 	return e.section(ctx, ref, "events", "ProfileCometTopAppSectionQuery", e.limit(limit, 8))

@@ -241,13 +241,17 @@ func newReactionsCmd() kit.Command {
 }
 
 func newPhotoCmd() kit.Command {
+	var dir string
 	return kit.Command{
 		Use:   "photo <fbid|url>",
 		Short: "Show a photo permalink",
 		Long: "photo reads a photo whole: the image and its alt text, the owner, the album, the post it " +
 			"belongs to, the neighbours in the album, the tagged profiles and the comments the " +
-			"permalink ships.",
+			"permalink ships. --download writes the file and a .json sidecar beside it.",
 		Args: kit.ExactArgs(1),
+		Flags: func(f *kit.FlagSet) {
+			f.StringVar(&dir, "download", "", "write the image and its sidecar into this directory")
+		},
 		Run: func(ctx context.Context, args []string) error {
 			a := appFromCtx(ctx)
 			a.target = args[0]
@@ -260,28 +264,90 @@ func newPhotoCmd() kit.Command {
 				return a.done(err)
 			}
 			a.warnMissed(p.Envelope)
+			if dir != "" {
+				d, err := eng.DownloadPhoto(a.ctx(), p, dir)
+				if err != nil {
+					return a.done(err)
+				}
+				return a.done(a.emitOne(downloadRow(d)))
+			}
 			return a.done(a.emitOne(photoRow(p)))
 		},
 	}
 }
 
+// emitPhotos turns a list of photos into rows, writing the files first when
+// there is a directory to write them into.
+//
+// It stops at the first download that fails and hands back what it wrote along
+// with the error, rather than swallowing it and printing a list that reads as
+// though every file arrived. The caller prints those rows and then exits on the
+// error, so a half-finished walk says so both ways.
+func emitPhotos(a *App, eng *fb.Engine, photos []fb.Photo, dir string) ([]Row, error) {
+	rows := make([]Row, 0, len(photos))
+	for _, p := range photos {
+		a.warnMissed(p.Envelope)
+		if dir == "" {
+			rows = append(rows, photoRow(p))
+			continue
+		}
+		d, err := eng.DownloadPhoto(a.ctx(), p, dir)
+		if err != nil {
+			return rows, err
+		}
+		rows = append(rows, downloadRow(d))
+	}
+	return rows, nil
+}
+
 func newPhotosCmd() kit.Command {
+	var album, dir string
 	return kit.Command{
 		Use:   "photos <handle|id>",
 		Short: "A profile's photo tab",
-		Args:  kit.ExactArgs(1),
+		Long: "photos reads a profile's photo tab, which pages on a cursor. --album walks a set instead, " +
+			"one request per photo, following the neighbour chain the viewer's arrows use. Give it any " +
+			"photo in the set: the album's own page carries nothing to a signed-out reader, and `fb photo " +
+			"<id>` prints the album id so you can tell which set you are in.",
+		Args: kit.MaximumNArgs(1),
+		Flags: func(f *kit.FlagSet) {
+			f.StringVar(&album, "album", "", "walk the set this photo belongs to, rather than the photo tab")
+			f.StringVar(&dir, "download", "", "write every image and its sidecar into this directory")
+		},
 		Run: func(ctx context.Context, args []string) error {
 			a := appFromCtx(ctx)
-			a.target = args[0]
+			if album == "" && len(args) == 0 {
+				return mapErr(fb.Usage("give photos a profile to read the photo tab, or --album with any photo from the set to walk it"))
+			}
 			eng, err := a.engine()
 			if err != nil {
 				return a.done(err)
 			}
+			if album != "" {
+				a.target = album
+				photos, err := eng.Album(a.ctx(), album, a.limit)
+				if err != nil {
+					return a.done(err)
+				}
+				rows, err := emitPhotos(a, eng, photos, dir)
+				if e := a.emit(rows); e != nil {
+					return a.done(e)
+				}
+				return a.done(err)
+			}
+			a.target = args[0]
 			s, err := eng.Photos(a.ctx(), args[0], a.limit)
 			if err != nil {
 				return a.done(err)
 			}
 			a.warnMissed(s.Envelope)
+			if dir != "" {
+				rows, err := emitPhotos(a, eng, s.Photos, dir)
+				if e := a.emit(rows); e != nil {
+					return a.done(e)
+				}
+				return a.done(err)
+			}
 			return a.done(a.emit(sectionRows(s)))
 		},
 	}
@@ -292,6 +358,7 @@ func newPhotosCmd() kit.Command {
 // both routes.
 func newVideoCmd(name string) kit.Command {
 	var transcript bool
+	var dir string
 	short := "Show a video or a reel"
 	if name == "reel" {
 		short = "Show a reel"
@@ -305,6 +372,7 @@ func newVideoCmd(name string) kit.Command {
 		Args: kit.ExactArgs(1),
 		Flags: func(f *kit.FlagSet) {
 			f.BoolVar(&transcript, "transcript", false, "fetch the watch route for the transcript")
+			f.StringVar(&dir, "download", "", "write the video and its sidecar into this directory, HD if there is one")
 		},
 		Run: func(ctx context.Context, args []string) error {
 			a := appFromCtx(ctx)
@@ -318,6 +386,13 @@ func newVideoCmd(name string) kit.Command {
 				return a.done(err)
 			}
 			a.warnMissed(v.Envelope)
+			if dir != "" {
+				d, err := eng.DownloadVideo(a.ctx(), v, dir)
+				if err != nil {
+					return a.done(err)
+				}
+				return a.done(a.emitOne(downloadRow(d)))
+			}
 			return a.done(a.emitOne(videoRow(v)))
 		},
 	}

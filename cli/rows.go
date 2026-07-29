@@ -88,6 +88,21 @@ func photoRow(p fb.Photo) Row {
 	}
 }
 
+// downloadRow is what a --download prints instead of the record: where the file
+// landed and how big it is. The record itself is not lost, it is in the sidecar
+// beside the file.
+//
+// The source URL is in the JSON and out of the columns. It is five hundred
+// characters of signature and it stops working within the hour, so in a table it
+// is a wall that hides the two things somebody is actually reading.
+func downloadRow(d fb.Downloaded) Row {
+	return Row{
+		Cols:  []string{"id", "path", "bytes", "quality"},
+		Vals:  []string{d.ID, d.Path, strconv.FormatInt(d.Bytes, 10), d.Quality},
+		Value: d,
+	}
+}
+
 func videoRow(v fb.Video) Row {
 	size := ""
 	if v.Width > 0 {

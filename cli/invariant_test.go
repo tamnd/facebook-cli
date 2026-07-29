@@ -77,7 +77,7 @@ func TestEveryRoutedSurfaceExists(t *testing.T) {
 // fb already knows or touch this machine only, and neither needs a route.
 var networked = []string{
 	"page", "profile", "feed", "post", "comments", "reactions",
-	"photo", "photos", "video", "reel", "videos",
+	"photo", "photos", "photos --album", "photo --download", "video", "video --download", "reel", "videos",
 	"group", "group feed", "event", "events", "discover", "search", "id --resolve",
 }
 

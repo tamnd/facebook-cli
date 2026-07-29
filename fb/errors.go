@@ -82,6 +82,10 @@ func usage(format string, args ...any) error {
 	return &UsageError{Msg: fmt.Sprintf(format, args...)}
 }
 
+// Usage is the exit-2 error for a caller outside this package, for the argument
+// checks a command does before it builds an engine.
+func Usage(format string, args ...any) error { return usage(format, args...) }
+
 // RateLimitedError marks a real 429 (exit code 5).
 //
 // It is deliberately hard to reach. Facebook's own refusals arrive at HTTP 200
