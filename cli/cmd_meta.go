@@ -22,6 +22,7 @@ func metaCommands() []kit.Command {
 		newTiersCmd(),
 		newRoutesCmd(),
 		newIDCmd(),
+		newFieldsCmd(),
 		newExplainCmd(),
 	}
 }
@@ -101,6 +102,44 @@ func newRoutesCmd() kit.Command {
 			rows := make([]Row, 0, len(fb.Operations))
 			for _, o := range fb.Operations {
 				rows = append(rows, operationRow(o))
+			}
+			return a.emit(rows)
+		},
+	}
+}
+
+// newFieldsCmd prints the census: every field on a record kind and how many of
+// the committed fixtures had something in it.
+//
+// It answers the question the JSON cannot. A field that is absent from a record
+// is either a field the page does not have or a field fb stopped reading, and
+// they look identical from the outside. `filled 3 of 3` says the parser works.
+// `filled 0 of 3` says go and look.
+func newFieldsCmd() kit.Command {
+	return kit.Command{
+		Use:   "fields [kind]",
+		Short: "Every field on a record, and how often the fixtures filled it",
+		Long: "fields prints the field census measured against the captured pages in testdata. With no " +
+			"argument it lists the kinds. A count of zero is a question rather than a verdict: a " +
+			"dozen captures is a dozen pages, not the whole of facebook.com.",
+		Args: kit.MaximumNArgs(1),
+		Run: func(ctx context.Context, args []string) error {
+			a := appFromCtx(ctx)
+			if len(args) == 0 {
+				kinds := fb.FieldKinds()
+				rows := make([]Row, 0, len(kinds))
+				for _, k := range kinds {
+					rows = append(rows, fieldKindRow(k))
+				}
+				return a.emit(rows)
+			}
+			fields, err := fb.FieldsOf(args[0])
+			if err != nil {
+				return mapErr(err)
+			}
+			rows := make([]Row, 0, len(fields))
+			for _, f := range fields {
+				rows = append(rows, fieldRow(f))
 			}
 			return a.emit(rows)
 		},

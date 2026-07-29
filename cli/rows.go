@@ -226,6 +226,38 @@ func routeRow(r fb.Route) Row {
 	}
 }
 
+// fieldRow prints one census entry. filled reads "3 of 3" rather than as two
+// columns, because the denominator is the whole point: three out of three is a
+// working parser and three out of forty is not.
+func fieldRow(f fb.Field) Row {
+	return Row{
+		Cols: []string{"field", "type", "filled", "seen"},
+		Vals: []string{
+			f.Name, f.Type,
+			fmt.Sprintf("%d of %d", f.Filled, f.Fixtures),
+			strings.Join(f.Seen, " "),
+		},
+		Value: f,
+	}
+}
+
+func fieldKindRow(kind string) Row {
+	fields, _ := fb.FieldsOf(kind)
+	filled := 0
+	for _, f := range fields {
+		if f.Filled > 0 {
+			filled++
+		}
+	}
+	return Row{
+		Cols: []string{"kind", "fields", "filled"},
+		Vals: []string{kind, strconv.Itoa(len(fields)), strconv.Itoa(filled)},
+		Value: map[string]any{
+			"kind": kind, "fields": len(fields), "filled": filled,
+		},
+	}
+}
+
 func statusRow(s fb.Status) Row {
 	return Row{
 		Cols:  []string{"present", "account", "imported", "path"},
