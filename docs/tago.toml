@@ -1,6 +1,6 @@
 title       = "fb"
 baseURL     = "https://facebook-cli.tamnd.com/"
-description = "A delightful, scriptable command line for Facebook. Resolve a Page, profile, or group to a rich record, stream its whole feed, and pull every comment, reaction, photo, video, and event into clean structured data, all from one binary."
+description = "Facebook as structured data, from one pure-Go binary. fb reads the Relay store the site ships to a signed-out browser and turns pages, posts, comments, media, groups and events into records and a claim graph you can query and export as RDF. No app id, no developer app, no API token."
 contentDir  = "content"
 outputDir   = "public"
 theme       = "tago-doks"

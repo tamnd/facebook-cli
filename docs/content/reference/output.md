@@ -1,73 +1,157 @@
 ---
 title: "Output"
-description: "Output formats, column selection, and per-record templates."
+description: "Ten formats, column selection, templates, and the envelope every record carries."
 weight: 30
 ---
 
-Every command renders through one formatter, so the flags below work everywhere.
+Every command renders through one formatter, so the flags on this page work on all of them.
 
 ## Formats
 
-Pick a format with `-o`, or let fb choose: a table when writing to a terminal,
-JSON Lines when piped.
+```
+auto  table  markdown  list  json  jsonl  csv  tsv  url  raw
+```
 
-| Format | Best for |
+`auto` is the default: a table on a terminal, JSON Lines into a pipe.
+Which means a command reads well when you type it and pipes cleanly when you do not, without a flag either way.
+
+```sh
+fb videos nasa -n 2 --fields id,created,plays -o markdown
+```
+
+```
+| id               | created          | plays   |
+|------------------|------------------|---------|
+| 1380134307388381 | 2026-07-23 16:31 | 457,806 |
+| 1376651124309650 | 2026-07-02 15:02 | 600,059 |
+```
+
+```sh
+fb videos nasa -n 2 --fields id,created,plays -o csv
+```
+
+```
+id,created,plays
+1380134307388381,2026-07-23 16:31,"457,806"
+1376651124309650,2026-07-02 15:02,"600,059"
+```
+
+`-o list` is the one to reach for when a record is too wide for a terminal:
+
+```sh
+fb videos nasa -n 1 -o list
+```
+
+```
+## 1380134307388381
+- **created**: 2026-07-23 16:31
+- **size**: 3840x2160
+- **plays**: 457,806
+- **reactions**: 6,023
+- **title**: NASA Astronaut Chris Williams: Thinking Like a Scientist
+- **url**: https://www.facebook.com/NASA/videos/nasa-astronaut-chris-williams-thinking-like-a-scientist/1380134307388381/
+```
+
+`-o url` prints one URL per record, which is what makes the shell a pipeline:
+
+```sh
+fb photos nasa -n 20 -o url | while read u; do fb photo "$u" -o jsonl; done > photos.jsonl
+```
+
+```
+https://www.facebook.com/NASA/videos/nasa-astronaut-chris-williams-thinking-like-a-scientist/1380134307388381/
+https://www.facebook.com/NASA/videos/whats-up-july-2026/1376651124309650/
+```
+
+## Table columns are not record fields
+
+This is the thing to know before writing a script.
+
+A table shows a chosen handful of columns, formatted for reading: numbers get thousands separators, timestamps get shortened, a count of zero renders as blank and a count that is genuinely unknown renders as `n/a`.
+The JSON is the record, whole and unformatted.
+
+```sh
+fb videos nasa -n 1 -o json
+```
+
+```json
+{"tier":0,"surfaces":["s1"],"id":"1380134307388381","url":"…","kind":"video",
+ "owner":{…},"title":"…","message":{…},"post_id":"…","width":3840,"height":2160,
+ "created_at":"2026-07-23T16:31:00Z","thumbnail":"…","sd_url":"…","counts":{…}}
+```
+
+`plays` is a column on the videos table and `counts` is the field in the record.
+`--fields` names columns, and a template names record fields.
+Never assume one list is the other.
+
+## --fields
+
+```sh
+fb videos nasa -n 2 --fields id,created,plays
+fb comments "$URL" --fields author,replies,body
+fb edges nasa --fields predicate,to,note
+```
+
+Keeps and orders exactly the columns you name, for table, markdown, CSV and TSV.
+`--no-header` drops the header row.
+
+`fb fields <kind>` lists what a record kind has.
+
+## --template
+
+A Go [text/template](https://pkg.go.dev/text/template) applied to each record, one line per record.
+The names are the JSON field names, lowercase, and nesting works:
+
+```sh
+fb page 100044561550831 --template '{{.name}} has {{.followers}} followers'
+```
+
+```
+NASA - National Aeronautics and Space Administration has 28000000 followers
+```
+
+```sh
+fb post "$URL" --template '{{.id}} {{.counts.reactions}}'
+```
+
+```
+1587860636042640 14120
+```
+
+Note the unformatted `28000000`, which is the point: a template gives you the record, not the table's rendering of it.
+
+A bad template is caught before any request goes out.
+
+## The envelope
+
+Every record carries the same six fields before its own:
+
+```json
+{"tier":0,"surfaces":["s1","s3"],
+ "sources":["https://www.facebook.com/profile.php?id=100044561550831",
+            "https://www.facebook.com/NASA/"],
+ "via":{"followers":"s1","likes":"s3","talking_about":"s3"},
+ "fetched_at":"2026-07-29T18:02:57.973905Z"}
+```
+
+| Field | What it says |
 |---|---|
-| `table` | Reading on a terminal (aligned columns) |
-| `jsonl` | Piping: one JSON object per line |
-| `json` | A single JSON array |
-| `csv` | Spreadsheets |
-| `tsv` | Tab-separated tools |
-| `yaml` | YAML documents |
-| `url` | Just the URL / permalink column |
-| `raw` | The upstream HTML/JSON, untouched (`--raw`) |
+| `tier` | Which tier answered |
+| `surfaces` | Which of the eight surfaces were read |
+| `sources` | The URLs, in order |
+| `via` | Which surface each contested field came from |
+| `missed` | What the read knew it did not get |
+| `fetched_at` | When |
 
-```sh
-fb page nasa --posts -o table
-fb page nasa --posts -o jsonl
-fb page nasa --posts -o json
-fb page nasa --posts -o csv
-fb page nasa --posts -o url
-```
+`via` only lists fields where the answer depends on which surface you ask, which is why `likes` is in it and `id` is not.
 
-`auto` (the default) resolves to `table` on a terminal and `jsonl` when the
-output is a pipe or file, so commands read well interactively and pipe cleanly
-without a flag.
+`missed` is the one to check in a pipeline.
+A post with 532 comments read from a permalink that ships twenty says so there, and a consumer that ignores it will conclude the post had twenty comments.
 
-## Selecting columns
+## Empty is not zero
 
-`--fields` keeps and orders just the columns you name, for table, CSV, and TSV:
+Tables render a real zero as blank and an unknown as `n/a`, and those are different facts.
+An event with nobody going shows a blank; an event whose meta sentence did not carry the numbers shows `n/a`.
 
-```sh
-fb page nasa --posts --fields permalink,reactions_count,comments_count
-```
-
-`--no-header` drops the header row, for feeding another tool:
-
-```sh
-fb page nasa --posts --fields permalink -o csv --no-header
-```
-
-## The url format
-
-`-o url` prints one URL per record. It uses the record's `url` column, falling
-back to `permalink`, then `canonical_url`, then `mbasic_url`, so it works across
-every record type:
-
-```sh
-fb photos nasa --limit 100 -o url
-fb search nasa --type page -o url | fb page - -o jsonl
-```
-
-## Templates
-
-`--template` runs a Go [text/template](https://pkg.go.dev/text/template) over the
-full record, one line per row. Fields are the struct fields (capitalised):
-
-```sh
-fb page nasa --posts --template '{{.Permalink}} {{.ReactionsCount}} {{.CommentsCount}}'
-```
-
-A template gives you the full record, including fields that are not shown as
-table columns, so it is the most flexible way to reshape output without piping
-through `jq`.
+In JSON the same distinction is `0` versus the field being absent.
+Nothing is defaulted to zero on the way out, because a zero fb invented is indistinguishable from a zero Facebook reported.

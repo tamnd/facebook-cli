@@ -4,8 +4,9 @@ description: "Install fb with go install, a prebuilt binary, a package manager, 
 weight: 20
 ---
 
-fb is a single static binary with no runtime dependencies. Pick whichever
-install path fits.
+fb is one static binary with no runtime dependencies.
+The SQLite store is pure Go, so there is no cgo and nothing to link against.
+Pick whichever path fits.
 
 ## go install
 
@@ -13,22 +14,21 @@ install path fits.
 go install github.com/tamnd/facebook-cli/cmd/fb@latest
 ```
 
-This puts `fb` in `$(go env GOPATH)/bin`. Make sure that is on your `PATH`.
+That puts `fb` in `$(go env GOPATH)/bin`, which needs to be on your `PATH`.
 
 ## Prebuilt binary
 
-Download an archive for your OS and architecture from the
-[releases page](https://github.com/tamnd/facebook-cli/releases), unpack it, and
-move `fb` somewhere on your `PATH`. Each release ships archives for Linux, macOS,
-Windows, and FreeBSD on amd64 and arm64, plus `.deb`, `.rpm`, and `.apk`
-packages, checksums, SBOMs, and a cosign signature.
+Download an archive for your OS and architecture from the [releases page](https://github.com/tamnd/facebook-cli/releases), unpack it, and move `fb` somewhere on your `PATH`.
+Every release ships Linux on amd64, arm64, armv7 and 386, macOS on amd64 and arm64, Windows on amd64 and arm64, and FreeBSD on amd64 and arm64.
+
+Alongside the archives are `.deb`, `.rpm` and `.apk` packages, a sha256 checksum file, a CycloneDX SBOM for each artifact, and a keyless cosign signature over the checksums.
 
 ## Package managers
 
-Homebrew (once the tap is published):
+Homebrew, once the tap is published:
 
 ```sh
-brew install tamnd/tap/fb
+brew install --cask tamnd/tap/fb
 ```
 
 Scoop on Windows:
@@ -38,8 +38,7 @@ scoop bucket add tamnd https://github.com/tamnd/scoop-bucket
 scoop install fb
 ```
 
-Debian/Ubuntu and Fedora/RHEL: download the `.deb` or `.rpm` from the releases
-page and install it with `dpkg -i` or `rpm -i`.
+Debian, Ubuntu, Fedora, RHEL and Alpine: download the `.deb`, `.rpm` or `.apk` from the releases page and install it with `dpkg -i`, `rpm -i` or `apk add --allow-untrusted`.
 
 ## Docker
 
@@ -47,11 +46,12 @@ page and install it with `dpkg -i` or `rpm -i`.
 docker run --rm ghcr.io/tamnd/fb page nasa
 ```
 
-Mount a volume to keep the cache and any datasets between runs:
+The image is Alpine with the static binary, CA certificates and tzdata, running as an unprivileged user.
+`FB_DATA_DIR` is set to `/data`, so mounting a volume there is what makes the page cache, any store and the session file survive between runs:
 
 ```sh
 docker run --rm -v ~/data/fb:/data ghcr.io/tamnd/fb \
-  page nasa --posts --limit 50 -o jsonl
+  photos nasa --limit 50 -o jsonl
 ```
 
 ## Build from source
@@ -59,15 +59,22 @@ docker run --rm -v ~/data/fb:/data ghcr.io/tamnd/fb \
 ```sh
 git clone https://github.com/tamnd/facebook-cli
 cd facebook-cli
-make build      # produces ./bin/fb
+make build      # writes bin/fb
 ```
+
+`bin/` is gitignored, and the binary goes there rather than the repo root because the root already holds the `fb/` source package.
 
 ## Verify
 
 ```sh
-fb version
+fb --version
 fb id nasa
+fb surfaces
 ```
 
-`fb id` works with no network and no login, so it is the quickest way to confirm
-the binary runs.
+None of those three touch the network, so they work behind any firewall and are the quickest way to confirm the binary runs.
+Then try a real read:
+
+```sh
+fb page nasa
+```
