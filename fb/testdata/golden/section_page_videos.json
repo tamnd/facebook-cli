@@ -1,0 +1,1348 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s1"
+  ],
+  "kind": "videos",
+  "owner": {
+    "kind": "",
+    "id": "100044561550831",
+    "name": "NASA"
+  },
+  "videos": [
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1380134307388381",
+      "url": "https://www.facebook.com/NASA/videos/nasa-astronaut-chris-williams-thinking-like-a-scientist/1380134307388381/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA Astronaut Chris Williams: Thinking Like a Scientist",
+      "message": {
+        "text": "During his eight months aboard the International Space Station, NASA astronaut Chris Williams conducted numerous experiments to improve life on Earth and prepare us for missions to the Moon and Mars.\n\nFrom cancer research to advancing technology, read about Williams’ work during his first time in space: https://go.nasa.gov/3RavGXj",
+        "ranges": [
+          {
+            "offset": 35,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064698066408"
+            }
+          },
+          {
+            "offset": 305,
+            "length": 27,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064698066408"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://go.nasa.gov/3RavGXj",
+            "offset": 305,
+            "length": 27
+          }
+        ]
+      },
+      "post_id": "1584419709720066",
+      "width": 3840,
+      "height": 2160,
+      "created_at": "2026-07-23T16:31:08Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/754970839_803020196231197_5928609298551288000_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=102\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=oh9YO8DSMnAQ7kNvwHpsMT1\u0026_nc_oc=AdrNWFGU1ETtciuIDo-LYNOXLGbFX5TwGPHHtHYHcBQcbvPaGqWs5DILmfl7AeHWXu0pIWTbu2U0wnl7V2_hRouy\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBxha7OQ0O6P9UEpLqZCeSW6T8t8XU8WAv4Vq77EHs2eQ\u0026oe=6A6F4867",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQMNIoC_TKECR5nqHI_uJ9Xe6cVGGMP6kq66A4-YKU6OxJGYRFryRAeR-o1PhDRUQWxys6Gsq9AAUPAzd4Zeq86ulCMYl_QBcgMiDOEMDw.mp4?_nc_cat=105\u0026_nc_oc=AdpJpuUWbtv2G_tV4pD1V936S2mnJxah5UKp-TlRlJHb1h3VOyvtbvmDnpUfpCx5jnGOnQH3A04VO_C1ZxFkNgzh\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=IiEDBZiFFIEQ7kNvwHCq0xB\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTE5NDA5ODkyMjg3OTkwNCwiYXNzZXRfYWdlX2RheXMiOjUsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoxMTIsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQBjzjWCiXMWlTdniAuyjE_YWfaln7dlDRaElvO_WFxWGQ\u0026oe=6A6F5279\u0026bitrate=452252\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 5976,
+        "reactions_text": "5.9K",
+        "by_type": {
+          "Angry": 3,
+          "Care": 73,
+          "Haha": 33,
+          "Like": 5230,
+          "Love": 623,
+          "Sad": 1,
+          "Wow": 13
+        },
+        "views": 98213,
+        "plays": 453802
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1376651124309650",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-july-2026/1376651124309650/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: July 2026",
+      "message": {
+        "text": "There will be more than just fireworks to see in the night sky this month!\n\nYou can look forward to these celestial sights in July:\n- A lunar-planetary alignment\n- A visiting comet\n- A good look at Saturn and the Milky Way\n\nHappy skywatching! https://go.nasa.gov/3QvQc4k",
+        "ranges": [
+          {
+            "offset": 243,
+            "length": 27,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://go.nasa.gov/3QvQc4k",
+            "offset": 243,
+            "length": 27
+          }
+        ]
+      },
+      "post_id": "1567272851434752",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2026-07-02T15:02:01Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/735149954_4435586749988646_521208314578416779_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=111\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=Gud7lQ4nsk8Q7kNvwHSmRKs\u0026_nc_oc=Adqft86kmW3ZkS05LPt1gvi6z3RCEb7-ZrqIPqz96cYPloasXSv6qQ2UKXRNc7nF1s1IfUb_e3--xOXGqJ66rQN8\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQCupfT9Yt4Xp8CZXbwuLpXV_lUk-VGkIIQ5On2TgnrXFA\u0026oe=6A6F586C",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQP9VBgwKhzJNLa04LNqW8dmeTwfbSJz5r6v_sfyNZbzo5P3i5LTZQ1bNlyVY1Yz5G85S0kpfR3_2CT0XYLq_ihXnSyvW8IHuI3BOhgJfw.mp4?_nc_cat=101\u0026_nc_oc=AdqZVEhvSSDxb8r0zpCEWPu_nl9OQ84atIrKtpRk_4tpMIU1eGiH_Ab_3f7cNwmWT8AmQJQ4Bkqh9gBUwKDfnFd9\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=0a97jH9IXfMQ7kNvwGue18_\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTM0Nzg2ODc2MDAwODIxNiwiYXNzZXRfYWdlX2RheXMiOjI2LCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6MjAwLCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQD9c_Lpt2lN4MAwUTato80AIg9RKMFabpBeUELTXH6W7w\u0026oe=6A6F50C1\u0026bitrate=177014\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 6612,
+        "reactions_text": "6.6K",
+        "by_type": {
+          "Angry": 1,
+          "Care": 113,
+          "Haha": 10,
+          "Like": 5228,
+          "Love": 1229,
+          "Wow": 31
+        },
+        "views": 78078,
+        "plays": 599898
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1023344310547434",
+      "url": "https://www.facebook.com/NASA/videos/come-watch-a-spacewalk-with-usnasa-astronauts-chris-williams-and-jessica-meir-ar/1023344310547434/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "Come watch a spacewalk with us!\n\nNASA astronauts Chris Williams and Jessica Meir are stepping outside the International Space Station for about six and a half hours to make repairs to the station's Canadarm2 robotic arm. Tune in: https://youtu.be/D0dd8X4g3Eg",
+      "message": {
+        "text": "Come watch a spacewalk with us!\n\nNASA astronauts Chris Williams and Jessica Meir are stepping outside the International Space Station for about six and a half hours to make repairs to the station's Canadarm2 robotic arm. Tune in: https://youtu.be/D0dd8X4g3Eg",
+        "ranges": [
+          {
+            "offset": 106,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064698066408"
+            }
+          },
+          {
+            "offset": 230,
+            "length": 28,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064698066408"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://youtu.be/D0dd8X4g3Eg",
+            "offset": 230,
+            "length": 28
+          }
+        ]
+      },
+      "post_id": "1565523918276312",
+      "width": 3840,
+      "height": 2160,
+      "created_at": "2026-06-30T14:00:41Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/736384680_1034463129116372_1847611548688510946_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx3840x2160\u0026ctp=p1080x2048\u0026_nc_cat=100\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=FUM4mpTZHuAQ7kNvwERY7Ag\u0026_nc_oc=Adrz3oxFhLrbDLYcf_CUOFEKGPzq-BJ6FNjXRoBVLcsfEbJqj-WMApr5VtWXgguminuG1ayWlCmnHiqh9xaOEYdD\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBMTGSbe1q-635o4-Y8Ka7jlPLO10jnzFlyfPM1dE-aiA\u0026oe=6A6F51C3",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNnS-5mGrakZDNhe_-1NJaPX4ZDs18woP4HwOEFWqFkqneNRgkPFmswhpzMGsitsGPJ2fYgfZYMyZslca9hmAM-1zFv7zaQF6AjUwShxg.mp4?_nc_cat=111\u0026_nc_oc=AdoUvNCuUZbzUXUT3G2c6zVut5M0tyqsglRUx7XZJwOMmKKUpShqtciI98HbUjmgeFdkQV35wouYrBIc-jG542DD\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=l5vmtaJJ1HkQ7kNvwHaZjhq\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6OTg1NjA2NTcwOTA5Njk4LCJhc3NldF9hZ2VfZGF5cyI6MjgsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoxNiwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQAxwJt_XPyQnUkgW4_mYtmeIv3n595vrUdG5rlKDErRyg\u0026oe=6A6F36CF\u0026bitrate=561721\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 75386,
+        "reactions_text": "75K",
+        "by_type": {
+          "Angry": 9,
+          "Care": 567,
+          "Haha": 924,
+          "Like": 66262,
+          "Love": 6924,
+          "Sad": 7,
+          "Wow": 693
+        },
+        "views": 1921796,
+        "plays": 5061361
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1736519150699488",
+      "url": "https://www.facebook.com/NASA/videos/nasa-at-the-great-american-state-fair/1736519150699488/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA at the Great American State Fair",
+      "message": {
+        "text": "We are at the Great American State Fair in Washington, D.C.!\n \nDiscover the technology and science driving our most exciting missions by visiting the NASA Pavilion—today through July 10: https://www.nasa.gov/freedom250/#american-state-fair",
+        "ranges": [
+          {
+            "offset": 187,
+            "length": 52,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://www.nasa.gov/freedom250/#american-state-fair",
+            "offset": 187,
+            "length": 52
+          }
+        ]
+      },
+      "post_id": "1561248945370476",
+      "width": 3840,
+      "height": 2160,
+      "created_at": "2026-06-25T16:13:01Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/730182605_1314642917513572_6743020664352329210_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=103\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=LImzdvtWgrIQ7kNvwEImRNK\u0026_nc_oc=AdqDTUzaN28jCBvTPKG66aZ9u6dkJWID4FU4wKi6W8WYLjJisrCyKIBHoZcAlLJCYESjJpxyh25KK6MSecNCUl1g\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQAPSYXhDNlqqGBLjhVWEAvb0YjYY8N5Ff7smi8Tsduymg\u0026oe=6A6F2A61",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQOCFhrdvE1gw4T_ehLE9YrnGVk9iqtdgOvssVpdhCDY2slQ37cGXb9voOCGJiMleCQewlY9Fta0VsV0B8Yltbp6pFPsR_TSKC2JVNsprQ.mp4?_nc_cat=109\u0026_nc_oc=Adp8Vhoybe-C6tx-tG2sP3JISypZHF0uJuvG5IEMjdmCtIQ0gnvjeqnmwM8ZLB_rrQk6-horsxfjJZJq7p056ELy\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=CjkerRPMFkUQ7kNvwGbYT8m\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6NDA0MDE4OTQ2Mjk0MDA4NSwiYXNzZXRfYWdlX2RheXMiOjMzLCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6MTIwLCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQBXfYVPjEYf38O-uqgvU7Pg5EGa7hZ2m_NgIRjiQPAz-g\u0026oe=6A6F2DF9\u0026bitrate=346350\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 3612,
+        "reactions_text": "3.6K",
+        "by_type": {
+          "Angry": 4,
+          "Care": 46,
+          "Haha": 24,
+          "Like": 3151,
+          "Love": 369,
+          "Sad": 3,
+          "Wow": 15
+        },
+        "views": 86574,
+        "plays": 427153
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1284450976822099",
+      "url": "https://www.facebook.com/NASA/videos/the-ultimate-away-game-world-cup-fever-on-the-iss/1284450976822099/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "The Ultimate Away Game: World Cup Fever on the ISS",
+      "message": {
+        "text": "The official FIFA World Cup ball went to space! \n\nWe're working to inspire the next generation by showing how space exploration inspires innovation in sports science — and everyday life. Learn more: https://go.nasa.gov/43G4Bhc",
+        "ranges": [
+          {
+            "offset": 199,
+            "length": 27,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://go.nasa.gov/43G4Bhc",
+            "offset": 199,
+            "length": 27
+          }
+        ]
+      },
+      "post_id": "1556903142471723",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2026-06-20T14:00:00Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/725733247_1380772853937295_3761258904677594278_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1920x1080\u0026ctp=s1920x1080\u0026_nc_cat=102\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=pz25OpOMZaIQ7kNvwFsUipP\u0026_nc_oc=Ado3ASbQbnQtbO_VJM2R3Rs7TZ-f5lOjhOfyCpJmKql0bzOJ2p8p-efS5BtVx05dGbr3DTEIPe2HZswPV0n5QoGp\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQDImvePzoq9e427D9HsFljMSharIy0MpG_dkZePYmoV6w\u0026oe=6A6F5344",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQMMA1e5CVjx7w7HM3O6PqsH7ZEfKka8czI-z3Kwhtecnz7reQuOUS7710hW6XAbBAG5biYYSM5QS7hc8kyVJyCK0Xpu86fjTNXn3v1UGQ.mp4?_nc_cat=100\u0026_nc_oc=AdotDSCHnAQCMEbzsMtHaqATdRN7kSwP0kFy0ml_-yCQneLr9CI9_AFfHE3hrOx67Pd2luW21kCzH4O_b7-lfYqs\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=j_Eq1PbOKo4Q7kNvwGbUiVI\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTY2NzYzNzg2NDcxOTk0NCwiYXNzZXRfYWdlX2RheXMiOjM4LCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6MzIsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQANGgp_OQkUguLhuugMKosg0lxGElE7PUcBcQZp__AQqg\u0026oe=6A6F4306\u0026bitrate=437563\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 18209,
+        "reactions_text": "18K",
+        "by_type": {
+          "Angry": 8,
+          "Care": 204,
+          "Haha": 156,
+          "Like": 15624,
+          "Love": 2103,
+          "Sad": 7,
+          "Wow": 107
+        },
+        "views": 213884,
+        "plays": 859999
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "2043044306290042",
+      "url": "https://www.facebook.com/NASA/videos/artemis-iii-announcement-recapmp4/2043044306290042/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "Artemis III Announcement Recap.mp4",
+      "message": {
+        "text": "Get ready for Earth joy!\n \nEarlier today, we announced the four astronauts who will go to space as part of Artemis III. This mission will undertake a series of challenging tests in low Earth orbit in 2027, setting future NASA Artemis missions up to return humanity to the Moon. \n\nLearn more about Artemis III: https://www.nasa.gov/mission/artemis-iii/",
+        "ranges": [
+          {
+            "offset": 221,
+            "length": 12,
+            "entity": {
+              "kind": "profile",
+              "id": "100068921331509"
+            }
+          },
+          {
+            "offset": 310,
+            "length": 41,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100068921331509"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://www.nasa.gov/mission/artemis-iii/",
+            "offset": 310,
+            "length": 41
+          }
+        ]
+      },
+      "post_id": "1548129933349044",
+      "width": 3840,
+      "height": 2160,
+      "created_at": "2026-06-10T00:50:02Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/719149300_1675536716897455_292426081350600923_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=110\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=jHV5akqH8n4Q7kNvwHeOBtP\u0026_nc_oc=AdovlsZHxwxuGnY7J33uQmqTxmWE82v_lw3llceYNR7j0vjzcV6Hs2G5ykMto90ybbk15CM5VH_TWcB3EHMcQku5\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBfuYXLTJ2qD9fhFzI2Z05MTF48kO9QDhtnrsuy_GJQkg\u0026oe=6A6F448E",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQM0UHBZD2dlcQzyItTJBm-538vroBuqsiV6432tdbSRXD2mpCTGj3JgacIuhkqE3pv5FS0XOxrzvmCDm9YJDB3-X4lQRZ0uaBTIktlXYw.mp4?_nc_cat=102\u0026_nc_oc=Ado3I11zRe4zvrNujmJCJqMqvkFqjs3CSqgsdqpqUlglU_2NY1YuC9v81VZ3_tHZ7UJhGwQegUJ78CprsBbZ_ZvQ\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=8h3p2ascMvYQ7kNvwE0uq_g\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTcwNDYyNTQ4NDAxMDE0NCwiYXNzZXRfYWdlX2RheXMiOjQ5LCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6MTI3LCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQCJRnuJutzDLyxKLhw7jNUgnNpRPTfizM0a4kv8eeZTvQ\u0026oe=6A6F53F0\u0026bitrate=231205\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 12416,
+        "reactions_text": "12K",
+        "by_type": {
+          "Angry": 15,
+          "Care": 212,
+          "Haha": 127,
+          "Like": 9707,
+          "Love": 2316,
+          "Sad": 6,
+          "Wow": 33
+        },
+        "views": 240608,
+        "plays": 924330
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1687633715905224",
+      "url": "https://www.facebook.com/NASA/videos/introducing-artemis-iii/1687633715905224/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "Introducing Artemis III",
+      "message": {
+        "text": "Introducing Artemis III. \n\nFour astronauts. Three launches. Two dockings. One splashdown. \n\nIn 2027, the Artemis III mission will practice docking the Orion spacecraft with two lunar landers in low Earth orbit. On future Artemis missions, landers will bring astronauts to the lunar surface. While Artemis III will not land on the Moon, it will test the complex capabilities we need to return humanity there — this time to stay. \n \nNASA astronauts NASA Astronaut Randy \"Komrade\" Bresnik, Astronaut Frank Rubio, and Andre Douglas will join ESA - European Space Agency astronaut Luca Parmitano on this historic mission. https://go.nasa.gov/4xoS8MC",
+        "ranges": [
+          {
+            "offset": 447,
+            "length": 38,
+            "entity": {
+              "kind": "profile",
+              "id": "100044176822347"
+            }
+          },
+          {
+            "offset": 487,
+            "length": 21,
+            "entity": {
+              "kind": "profile",
+              "id": "100085096361329"
+            }
+          },
+          {
+            "offset": 538,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064562868974"
+            }
+          },
+          {
+            "offset": 576,
+            "length": 14,
+            "entity": {
+              "kind": "profile",
+              "id": "100047344532056"
+            }
+          },
+          {
+            "offset": 617,
+            "length": 27,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100044176822347"
+          },
+          {
+            "kind": "profile",
+            "id": "100085096361329"
+          },
+          {
+            "kind": "profile",
+            "id": "100064562868974"
+          },
+          {
+            "kind": "profile",
+            "id": "100047344532056"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://go.nasa.gov/4xoS8MC",
+            "offset": 617,
+            "length": 27
+          }
+        ]
+      },
+      "post_id": "1547936720035032",
+      "width": 3840,
+      "height": 2160,
+      "created_at": "2026-06-09T18:47:11Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/716190119_1161661776142297_4375813759767038090_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=107\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=vI7_PAVzSeQQ7kNvwGJTSKT\u0026_nc_oc=Ado46vND6I9uXkUX9ZJTVVv87MR7Fw5Q43xh9-pyGpLWxoZTCA9ZvTrI-faEa5yYJbkYUSMswquU_kF56fcgL4if\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQAnx50aUyfcfBHYNQ9fAANucvU6rJHbtu_0aXLGQuW9bA\u0026oe=6A6F5799",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQOaepl1LF7GIhSYxFxzoZYtZzxhhLxuzhMDz_sOP1qdAhxRHfr1e8yFcDMcEL-WluMFknHxK31KZnMNRucdLD6l-0ZKcJ3Kw-z3jN3fXg.mp4?_nc_cat=101\u0026_nc_oc=Adra8FFle8aXvg94U-5tqguq4DZ_gwpQCSVpU_C8w__knZcFG52ggIE3PdnNUea9nwZyt8TE5i71ZmFDck3toiky\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=RzyeZC-MvNEQ7kNvwHaF2Cp\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTY5MDA3NjU4NTQ4MDc3OCwiYXNzZXRfYWdlX2RheXMiOjQ5LCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6ODYsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQBdJGqDomllCal1fBpybV1SfR5nT670BfEgAz_b8K_UCw\u0026oe=6A6F3201\u0026bitrate=320453\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 21470,
+        "reactions_text": "21K",
+        "by_type": {
+          "Angry": 19,
+          "Care": 331,
+          "Haha": 104,
+          "Like": 15785,
+          "Love": 5134,
+          "Sad": 7,
+          "Wow": 90
+        },
+        "views": 306404,
+        "plays": 1399143
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "960710576782934",
+      "url": "https://www.facebook.com/NASA/videos/nasas-artemis-iii-announcement-official-nasa-trailer/960710576782934/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA’s Artemis III Announcement (Official NASA Trailer)",
+      "message": {
+        "text": "Coming soon: one of history’s most complex missions \n\nTune in on Tuesday, June 9, at 11 a.m. EDT (1500 UTC) to meet the astronauts flying aboard Artemis III, the mission that will test rendezvous and docking capabilities with commercial landers in low Earth orbit. Commercial landers are needed to bring astronauts to the lunar surface during future Artemis missions. \n\nBefore Artemis IV heads back to the Moon, this third mission will be an important stepping stone for lunar landings during future Artemis missions. https://www.facebook.com/events/1526795995494848",
+        "ranges": [
+          {
+            "offset": 518,
+            "length": 48,
+            "entity": {
+              "kind": "event",
+              "id": "1526795995494848"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "event",
+            "id": "1526795995494848"
+          }
+        ]
+      },
+      "post_id": "1546299190198785",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2026-06-07T19:42:30Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/718076038_977912571683875_6463688596365675757_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=111\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=-POSAjo53RsQ7kNvwHXv6NS\u0026_nc_oc=AdpM63PsoMtXdG_mr1TSw0ZHeFrfiwshGBaal4PjUzTxrcLkDeRlXeosJZf0vU7aozXNnaht-qJcCduXdCatcK5Y\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQCyVqrHcAarxxp2oSocaUl87Gnag-9w4AjCSY-7PSvpBA\u0026oe=6A6F36FE",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNi7LzLtix8-1K7zdIEnrgaVN3s35uLqu7RMxpaP03E0PiUoiBb_oD8NPPkuGT70cJuyOrmvppUKSZ1ZGQLeFvF7NE0x0OwUqgm4d5vkQ.mp4?_nc_cat=104\u0026_nc_oc=Ado5ynSOEFpWW03VxmOjMZUvPnd6xv80bwEKlthX8eRj2hA2Cf2ixcimXTkKwzJZDDnA4n2zS0ZALAHnoTL9NWMp\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=4tGk23J38U4Q7kNvwGx1ZnJ\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6Mzk1NDMxNzk1ODE5NTMxNSwiYXNzZXRfYWdlX2RheXMiOjUxLCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6NDUsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQBeyZ1CSt7PSRu_SVfNAasH87Wv3Y6GqZszl2y-VtJnBA\u0026oe=6A6F377A\u0026bitrate=253305\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 23778,
+        "reactions_text": "23K",
+        "by_type": {
+          "Angry": 2,
+          "Care": 364,
+          "Haha": 73,
+          "Like": 18981,
+          "Love": 4223,
+          "Sad": 2,
+          "Wow": 133
+        },
+        "views": 308282,
+        "plays": 1123592
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1885178062145784",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-june-2026/1885178062145784/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: June 2026",
+      "message": {
+        "text": "What's up for June?\n\nThe solstice brings summer to the Northern Hemisphere. Jupiter and Venus will appear close together in the night sky, and Mercury will join them soon after. The Moon will also pass in front of Venus on June 17. Learn more: https://go.nasa.gov/4ap33vB",
+        "ranges": [
+          {
+            "offset": 244,
+            "length": 27,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "https://go.nasa.gov/4ap33vB",
+            "offset": 244,
+            "length": 27
+          }
+        ]
+      },
+      "post_id": "1540929904069047",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2026-06-01T19:40:50Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/713823975_2088298998785729_6777423293874418422_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=100\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=TnNXcn1mL2sQ7kNvwEgeAf5\u0026_nc_oc=Adro8Wo_kxz2QGEy3nVui-qFL_MTeWaqWVXR5U-YDVEi5kRjHADm6dseL5tFh8umWHSrQAPop9RZVU6rtqVrr7p1\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQA6U0_ojcsQXxoXZCovoMZaYvfo5HpohsRbXalgfMKK3w\u0026oe=6A6F5E66",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNk7cqhb9wN3SfEaEs7TQ-WgVQcUyoemK3Iu2kT9KqUGeK0uPhJ9sF6dG7Qtw_X-LE8SDMF3q_KrOAKNOT8pqKsws37p1W4pNhIANIXxw.mp4?_nc_cat=111\u0026_nc_oc=Adpa_YVkHfuFv9wDE-wDem_lFe7fKbB0c1yz982fEjF3Pcs5ZO46rJn-fa4EOSf-h3b0oJTL4RPfP5vUxhxpVHyG\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=W8-12p3aDK4Q7kNvwHAsntI\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6NDAyNjE1NDQwNzUxNDUzNywiYXNzZXRfYWdlX2RheXMiOjU3LCJ2aV91c2VjYXNlX2lkIjoxMDEyMiwiZHVyYXRpb25fcyI6MjI5LCJ1cmxnZW5fc291cmNlIjoid3d3In0%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQAjkTZhV1qMvIvTFeazhBJ_fMLnqoHNRemzmlWoQSiZ8g\u0026oe=6A6F2EF7\u0026bitrate=203275\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 10510,
+        "reactions_text": "10K",
+        "by_type": {
+          "Angry": 1,
+          "Care": 130,
+          "Haha": 6,
+          "Like": 8645,
+          "Love": 1681,
+          "Sad": 1,
+          "Wow": 46
+        },
+        "views": 151003,
+        "plays": 889505
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "452499129200583",
+      "url": "https://www.facebook.com/NASA/videos/firing-up-the-rocket-for-the-artemis-moon-missions-this-week-nasa-31921/452499129200583/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "Firing up the Rocket for the Artemis Moon Missions This Week @NASA – 3/19/21",
+      "message": {
+        "text": "This week...\n\n🔥 Our NASA's Artemis Program Moon rocket core stage fires up\n📰 A nomination announcement for the next NASA Administrator\n🛰️ A spacecraft relocates to make room for the next International Space Station crew\n\nWatch: youtu.be/nPmQbhlVeMs",
+        "ranges": [
+          {
+            "offset": 187,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064698066408"
+            }
+          },
+          {
+            "offset": 228,
+            "length": 20,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064698066408"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "h: youtu.be/nPmQbhlV",
+            "offset": 228,
+            "length": 20
+          }
+        ]
+      },
+      "post_id": "10159065692406772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-03-20T17:02:06Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/151732125_452501232533706_4250162638341106018_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=107\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=tsFd6MLCIw0Q7kNvwGs9_FZ\u0026_nc_oc=Adohl4MydGbWFy7jy4QqnoaqA5qzB-imlAgDcpPOkl1Ca-wznOSehKDRciPLZ62NNOQWgf0rnA24NSxtsffFQiJn\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBO0QldcMX32eYG02dGt5Xi5_b9aq1dzbaO-TXFezYukA\u0026oe=6A6F5B9E",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNnR8vykp_idwKthMYwRFobqcNYI-jP5mFo35BNICIl7XbeOMWCWyuyb1Fru08lBly6EJwwg1xCZtevDacE7ZzC.mp4?_nc_cat=105\u0026_nc_oc=Adr0ZDsy1QKLXXNQDhrbM8-YZ_cOGclER7L_JDtUbmtkch7Bfow29WrfgSUsGDGDzprhUNUO7szj_ZoVgCbZ2QU2\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=haP8Vc2VxA4Q7kNvwEy50oe\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTU2NjM1MjE1NDE4MDc3MiwiYXNzZXRfYWdlX2RheXMiOjE5NTYsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoyNTIsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQB-kgtDDSc0lzuxzWRrETSRffCZdAM74KLFCAeVC_a9ow\u0026oe=6A6F44D2\u0026bitrate=214124\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 837,
+        "reactions_text": "837",
+        "by_type": {
+          "Care": 11,
+          "Haha": 2,
+          "Like": 708,
+          "Love": 105,
+          "Wow": 11
+        },
+        "views": 12406,
+        "plays": 12406
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "161382045774196",
+      "url": "https://www.facebook.com/NASA/videos/-weve-been-busy-president-joe-biden-announces-nasa-funding-request-our-ingenuity/161382045774196/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "🌟 We've been busy.\n\n- President Joe Biden announces NASA funding request, our Ingenuity #MarsHelicopter preps for flight, and a new crew arrives at the International Space Station.\n\nAll that and more This Week @ NASA: https://youtu.be/66RYpY_adnw",
+      "message": {
+        "text": "🌟 We've been busy.\n\n- President Joe Biden announces NASA funding request, our Ingenuity #MarsHelicopter preps for flight, and a new crew arrives at the International Space Station.\n\nAll that and more This Week @ NASA: https://youtu.be/66RYpY_adnw",
+        "ranges": [
+          {
+            "offset": 22,
+            "length": 19,
+            "entity": {
+              "kind": "profile",
+              "id": "100063509179160"
+            }
+          },
+          {
+            "offset": 218,
+            "length": 28,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100063509179160"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": " https://youtu.be/66RYpY_adn",
+            "offset": 218,
+            "length": 28
+          }
+        ]
+      },
+      "post_id": "10159114517846772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-04-10T01:12:08Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/167839033_161383285774072_3853125686945722505_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=104\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=RNV3RIAe-MAQ7kNvwG30VBI\u0026_nc_oc=Adpt7tNv-YZ5Lslf_BZWJ1PMHuvOVF0FOm-eRPvw6yzVu9HWvn80cmRb0sbDa_lHYohzoeDwGcB6za6mcLD866eL\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQB8QJ8lpqvK_6bNgUIChHxdFKxD5UJhKnXoj3lFx6QbXg\u0026oe=6A6F2808",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNhdLPZz16gZKTYWktgGtuHGNOqSNHE-t1daQPoqXjTSS-4yAwUko0htRdWnyq4eAJwgNhY3qj4t8dPAtXQ_6Q.mp4?_nc_cat=103\u0026_nc_oc=AdqjiRB2DmQBri4fUKCxotoBnoFbWYJrunBpZhhULQc89_jfY3aorUQt5ewZN_LDAzN46E5BdEnzk25afypNIzdy\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=3KCFb8SqE1gQ7kNvwFiwAQ_\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTA2ODM2NDE2NDE5NTk0OSwiYXNzZXRfYWdlX2RheXMiOjE5MzYsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoyOTIsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQC471HRFm7XAfiySxa-Z_0x_BwR5Ylwu49ZyInUC6G5yg\u0026oe=6A6F5ACB\u0026bitrate=221748\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 3447,
+        "reactions_text": "3.4K",
+        "by_type": {
+          "Angry": 3,
+          "Care": 15,
+          "Haha": 10,
+          "Like": 3077,
+          "Love": 322,
+          "Wow": 20
+        },
+        "views": 74422,
+        "plays": 74422
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "292683338958803",
+      "url": "https://www.facebook.com/NASA/videos/this-week-nasa-april-2-2021/292683338958803/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "This Week @ NASA – April 2, 2021",
+      "message": {
+        "text": "This week…\n\n🧪 NASA Ames Research Center prepares the first long-duration biology experiment in deep space\n👩‍🔬 The International Space Station welcomes Robyn Gatens as its program director\n🛰️  A major component of our Psyche mission arrives at the NASA Jet Propulsion Laboratory\n\nWant details? Watch: youtu.be/g4tld6ppv7Q",
+        "ranges": [
+          {
+            "offset": 14,
+            "length": 25,
+            "entity": {
+              "kind": "profile",
+              "id": "100064843206422"
+            }
+          },
+          {
+            "offset": 114,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064698066408"
+            }
+          },
+          {
+            "offset": 300,
+            "length": 20,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064843206422"
+          },
+          {
+            "kind": "profile",
+            "id": "100064698066408"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "ch: youtu.be/g4tld6p",
+            "offset": 300,
+            "length": 20
+          }
+        ]
+      },
+      "post_id": "10159096097556772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-04-03T01:05:07Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/151480839_292684862291984_7183282246301731065_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=102\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=JN2VuBBEHxIQ7kNvwGit9PN\u0026_nc_oc=AdrwF_ygtwgPySHOEgGZLAUpFENL7sCX0n46fYiEAuxsxTnMm48R83cKH_csE9iKIdmQbJ8sytIZM3b8dMt_pgsz\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQCRqpgK2eZ178bNNPn2VM6_N-Ow37stLOm6ZIPz4--10Q\u0026oe=6A6F36FE",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQOca2uLuGclHzsyEZ55D1Yf4sgw0BeGf4I94LL0W5rpBnSqqCj8VsF6HLjd_l5UrPy70kxCnEPlVWJCXvldDjFl.mp4?_nc_cat=106\u0026_nc_oc=AdomeN4t6gHmSu6EMSESuwhYcNIDOwzKD2cEOhoX7LjuXoy0kzFHkL2-_I2HQ2qDXPjdoBTyEfpaqhT4WDuj5fCH\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=sOfAl72zKDMQ7kNvwFoAqoW\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTQ2MDkzNDE4NDYzNzIwNSwiYXNzZXRfYWdlX2RheXMiOjE5NDMsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoxNzcsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQDyajsrsMQ63aepIu5qxX8WCWbysF4sG8b7WAt8Vc-W9A\u0026oe=6A6F4237\u0026bitrate=260516\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 2924,
+        "reactions_text": "2.9K",
+        "by_type": {
+          "Angry": 1,
+          "Care": 22,
+          "Haha": 3,
+          "Like": 2581,
+          "Love": 285,
+          "Sad": 1,
+          "Wow": 31
+        },
+        "views": 56721,
+        "plays": 56721
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "490611381989026",
+      "url": "https://www.facebook.com/NASA/videos/confirming-the-nomination-of-our-next-administrator-on-this-week-nasa-43021/490611381989026/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "Confirming the Nomination of Our Next Administrator on This Week @NASA – 4/30/21",
+      "message": {
+        "text": "This week...\n\n🗳️ Confirming the nomination of our next administrator\n🌊 NASA's SpaceX Crew-1 mission set to undock from the International Space Station \u0026 splash down\n🌔 Remembering Apollo 11 and Gemini X astronaut Michael Collins\n\nWatch: youtu.be/PnEvu9jpkeE",
+        "ranges": [
+          {
+            "offset": 123,
+            "length": 27,
+            "entity": {
+              "kind": "profile",
+              "id": "100064698066408"
+            }
+          },
+          {
+            "offset": 236,
+            "length": 20,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064698066408"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "h: youtu.be/PnEvu9jp",
+            "offset": 236,
+            "length": 20
+          }
+        ]
+      },
+      "post_id": "10159165907746772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-05-01T23:24:11Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/166283079_490612745322223_1081077117587264621_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=109\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=kCspXVvb70YQ7kNvwGZlqhT\u0026_nc_oc=AdrRzwMLtN24jARn2T-8bGOKWP7FHPhlYyCRSQ_-9uemuxSCkPlX3pKHon1NbXA6P7sEUpFnuMWm77uM4EQeni5l\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQAArH8jBZlE2WoSp344Jjg7-BrvRry1XjNt0P8kZrH2dA\u0026oe=6A6F5B21",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNciEK4b_ZFN6uRN4gSVzXZJK7WaooKW73fDODuiYO5OJW38oz9uvlE7TVdsH3yv1nHTrhEVc9zE3AJA_8lfA.mp4?_nc_cat=106\u0026_nc_oc=Adry5rarpJ0Pksv3J3FWmZSR8915voCJDkZ5fWKxlCni5V2i13WKUNyzRRVPBpW_x_IWtxPRKsX04SeyhoO95ly0\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=wWBxHwsqiiAQ7kNvwE2fP48\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6NzYxNTkzOTE5MTYxNTE4LCJhc3NldF9hZ2VfZGF5cyI6MTkxNCwidmlfdXNlY2FzZV9pZCI6MTAxMjIsImR1cmF0aW9uX3MiOjI2NSwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQDXID1ifzqSXDRNCe-lt80CKV_-FNzRo3f6NdmFdDnvAQ\u0026oe=6A6F2AEA\u0026bitrate=193251\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 1865,
+        "reactions_text": "1.8K",
+        "by_type": {
+          "Angry": 7,
+          "Care": 27,
+          "Haha": 13,
+          "Like": 1588,
+          "Love": 211,
+          "Sad": 6,
+          "Wow": 13
+        },
+        "views": 52556,
+        "plays": 52556
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "301780235537207",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-july-2023-skywatching-tips-from-nasa/301780235537207/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: July 2023 Skywatching Tips from NASA",
+      "message": {
+        "text": "Say hi to the sky in July!\n\nA full moon starts the month, Jupiter and Saturn will be early birds and night owls, and while Venus and Mars go low in the west, Saturn will go high in the southern sky. The Red Planet will also cozy up with the star Regulus: http://go.nasa.gov/whatsup",
+        "ranges": [
+          {
+            "offset": 255,
+            "length": 26,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "http://go.nasa.gov/whatsup",
+            "offset": 255,
+            "length": 26
+          }
+        ]
+      },
+      "post_id": "826144325547612",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2023-06-30T20:01:28Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/356554141_986264672797682_5974416453073306813_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1280x720\u0026ctp=s1280x720\u0026_nc_cat=111\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=FVeGSv4KOQgQ7kNvwH6AJas\u0026_nc_oc=Adrc73kXzf3z5SLihS10hShnZW3muGWzZTBJC2djtoGaBkmL7T-V677znOyOlNG7Dc7vubHSiEqIrcTbgltw3vew\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQCr3QchUbBjfF0qnxGieyLaa4xOGuT8U2UwgxgixtV9FA\u0026oe=6A6F4541",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQMW2a_ewGJgjQTQNcBIidRZi7t8gbAdZsiGXvTuozb0IcV5lT8yraH4SnRIo4fuUgqmNLx--b_QuVq0t1tQ7pA.mp4?_nc_cat=111\u0026_nc_oc=AdqCvGdOhJxViAdRIhTcYfi2JklnwBN6F8GpT7k9Zuq9Or1Cb8F2ztOe6gFBDfjSdIAluij5GkdoCClfg7bIriRl\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=cXMqPEyCB84Q7kNvwHKRC3N\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MjkzNTIzMjU5ODQwNzg4LCJhc3NldF9hZ2VfZGF5cyI6MTEyNSwidmlfdXNlY2FzZV9pZCI6MTAxMjIsImR1cmF0aW9uX3MiOjIxOSwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQC8mHBvqlFuHUtCVCjMhiVF80BBRS46A7ZFmVdW3adlFA\u0026oe=6A6F2A9F\u0026bitrate=120430\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 5105,
+        "reactions_text": "5.1K",
+        "by_type": {
+          "Angry": 1,
+          "Care": 47,
+          "Haha": 22,
+          "Like": 3756,
+          "Love": 1244,
+          "Wow": 35
+        },
+        "views": 70549,
+        "plays": 82202
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "576845513639244",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-october-2021-skywatching-tips-from-nasa/576845513639244/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: October 2021 Skywatching Tips from NASA",
+      "message": {
+        "text": "🍂  Fall weather have you itching to step outside? You're in luck! This month, you'll have a chance to see several groupings of the Moon, planets, and stars at sunrise and sunset. That's not all – check out October skywatching tips from NASA Solar System Exploration: https://youtu.be/25XHe13OevA",
+        "ranges": [
+          {
+            "offset": 236,
+            "length": 29,
+            "entity": {
+              "kind": "profile",
+              "id": "100064588638223"
+            }
+          },
+          {
+            "offset": 267,
+            "length": 28,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "mentions": [
+          {
+            "kind": "profile",
+            "id": "100064588638223"
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": " https://youtu.be/25XHe13Oev",
+            "offset": 267,
+            "length": 28
+          }
+        ]
+      },
+      "post_id": "10159527591111772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-10-02T00:05:32Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/243070133_576850643638731_8781286937420261312_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1920x1080\u0026ctp=s1920x1080\u0026_nc_cat=104\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=Y5CoGiRECD0Q7kNvwFhApwM\u0026_nc_oc=AdqoXOt6TwupGbayYK8ctx00OvxsLZvaMpFWMKzcfUBbiL8UskKqXBrgp9uUlAuSWsNo3q2NM7239fbojokuZYj8\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQDB3Q-jQwmB2zsGD2rwCX33UZJi_Q6Ebo-wHzjD_BS8zQ\u0026oe=6A6F4DBE",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQMtp_7pZTVzfxsEqvg638aF6vzwGyvoHRdnE1ynyFqBiY7fyx77zdPT6SagudvFQ_0vvRvQKQXdbgn7w8pQ07z7.mp4?_nc_cat=102\u0026_nc_oc=AdoxwFhcGH72K3qUXCWBzYnjbgst6lT96HaBv4RoijaJZW7eC9biHXq2A7UlLQbBGvEKe252610LTbA3B1fhqirI\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=R2anYCUtXB8Q7kNvwEewETc\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTA3OTg4ODkxMzE1OTY3MCwiYXNzZXRfYWdlX2RheXMiOjE3NjIsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoxOTAsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQBGWAdqdtfZL50xuq-KLAlxMZ2MNb0Rry-ZfMvCNsblZg\u0026oe=6A6F2B87\u0026bitrate=145596\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 4565,
+        "reactions_text": "4.5K",
+        "by_type": {
+          "Angry": 41,
+          "Care": 64,
+          "Haha": 23,
+          "Like": 3747,
+          "Love": 633,
+          "Sad": 15,
+          "Wow": 42
+        },
+        "views": 133466,
+        "plays": 162891
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "772972123268014",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-june-2021-skywatching-tips-from-nasa/772972123268014/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: June 2021 Skywatching Tips from NASA",
+      "message": {
+        "text": "Want skywatching tips for June? This month you’ll find: \n\n😎 A partial solar eclipse \n🔭 The constellation Scorpius \n☀️ The Summer solstice in the Northern Hemisphere\n🍓 A “Strawberry” Full Moon \n\nAnd more! Get the details on when and where to look up: https://solarsystem.nasa.gov/whats-up-skywatching-tips-from-nasa.\n\nCredit: NASA/JPL-Caltech",
+        "ranges": [
+          {
+            "offset": 250,
+            "length": 64,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": "p: https://solarsystem.nasa.gov/whats-up-skywatching-tips-from-n",
+            "offset": 250,
+            "length": 64
+          }
+        ]
+      },
+      "post_id": "10159244224431772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-06-03T21:34:18Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/174021598_772901506608409_789035929998833130_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1920x1080\u0026ctp=s1920x1080\u0026_nc_cat=108\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=CZcH7VYmmn0Q7kNvwE91w0t\u0026_nc_oc=Adq5uQb1yMBHWPq-nVRg4EGqED26OGAWxKGw3S_4Qy2XpoWQmTTBxOCZsp2edaOhJSAFXIQxpW597M4i4ZdXgCN5\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQAb6_y3SuC9L9TsbK2FcdI3P2rWM2DD54eqwxiKa3ygdQ\u0026oe=6A6F4A53",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNwNgmxx9BdLwjvH4uGG_MjOtU9KZ2T1d21tMI_ekSnxecTQLKAtUkwwetGRhLDLgodn885LrHXtgEgu69zgDmZ.mp4?_nc_cat=109\u0026_nc_oc=AdrixaJprJ7h2giFf1a9fms5vwJFVzQYlEES-S2YkD5IUEZQYiu6vBMxUNFrKlzj2Lnya2lUKnpKJ_RPXYqTE_LN\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=seGevdNsblEQ7kNvwEc_A5K\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6NzI4NTczODQ4OTQ1NDAxLCJhc3NldF9hZ2VfZGF5cyI6MTg4MSwidmlfdXNlY2FzZV9pZCI6MTAxMjIsImR1cmF0aW9uX3MiOjIwOSwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQAld9s9hgukyl4_wP6cRMDqBQnSY6AfaVD4kMB6tnpwaw\u0026oe=6A6F4C16\u0026bitrate=127249\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 3144,
+        "reactions_text": "3.1K",
+        "by_type": {
+          "Angry": 1,
+          "Care": 19,
+          "Haha": 6,
+          "Like": 2701,
+          "Love": 396,
+          "Wow": 21
+        },
+        "views": 65358,
+        "plays": 83235
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "3884641041571706",
+      "url": "https://www.facebook.com/NASA/videos/whats-up-may-2021-skywatching-tips-from-nasa/3884641041571706/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "What's Up: May 2021 Skywatching Tips from NASA",
+      "message": {
+        "text": "What's up in the night sky for May? 🔭  \n\nFind out how to see all of our solar system's rocky inner planets in the middle of the month, and mark your calendars for a May 26 supermoon eclipse!\n\nWhen \u0026 where to look up: go.nasa.gov/34hp376\n\nCredit: NASA/JPL-Caltech",
+        "ranges": [
+          {
+            "offset": 217,
+            "length": 19,
+            "entity": {
+              "kind": "external"
+            }
+          }
+        ],
+        "links": [
+          {
+            "url": "",
+            "display": " go.nasa.gov/34hp37",
+            "offset": 217,
+            "length": 19
+          }
+        ]
+      },
+      "post_id": "10159163473986772",
+      "width": 1920,
+      "height": 1080,
+      "created_at": "2021-05-01T15:57:20Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/176896666_3884260801609730_4063315727560229051_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx1920x1080\u0026ctp=s1920x1080\u0026_nc_cat=106\u0026ccb=1-7\u0026_nc_sid=5fad0e\u0026_nc_ohc=DMsLg6XkQ5oQ7kNvwGCOvqP\u0026_nc_oc=AdpObI2aIkXixxsSpMSbuae5Sdd3dxSPzelTHp7yDanFM_GAYXi1bvktVNQ7Q3_ZoQ208GCiY5zAZ7hsknjFCqDZ\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBawtv-J74mt4AJwNmuy3wxukkhC87fMoKG3CnWXyaOqg\u0026oe=6A6F4166",
+        "signed": true
+      },
+      "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQNuhGpg7xdwKf-AClWhCs_MxUDZ9HYStTvTkYPKptD8l75zfShdH7R6_88SNklYN3ZosmwZCFULkbeVVyJ3Z-E.mp4?_nc_cat=110\u0026_nc_oc=Adpxspx7Hms2EqbQiZbSuV9VlbTZ0urNTvH85BSI_IiEXOkNQCjVxmgiMIFqtjMLD91GnR3TiTVm6woGFfUK29Os\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=Wn0yk7xAlXkQ7kNvwGTmlKa\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNDI2LnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTM3NTIyNDY4MzEzNzAxOCwiYXNzZXRfYWdlX2RheXMiOjE5MTUsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoyMDgsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQAYeM_HdG_Q5VhYnuNA4PCUwE7xSfRzKJlUjOg0h_6V6w\u0026oe=6A6F3FC4\u0026bitrate=135375\u0026tag=sve_sd",
+      "counts": {
+        "reactions": 3176,
+        "reactions_text": "3.1K",
+        "by_type": {
+          "Angry": 5,
+          "Care": 26,
+          "Haha": 9,
+          "Like": 2694,
+          "Love": 412,
+          "Sad": 6,
+          "Wow": 24
+        },
+        "views": 76733,
+        "plays": 130007
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "414410432517233",
+      "url": "https://www.facebook.com/NASA/videos/nasa-science-live-ep-6-nasas-next-solar-system-explorer/414410432517233/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA Science Live Ep. 6: NASA's Next Solar System Explorer",
+      "message": {
+        "text": "Our new NASA solar system mission, #Dragonfly, will send a rotocraft-lander to explore Saturn's moon, Titan! Why Titan? This ocean world is unique in the solar system, with organic compounds that could teach us about the origin of life itself. Watch this special edition of NASA Science Live to learn more and meet mission experts!",
+        "ranges": [
+          {
+            "offset": 35,
+            "length": 10,
+            "entity": {
+              "kind": "Hashtag",
+              "id": "142786939222400"
+            }
+          }
+        ]
+      },
+      "post_id": "10157354735981772",
+      "width": 400,
+      "height": 224,
+      "created_at": "2019-07-01T20:43:04Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/96411281_596006984357576_5324346239590858752_n.jpg?_nc_cat=111\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=zHgYc8fNF3oQ7kNvwHr3QBi\u0026_nc_oc=Adq-7bO0wI012h_HNsF9u-esFylhKUOODK7dSq0uKPz-ZhmR6EagxXu4td59bGTtGvaHofvmgleatsPehIiPt25k\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQAvnaduIBDyY1qlRhqrU7jsSQRVI-U69mAY7XnSdZ5vvw\u0026oe=6A6F2DFE",
+        "signed": true
+      },
+      "counts": {
+        "reactions": 10,
+        "reactions_text": "10",
+        "by_type": {
+          "Like": 10
+        },
+        "views": 10238,
+        "plays": 11321
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "1723393677803607",
+      "url": "https://www.facebook.com/NASA/videos/nasa-science-live-ep-5-next-steps-to-science-on-the-moon/1723393677803607/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA Science Live Ep. 5: Next Steps to Science on the Moon",
+      "message": {
+        "text": "Moon news! We announced the next major step in the Artemis program’s exploration plans for the lunar surface. Meet the first three American companies that will land spacecraft on the Moon with NASA science and technology onboard."
+      },
+      "post_id": "10157354735961772",
+      "width": 400,
+      "height": 224,
+      "created_at": "2019-07-01T20:37:45Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/96581309_2035477139928591_837696159488147456_n.jpg?_nc_cat=108\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=W36994kvwsoQ7kNvwEvEmFP\u0026_nc_oc=AdpjHN0_KHzHPsJBBWg_2Fw5Xe7tJeS4j0fPn6_ft-rDZ2ulY-sTdzwCy9alAsPK3bPnwWkV1Jv5cIK6wS-G2Wju\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBrkk_L_TIA-9-L-v7QLoZ4qKkpLn2-4aI52Vxn2qRLYg\u0026oe=6A6F475F",
+        "signed": true
+      },
+      "counts": {
+        "reactions": 18,
+        "reactions_text": "18",
+        "by_type": {
+          "Like": 15,
+          "Love": 3
+        },
+        "views": 11193,
+        "plays": 11696
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "2343814675872735",
+      "url": "https://www.facebook.com/NASA/videos/nasa-science-live-ep-4-storms-across-the-solar-system/2343814675872735/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA Science Live Ep. 4: Storms Across the Solar System",
+      "message": {
+        "text": "Did you know that there are storms churning all across our solar system and beyond? Watch as we tour some of the storms in our planetary neighborhood – from supersonic winds on Venus to dust storms on Mars. Then, we bring things closer to home to take a look at how NASA studies weather on Earth."
+      },
+      "post_id": "10157354735956772",
+      "width": 400,
+      "height": 224,
+      "created_at": "2019-07-01T20:28:29Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/98162788_2585508871703313_1315328657748656128_n.jpg?_nc_cat=104\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=qef55Ou1tcAQ7kNvwEIyi4z\u0026_nc_oc=AdrP6TrgwfuBOtwuSVqcIsyzudtQ6EESvMzfW4WjrvSOF3Xqj7AeGUmo9CLfrG_SzBmBprv_w0AVVzebWCQAb55I\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQDcKUduLB8oYVTmy8Z8TGcDM1XTMvjoV0tgrWrRpqdcwQ\u0026oe=6A6F2F6E",
+        "signed": true
+      },
+      "counts": {
+        "reactions": 15,
+        "reactions_text": "15",
+        "by_type": {
+          "Like": 15
+        },
+        "views": 8581,
+        "plays": 9147
+      }
+    },
+    {
+      "tier": 0,
+      "surfaces": [
+        "s1"
+      ],
+      "id": "365063870814603",
+      "url": "https://www.facebook.com/NASA/videos/nasa-science-live-ep-3-our-weird-home/365063870814603/",
+      "kind": "video",
+      "owner": {
+        "kind": "profile",
+        "id": "100044561550831"
+      },
+      "title": "NASA Science Live Ep. 3: Our Weird Home",
+      "message": {
+        "text": "The third episode of NASA Science Live highlights our weird home: Earth. Liquid water, a protective atmosphere and an active core that gives our planet a defensive shield. These features, plus more, make our home one of the most unique places in the solar system. Watch as we explore these features that make our planet special in celebration of Earth Day."
+      },
+      "post_id": "10157354735951772",
+      "width": 400,
+      "height": 224,
+      "created_at": "2019-05-01T13:35:44Z",
+      "thumbnail": {
+        "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/96404004_531475794173409_1410441782260400128_n.jpg?_nc_cat=108\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=-DVIld0Mm6IQ7kNvwHreHS_\u0026_nc_oc=AdpK7DdsfHry9eX7048X88PShimulfUOEIN55aJI8RmJcicbUQDL8vuywRF_5Os-4YOVaABV_wBh4g1-tSB1BrqF\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=7ZM5GsINX0iYMOEq0yeJ_g\u0026_nc_ss=7d289\u0026oh=00_AQBmdIGfz6obTdbKgdfL9nPQT47cXbX8KKxiSHl2cvU7cg\u0026oe=6A6F4215",
+        "signed": true
+      },
+      "counts": {
+        "reactions": 1,
+        "reactions_text": "1",
+        "by_type": {
+          "Like": 1
+        },
+        "views": 6569,
+        "plays": 14555
+      }
+    }
+  ],
+  "playlists": [
+    {
+      "id": "773774376379069",
+      "count": 4,
+      "video_ids": [
+        "452499129200583",
+        "161382045774196",
+        "292683338958803",
+        "490611381989026"
+      ]
+    },
+    {
+      "id": "367053713969437",
+      "count": 4,
+      "video_ids": [
+        "301780235537207",
+        "576845513639244",
+        "772972123268014",
+        "3884641041571706"
+      ]
+    },
+    {
+      "id": "2611914615494870",
+      "count": 4,
+      "video_ids": [
+        "414410432517233",
+        "1723393677803607",
+        "2343814675872735",
+        "365063870814603"
+      ]
+    }
+  ],
+  "cursor": "AQHScNLQVQebYHbRcK4U6XFlXJJNfj-7Oad8DwmdPpHy7PLLUpBw0coOQhdYWct7fVgg1I3pRREN1ABgoSnxvuIrig",
+  "more": true
+}

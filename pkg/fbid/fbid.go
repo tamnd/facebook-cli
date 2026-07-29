@@ -1,305 +1,451 @@
-// Package fbid classifies and normalizes the many Facebook identifier and URL
-// forms into a single typed Identity. It is pure (no network) so it can be
-// imported and tested on its own; short-link resolution that needs a redirect
-// lives in the fb package.
+// Package fbid classifies a Facebook reference without making a request.
+//
+// Facebook has more shapes of identifier than any other site in this tool
+// series: numeric ids for six different kinds of object, vanity handles, two
+// base64 keys that decode to something useful, an opaque signed token that
+// decodes to nothing, and a dozen URL routes that wrap all of them. Spec 3004
+// doc 04 section 1 has the table this file implements.
+//
+// It is its own package because classification is useful on its own. Anybody
+// with a folder of Facebook links and a question about what is in it should be
+// able to import this and get an answer without pulling in an HTTP client.
+//
+// The one rule worth stating: a bare number is not classified. 100044561550831
+// is a profile and 1587860636042640 is a post and nothing in the digits says
+// which, so Parse returns KindNumeric and the caller that knows what it asked
+// for coerces it. Guessing here would put wrong kinds in a graph.
 package fbid
 
 import (
+	"encoding/base64"
+	"errors"
+	"fmt"
 	"net/url"
-	"regexp"
 	"strings"
 )
 
-// Kind is the entity class an input resolves to.
-type Kind string
-
+// The kinds Parse returns.
 const (
-	KindUnknown Kind = "unknown"
-	KindPage    Kind = "page"
-	KindProfile Kind = "profile"
-	KindGroup   Kind = "group"
-	KindPost    Kind = "post"
-	KindPhoto   Kind = "photo"
-	KindVideo   Kind = "video"
-	KindEvent   Kind = "event"
+	KindProfile   = "profile"
+	KindPage      = "page"
+	KindPost      = "post"
+	KindPhoto     = "photo"
+	KindVideo     = "video"
+	KindReel      = "reel"
+	KindGroup     = "group"
+	KindEvent     = "event"
+	KindAlbum     = "album"
+	KindComment   = "comment"
+	KindStory     = "story"     // a base64 story key
+	KindFeedback  = "feedback"  // a base64 feedback key
+	KindHandle    = "handle"    // a vanity name, which names a profile
+	KindNumeric   = "numeric"   // digits, and nothing says what they name
+	KindOpaque    = "opaque"    // a pfbid
+	KindShare     = "share"     // a short link that redirects to one of the above
+	KindDirectory = "directory" // a directory index or letter page
+	KindSearch    = "search"
+	KindUnknown   = "unknown"
 )
 
-// Identity is the normalized result of classifying an input.
-type Identity struct {
-	Input        string `json:"input"`
-	Kind         Kind   `json:"kind"`
-	PageID       string `json:"page_id,omitempty"`
-	ProfileID    string `json:"profile_id,omitempty"`
-	GroupID      string `json:"group_id,omitempty"`
-	PostID       string `json:"post_id,omitempty"`
-	OwnerID      string `json:"owner_id,omitempty"`
-	PhotoID      string `json:"photo_id,omitempty"`
-	VideoID      string `json:"video_id,omitempty"`
-	EventID      string `json:"event_id,omitempty"`
-	Slug         string `json:"slug,omitempty"`
-	CanonicalURL string `json:"canonical_url,omitempty"`
-	MBasicURL    string `json:"mbasic_url,omitempty"`
-	// ShortLink is true when the input is a fb.watch/fb.me/share link that needs
-	// a redirect to fully classify; the fb package resolves it.
-	ShortLink bool `json:"short_link,omitempty"`
+// Ref is what a reference names, as far as it can be known without asking
+// Facebook.
+//
+// The fields are all optional because the shapes carry different things: a
+// permalink gives an author and a post, a story key gives an author and up to
+// two object ids, a pfbid gives nothing but itself.
+type Ref struct {
+	Input    string `json:"input"`
+	Kind     string `json:"kind"`
+	ID       string `json:"id,omitempty"`
+	Handle   string `json:"handle,omitempty"`
+	AuthorID string `json:"author_id,omitempty"`
+	PostID   string `json:"post_id,omitempty"`
+	PhotoID  string `json:"photo_id,omitempty"`
+	VideoID  string `json:"video_id,omitempty"`
+	Set      string `json:"set,omitempty"`
+	Tab      string `json:"tab,omitempty"`
+	Letter   string `json:"letter,omitempty"`
+	Query    string `json:"query,omitempty"`
+	// URL is the page fb would fetch to read this, when the reference is enough
+	// to build one. A bare post id is not, which is the whole reason `fb post`
+	// has an --author flag.
+	URL string `json:"url,omitempty"`
+	// Command is the fb command that handles this reference, which is what `fb
+	// explain` prints.
+	Command string `json:"command,omitempty"`
+	// Opaque marks a token that is per-render and per-viewer, so it is never a
+	// graph key however stable it looks.
+	Opaque bool `json:"opaque,omitempty"`
+	// Decoded is the plaintext behind a base64 key, kept because seeing it is
+	// most of the value of decoding it.
+	Decoded string `json:"decoded,omitempty"`
+	Note    string `json:"note,omitempty"`
 }
 
-var (
-	numericRe  = regexp.MustCompile(`^\d+$`)
-	pfbidRe    = regexp.MustCompile(`pfbid[0-9A-Za-z]+`)
-	storyFbid  = regexp.MustCompile(`(?:story_fbid|fbid)=([0-9A-Za-z]+)`)
-	idParam    = regexp.MustCompile(`[?&]id=(\d+)`)
-	postsPath  = regexp.MustCompile(`/posts/([0-9A-Za-z]+)`)
-	groupsPath = regexp.MustCompile(`/groups/([^/?&]+)`)
-	videoVPar  = regexp.MustCompile(`[?&]v=(\d+)`)
-	reelPath   = regexp.MustCompile(`/reel/(\d+)`)
-	watchVideo = regexp.MustCompile(`/videos/(\d+)`)
-	photoFbid  = regexp.MustCompile(`(?:photo\.php\?fbid=|/photo/\?fbid=|[?&]fbid=)(\d+)`)
-	eventsPath = regexp.MustCompile(`/events/(\d+)`)
-)
+// Host is the host every URL Ref is built against.
+const Host = "https://www.facebook.com"
 
-// reserved path segments that are never a page/profile slug.
-var reserved = map[string]bool{
-	"profile.php": true, "groups": true, "events": true, "watch": true,
-	"reel": true, "photo.php": true, "photo": true, "permalink.php": true,
-	"story.php": true, "media": true, "sharer": true, "sharer.php": true,
-	"search": true, "marketplace": true, "gaming": true, "pages": true,
-	"login": true, "login.php": true, "recover": true, "checkpoint": true,
-	"help": true, "settings": true, "policies": true, "l.php": true,
-}
+// ErrEmpty is returned for a reference that is not there at all.
+var ErrEmpty = errors.New("no reference given")
 
-// Classify maps any Facebook id or URL to a typed Identity without any network
-// access. Short links (fb.watch, fb.me, share/...) are flagged ShortLink so the
-// caller can resolve the redirect.
-func Classify(input string) Identity {
-	id := Identity{Input: strings.TrimSpace(input), Kind: KindUnknown}
-	raw := id.Input
+// Parse classifies anything: a URL, an id, a handle, a base64 key, a token.
+// It never makes a request and it never fails: an unrecognised string comes
+// back as KindUnknown, which is a fact about the string rather than an error.
+func Parse(s string) Ref {
+	raw := strings.TrimSpace(s)
+	r := Ref{Input: raw, Kind: KindUnknown}
 	if raw == "" {
-		return id
+		r.Note = "there is nothing here to classify"
+		return r
 	}
-
-	// A bare numeric id is ambiguous (page or profile); default to page since
-	// that is the more common public target. Callers can override.
-	if numericRe.MatchString(raw) {
-		id.Kind = KindPage
-		id.PageID = raw
-		id.Slug = raw
-		fillURLs(&id, raw)
-		return id
+	if looksLikeURL(raw) {
+		return parseURL(raw)
 	}
-
-	// A bare slug (no slash, no scheme) is a page or profile vanity name.
-	if !strings.Contains(raw, "/") && !strings.Contains(raw, "?") && !strings.Contains(raw, ".") {
-		id.Kind = KindPage
-		id.Slug = raw
-		id.PageID = raw
-		fillURLs(&id, raw)
-		return id
+	if strings.HasPrefix(raw, "@") {
+		return handleRef(raw, strings.TrimPrefix(raw, "@"))
 	}
-
-	u := parseLoose(raw)
-	host := strings.ToLower(u.Host)
-	pathQuery := u.Path
-	if u.RawQuery != "" {
-		pathQuery += "?" + u.RawQuery
+	if strings.HasPrefix(raw, "pfbid") {
+		r.Kind = KindOpaque
+		r.Opaque = true
+		r.ID = raw
+		r.Note = "a pfbid is per-render and is not a stable id: resolve it by fetching the permalink"
+		return r
 	}
-
-	// Short links that require a redirect to classify.
-	if strings.Contains(host, "fb.watch") {
-		id.Kind = KindVideo
-		id.ShortLink = true
-		id.CanonicalURL = raw
-		id.MBasicURL = raw
-		return id
+	// An album set token is "a." and the album id, and it is the only shape with
+	// a dot that is not a handle.
+	if rest, ok := strings.CutPrefix(raw, "a."); ok && allDigits(rest) {
+		r.Kind = KindAlbum
+		r.ID = rest
+		r.Set = raw
+		r.Command = "photos --album"
+		r.URL = Host + "/media/set/?set=" + url.QueryEscape(raw)
+		return r
 	}
-	if strings.Contains(host, "fb.me") || strings.HasPrefix(strings.TrimPrefix(u.Path, "/"), "share/") {
-		id.ShortLink = true
-		id.CanonicalURL = raw
-		id.MBasicURL = raw
-		return id
-	}
-
-	// Photo.
-	if m := photoFbid.FindStringSubmatch(pathQuery); m != nil {
-		id.Kind = KindPhoto
-		id.PhotoID = m[1]
-		if o := idParam.FindStringSubmatch(pathQuery); o != nil {
-			id.OwnerID = o[1]
+	if allDigits(raw) {
+		r.Kind = KindNumeric
+		r.ID = raw
+		r.Note = "a number alone does not say what it names: fb page, fb post --author, fb group, fb event and fb photo all take one"
+		if ProfileShaped(raw) {
+			r.Note = "15 digits starting 1000 is the shape of a profile id, but only a fetch confirms it"
 		}
-		fillURLs(&id, strings.TrimPrefix(u.Path, "/"))
-		return id
+		return r
 	}
-
-	// Event.
-	if m := eventsPath.FindStringSubmatch(u.Path); m != nil {
-		id.Kind = KindEvent
-		id.EventID = m[1]
-		fillURLs(&id, "events/"+m[1])
-		return id
+	if key, ok := decodeKey(raw); ok {
+		return key
 	}
-
-	// Video / reel.
-	if m := reelPath.FindStringSubmatch(u.Path); m != nil {
-		id.Kind = KindVideo
-		id.VideoID = m[1]
-		fillURLs(&id, "reel/"+m[1])
-		return id
+	if isHandle(raw) {
+		return handleRef(raw, raw)
 	}
-	if m := videoVPar.FindStringSubmatch(pathQuery); m != nil {
-		id.Kind = KindVideo
-		id.VideoID = m[1]
-		fillURLs(&id, "watch/?v="+m[1])
-		return id
-	}
-	if m := watchVideo.FindStringSubmatch(u.Path); m != nil {
-		id.Kind = KindVideo
-		id.VideoID = m[1]
-		fillURLs(&id, strings.TrimPrefix(u.Path, "/"))
-		return id
-	}
-
-	// Group.
-	if m := groupsPath.FindStringSubmatch(u.Path); m != nil {
-		id.GroupID = m[1]
-		// A post inside a group.
-		if pm := postsPath.FindStringSubmatch(u.Path); pm != nil {
-			id.Kind = KindPost
-			id.PostID = pm[1]
-			id.OwnerID = m[1]
-			fillURLs(&id, strings.TrimPrefix(u.Path, "/"))
-			return id
-		}
-		id.Kind = KindGroup
-		id.Slug = m[1]
-		fillURLs(&id, "groups/"+m[1])
-		return id
-	}
-
-	// Permalink / story with story_fbid or fbid + id.
-	if m := storyFbid.FindStringSubmatch(pathQuery); m != nil {
-		id.Kind = KindPost
-		id.PostID = m[1]
-		if o := idParam.FindStringSubmatch(pathQuery); o != nil {
-			id.OwnerID = o[1]
-		}
-		fillURLs(&id, strings.TrimPrefix(u.Path, "/")+queryString(u))
-		return id
-	}
-
-	// /<owner>/posts/<id> form.
-	if m := postsPath.FindStringSubmatch(u.Path); m != nil {
-		id.Kind = KindPost
-		id.PostID = m[1]
-		if owner := firstSegment(u.Path); owner != "" && !reserved[owner] {
-			id.OwnerID = owner
-		}
-		fillURLs(&id, strings.TrimPrefix(u.Path, "/"))
-		return id
-	}
-
-	// profile.php?id=<uid>.
-	if strings.Contains(u.Path, "profile.php") {
-		if o := idParam.FindStringSubmatch(pathQuery); o != nil {
-			id.Kind = KindProfile
-			id.ProfileID = o[1]
-			fillURLs(&id, "profile.php?id="+o[1])
-			return id
-		}
-	}
-
-	// A pfbid token anywhere is a profile token.
-	if pfbidRe.MatchString(u.Path) {
-		id.Kind = KindProfile
-		id.ProfileID = pfbidRe.FindString(u.Path)
-		id.Slug = id.ProfileID
-		fillURLs(&id, id.ProfileID)
-		return id
-	}
-
-	// Fall back: first non-reserved path segment is a page/profile slug.
-	if seg := firstSegment(u.Path); seg != "" && !reserved[seg] {
-		id.Kind = KindPage
-		id.Slug = seg
-		id.PageID = seg
-		fillURLs(&id, seg)
-		return id
-	}
-
-	id.CanonicalURL = raw
-	id.MBasicURL = ToMBasic(raw)
-	return id
+	r.Note = "this is not a shape fb recognises"
+	return r
 }
 
-func queryString(u *url.URL) string {
-	if u.RawQuery == "" {
-		return ""
+// ProfileShaped reports whether a numeric id has the shape Facebook gives a
+// person or a Page profile: fifteen digits starting 1000. It is a hint and it
+// is documented as one, because Facebook has never promised it.
+func ProfileShaped(id string) bool {
+	return len(id) == 15 && strings.HasPrefix(id, "1000") && allDigits(id)
+}
+
+func handleRef(input, handle string) Ref {
+	return Ref{
+		Input:   input,
+		Kind:    KindHandle,
+		Handle:  handle,
+		URL:     Host + "/" + handle,
+		Command: "page",
+		Note:    "a handle is an alias and not an identity: it names a profile until the profile changes it",
 	}
-	return "?" + u.RawQuery
 }
 
-func firstSegment(p string) string {
-	p = strings.TrimPrefix(p, "/")
-	if i := strings.IndexByte(p, '/'); i >= 0 {
-		p = p[:i]
+// decodeKey reads the two base64 shapes that carry something.
+//
+// A feedback key is base64 of "feedback:{post_id}". A story key is base64 of
+// "S:_I{author}:{a}:{b}", where the middle segment is either the post id again
+// or the literal VK, which is what Facebook writes when the story is about a
+// video or an event rather than a post. Both were read out of the captures
+// rather than a document.
+func decodeKey(s string) (Ref, bool) {
+	plain, ok := base64Any(s)
+	if !ok {
+		return Ref{}, false
 	}
-	return strings.ToLower(p)
+	r := Ref{Input: s, Decoded: plain}
+	if id, ok := strings.CutPrefix(plain, "feedback:"); ok && allDigits(id) {
+		r.Kind = KindFeedback
+		r.ID = id
+		r.PostID = id
+		r.Command = "post --author"
+		r.Note = `base64 of "feedback:` + id + `", which is the post's comment thread`
+		return r, true
+	}
+	if body, ok := strings.CutPrefix(plain, "S:_I"); ok {
+		parts := strings.Split(body, ":")
+		if len(parts) < 2 || !allDigits(parts[0]) {
+			return Ref{}, false
+		}
+		r.Kind = KindStory
+		r.AuthorID = parts[0]
+		r.Note = `base64 of "` + plain + `": the author id in it names a profile nobody fetched`
+		r.Command = "post --author"
+		switch {
+		case parts[1] == "VK":
+			// VK is Facebook's marker for a story about a video or an event, and
+			// the id after it is the video or the event, not a post.
+			if len(parts) > 2 && allDigits(parts[2]) {
+				r.ID = parts[2]
+				r.VideoID = parts[2]
+			}
+			r.Command = "video"
+			r.Note = `base64 of "` + plain + `": VK means the story is about a video or an event, so the last id is not a post id`
+		default:
+			if allDigits(parts[1]) {
+				r.PostID = parts[1]
+				r.ID = parts[1]
+			}
+			if len(parts) > 2 && allDigits(parts[2]) && parts[2] != r.PostID {
+				r.PhotoID = parts[2]
+			}
+		}
+		return r, true
+	}
+	return Ref{}, false
 }
 
-func fillURLs(id *Identity, path string) {
-	path = strings.TrimPrefix(path, "/")
-	id.CanonicalURL = "https://www.facebook.com/" + path
-	id.MBasicURL = "https://mbasic.facebook.com/" + path
+// base64Any decodes the four spellings Facebook uses, padded and not, standard
+// and URL-safe, and reports whether the result is printable text. A blob that
+// decodes to bytes is not a key, it is a coincidence.
+func base64Any(s string) (string, bool) {
+	if len(s) < 8 {
+		return "", false
+	}
+	for _, enc := range []*base64.Encoding{
+		base64.StdEncoding, base64.RawStdEncoding,
+		base64.URLEncoding, base64.RawURLEncoding,
+	} {
+		b, err := enc.DecodeString(s)
+		if err != nil || len(b) == 0 {
+			continue
+		}
+		if !printable(b) {
+			continue
+		}
+		return string(b), true
+	}
+	return "", false
 }
 
-// parseLoose parses a URL even when the scheme is missing.
-func parseLoose(raw string) *url.URL {
-	if !strings.HasPrefix(raw, "http://") && !strings.HasPrefix(raw, "https://") {
-		if strings.HasPrefix(raw, "/") {
-			raw = "https://www.facebook.com" + raw
-		} else if strings.Contains(raw, "facebook.com") || strings.Contains(raw, "fb.watch") || strings.Contains(raw, "fb.me") {
-			raw = "https://" + raw
+func printable(b []byte) bool {
+	for _, c := range b {
+		if c < 0x20 || c > 0x7e {
+			return false
+		}
+	}
+	return true
+}
+
+func looksLikeURL(s string) bool {
+	if strings.Contains(s, "://") {
+		return true
+	}
+	lower := strings.ToLower(s)
+	for _, p := range []string{"www.facebook.com/", "facebook.com/", "fb.watch/", "fb.me/", "m.facebook.com/", "web.facebook.com/", "mbasic.facebook.com/"} {
+		if strings.HasPrefix(lower, p) {
+			return true
+		}
+	}
+	return false
+}
+
+// isHandle reports whether a string is shaped like a vanity name. Facebook
+// allows letters, digits, dots and hyphens, and nothing else gets a URL.
+func isHandle(s string) bool {
+	if s == "" || len(s) > 60 {
+		return false
+	}
+	for _, c := range s {
+		switch {
+		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9':
+		case c == '.' || c == '-' || c == '_':
+		default:
+			return false
+		}
+	}
+	return true
+}
+
+func allDigits(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// Profile coerces a reference to a profile, which is what every command that
+// takes a page or a person needs. A handle and a numeric id both work, and they
+// take different routes: Facebook serves a number from /profile.php?id= and a
+// name from /{name}, and getting that backwards is a 404 rather than a redirect.
+func Profile(s string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindProfile, KindPage:
+		return r, nil
+	case KindHandle:
+		return r, nil
+	case KindNumeric:
+		r.Kind = KindProfile
+		r.URL = Host + "/profile.php?id=" + r.ID
+		r.Command = "page"
+		return r, nil
+	case KindStory:
+		// A story key names its author, which is a profile nobody fetched.
+		if r.AuthorID != "" {
+			return Ref{Input: s, Kind: KindProfile, ID: r.AuthorID, URL: Host + "/profile.php?id=" + r.AuthorID, Command: "page"}, nil
+		}
+	case KindOpaque:
+		return r, fmt.Errorf("%s is a pfbid, which is not a profile id: use the profile's handle or its numeric id", short(s))
+	}
+	if r.Handle != "" {
+		return r, nil
+	}
+	return r, fmt.Errorf("%s does not name a profile: give a handle, a numeric id, or a facebook.com profile URL", short(s))
+}
+
+// Post coerces a reference to a post, with an author when one is needed.
+//
+// Facebook has no route that takes a post id on its own, so a bare id with no
+// author is a usage error that names both ways to fix it rather than a request
+// that was always going to 404.
+func Post(s, author string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindPost:
+		return r, nil
+	case KindFeedback:
+		r.Kind = KindPost
+		r.ID = r.PostID
+	case KindStory:
+		if r.PostID == "" {
+			return r, fmt.Errorf("%s is a story key for a video or an event, not a post: try fb video", short(s))
+		}
+		r.Kind = KindPost
+		r.ID = r.PostID
+		if author == "" && r.AuthorID != "" {
+			author = r.AuthorID
+		}
+	case KindNumeric:
+		r.Kind = KindPost
+	case KindOpaque:
+		if author == "" {
+			return r, fmt.Errorf("a pfbid names a post only next to its author: pass --author, or give the whole permalink URL")
+		}
+		r.Kind = KindPost
+	default:
+		return r, fmt.Errorf("%s does not name a post: give a permalink URL, or a post id with --author", short(s))
+	}
+	if r.URL == "" {
+		if author == "" {
+			return r, fmt.Errorf("facebook has no route that takes a post id alone: pass --author, or give the whole permalink URL")
+		}
+		r.AuthorID = author
+		if allDigits(author) {
+			r.URL = Host + "/permalink.php?story_fbid=" + r.ID + "&id=" + author
 		} else {
-			raw = "https://www.facebook.com/" + raw
+			r.URL = Host + "/" + strings.TrimPrefix(author, "@") + "/posts/" + r.ID
 		}
 	}
-	u, err := url.Parse(raw)
-	if err != nil {
-		return &url.URL{Path: raw}
-	}
-	return u
+	r.Command = "post"
+	return r, nil
 }
 
-// ToMBasic rewrites any Facebook URL to the mbasic surface, preserving path and
-// query. Non-Facebook hosts are returned unchanged.
-func ToMBasic(raw string) string {
-	raw = strings.TrimSpace(raw)
-	if raw == "" {
-		return raw
+// Photo coerces a reference to a photo permalink.
+func Photo(s string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindPhoto:
+		return r, nil
+	case KindNumeric:
+		r.Kind = KindPhoto
+		r.PhotoID = r.ID
+		r.URL = Host + "/photo/?fbid=" + r.ID
+		r.Command = "photo"
+		return r, nil
+	case KindStory:
+		if r.PhotoID != "" {
+			return Ref{Input: s, Kind: KindPhoto, ID: r.PhotoID, PhotoID: r.PhotoID, URL: Host + "/photo/?fbid=" + r.PhotoID, Command: "photo"}, nil
+		}
 	}
-	u := parseLoose(raw)
-	if strings.Contains(u.Host, "facebook.com") {
-		u.Scheme = "https"
-		u.Host = "mbasic.facebook.com"
-	}
-	return u.String()
+	return r, fmt.Errorf("%s does not name a photo: give a /photo/?fbid= URL or a photo id", short(s))
 }
 
-// ToMobile rewrites a Facebook URL to the m.facebook.com surface.
-func ToMobile(raw string) string {
-	u := parseLoose(raw)
-	if strings.Contains(u.Host, "facebook.com") {
-		u.Scheme = "https"
-		u.Host = "m.facebook.com"
+// Video coerces a reference to a video or a reel. The same media id serves both
+// routes, so the caller picks the route and this only has to find the id.
+func Video(s string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindVideo, KindReel:
+		return r, nil
+	case KindNumeric, KindStory:
+		id := r.ID
+		if r.VideoID != "" {
+			id = r.VideoID
+		}
+		if id == "" {
+			break
+		}
+		return Ref{Input: s, Kind: KindVideo, ID: id, VideoID: id, URL: Host + "/watch/?v=" + id, Command: "video"}, nil
 	}
-	return u.String()
+	return r, fmt.Errorf("%s does not name a video: give a /watch/?v= URL, a /reel/ URL, or a video id", short(s))
 }
 
-// ToCanonical rewrites a Facebook URL to the www host users expect in output.
-func ToCanonical(raw string) string {
-	u := parseLoose(raw)
-	if strings.Contains(u.Host, "facebook.com") {
-		u.Scheme = "https"
-		u.Host = "www.facebook.com"
+// Group coerces a reference to a group. A slug works signed in and a numeric id
+// works either way, and the difference is not visible here: it is the fetch that
+// finds out.
+func Group(s string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindGroup:
+		return r, nil
+	case KindNumeric, KindHandle:
+		id := r.ID
+		if id == "" {
+			id = r.Handle
+		}
+		return Ref{Input: s, Kind: KindGroup, ID: id, URL: Host + "/groups/" + id, Command: "group"}, nil
 	}
-	return u.String()
+	return r, fmt.Errorf("%s does not name a group: give a numeric group id, a slug, or a /groups/ URL", short(s))
+}
+
+// Event coerces a reference to an event.
+func Event(s string) (Ref, error) {
+	r := Parse(s)
+	switch r.Kind {
+	case KindEvent:
+		return r, nil
+	case KindNumeric:
+		return Ref{Input: s, Kind: KindEvent, ID: r.ID, URL: Host + "/events/" + r.ID, Command: "event"}, nil
+	case KindStory:
+		// An event's announcement story carries the event id after the VK
+		// marker, which is how an event id turns up in a payload at all.
+		if r.VideoID != "" {
+			return Ref{Input: s, Kind: KindEvent, ID: r.VideoID, URL: Host + "/events/" + r.VideoID, Command: "event"}, nil
+		}
+	}
+	return r, fmt.Errorf("%s does not name an event: give a numeric event id or a /events/ URL", short(s))
+}
+
+func short(s string) string {
+	s = strings.TrimSpace(s)
+	if len(s) > 48 {
+		return s[:45] + "..."
+	}
+	if s == "" {
+		return "an empty reference"
+	}
+	return s
 }

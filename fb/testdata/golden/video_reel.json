@@ -1,0 +1,84 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s1"
+  ],
+  "id": "1380134307388381",
+  "url": "https://www.facebook.com/reel/1380134307388381",
+  "kind": "reel",
+  "owner": {
+    "kind": "profile",
+    "id": "100044561550831",
+    "handle": "NASA",
+    "name": "NASA - National Aeronautics and Space Administration",
+    "url": "https://www.facebook.com/NASA",
+    "verified": true
+  },
+  "message": {
+    "text": "During his eight months aboard the International Space Station, NASA astronaut Chris Williams conducted numerous experiments to improve life on Earth and prepare us for missions to the Moon and Mars.\n\nFrom cancer research to advancing technology, read about Williams’ work during his first time in space: https://go.nasa.gov/3RavGXj",
+    "ranges": [
+      {
+        "offset": 35,
+        "length": 27,
+        "entity": {
+          "kind": "profile",
+          "id": "100064698066408",
+          "handle": "ISS",
+          "url": "https://www.facebook.com/ISS"
+        }
+      },
+      {
+        "offset": 305,
+        "length": 27,
+        "entity": {
+          "kind": "external",
+          "url": "https://go.nasa.gov/3RavGXj"
+        }
+      }
+    ],
+    "mentions": [
+      {
+        "kind": "profile",
+        "id": "100064698066408",
+        "handle": "ISS",
+        "url": "https://www.facebook.com/ISS"
+      }
+    ],
+    "links": [
+      {
+        "url": "https://go.nasa.gov/3RavGXj",
+        "display": "https://go.nasa.gov/3RavGXj",
+        "offset": 305,
+        "length": 27
+      }
+    ]
+  },
+  "post_id": "1584419709720066",
+  "width": 3840,
+  "height": 2160,
+  "duration_seconds": 112.946,
+  "created_at": "2026-07-23T16:31:54Z",
+  "thumbnail": {
+    "uri": "https://scontent.fhan17-1.fna.fbcdn.net/v/t15.5256-10/754970839_803020196231197_5928609298551288000_n.jpg?stp=dst-jpg_tt6\u0026cstp=mx720x405\u0026ctp=s720x405\u0026_nc_cat=102\u0026ccb=1-7\u0026_nc_sid=d2b52d\u0026_nc_ohc=oh9YO8DSMnAQ7kNvwHXc9Kd\u0026_nc_oc=AdoCHO--tI9MAPaJ1k02RUoMGnE-l2LkkUWmG3eYvE-NFm4B8tBW0mp1nc1cd605B_ruTJnjQ9AWLEJkCtg_3v33\u0026_nc_zt=23\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=c0y-6UUvqEZWSIJgRwqTzA\u0026_nc_ss=7d289\u0026oh=00_AQDIpRl9OO7iZnXZ5mZDc4VyVK0cIfH6QGHO5_HtV4yhNA\u0026oe=6A6F4867",
+    "signed": true
+  },
+  "sd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m412/AQMNIoC_TKECR5nqHI_uJ9Xe6cVGGMP6kq66A4-YKU6OxJGYRFryRAeR-o1PhDRUQWxys6Gsq9AAUPAzd4Zeq86ulCMYl_QBcgMiDOEMDw.mp4?_nc_cat=105\u0026_nc_oc=AdoziDis4xbil7BWHWDTuTqYGbmMQNsYqcUdmv_0Il_Go6JR1dVvMFXcv6Gz5DiV_WpnpjHpKlb3vqRRG7kdTHIa\u0026_nc_sid=8bf8fe\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=IiEDBZiFFIEQ7kNvwGomEUx\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuNjQwLnN2ZV9zZCIsInhwdl9hc3NldF9pZCI6MTE5NDA5ODkyMjg3OTkwNCwiYXNzZXRfYWdlX2RheXMiOjUsInZpX3VzZWNhc2VfaWQiOjEwMTIyLCJkdXJhdGlvbl9zIjoxMTIsInVybGdlbl9zb3VyY2UiOiJ3d3cifQ%3D%3D\u0026ccb=17-1\u0026_nc_gid=c0y-6UUvqEZWSIJgRwqTzA\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQByVsPuPJEk_YDX4wgCZ0rBMgzHyrzmjCk8Q4y5R4kw5g\u0026oe=6A6F5279\u0026bitrate=452252\u0026tag=sve_sd",
+  "hd_url": "https://video.fhan17-1.fna.fbcdn.net/o1/v/t2/f2/m366/AQNNFuni8clCeMB5VeV07ZDIzXWkhBI5ozM_78otCALjoD72HsRW7yvnWXM_b0WGcKAjPk-KGDhCqRkGsaoZ57noEirZQ7LpYHZZbTVu3jMMQg.mp4?_nc_cat=106\u0026_nc_oc=Adqoy4sR2KL98U7w9pEjtaj0KTGQl29whSpVdQOUHnrGAhZypbZsV8kJh7N0NbdiG-DeP4QEYpbEI3nfhOba7PgW\u0026_nc_sid=5e9851\u0026_nc_ht=video.fhan17-1.fna.fbcdn.net\u0026_nc_ohc=3P4It5EVwQgQ7kNvwGJzCOY\u0026efg=eyJ2ZW5jb2RlX3RhZyI6Inhwdl9wcm9ncmVzc2l2ZS5GQUNFQk9PSy4uQzMuMTI4MC5kYXNoX2gyNjQtYmFzaWMtZ2VuMl83MjBwIiwieHB2X2Fzc2V0X2lkIjoxMTk0MDk4OTIyODc5OTA0LCJhc3NldF9hZ2VfZGF5cyI6NSwidmlfdXNlY2FzZV9pZCI6MTAxMjIsImR1cmF0aW9uX3MiOjExMiwidXJsZ2VuX3NvdXJjZSI6Ind3dyJ9\u0026ccb=17-1\u0026vs=9c0eb298fd229df3\u0026_nc_vs=HBksFQIYRWZiX2VwaGVtZXJhbC81QjRGNjlENEJCQjg2NTRDODgwNUVEQ0UwNEM4QzBBNV9tdF8xX3ZpZGVvX2Rhc2hpbml0Lm1wNBUAAsgBEgAVAhhAZmJfcGVybWFuZW50L0MxNDBCMzE1NkRDMzhDNTFCNzhCQTQ3NjlGMDJFQkE4X2F1ZGlvX2Rhc2hpbml0Lm1wNBUCAsgBEgAoABgAGwKIB3VzZV9vaWwBMRJwcm9ncmVzc2l2ZV9yZWNpcGUBMRUAACbA7v-h2oGfBBUCKAJDMywXQFw8i0OVgQYYGWRhc2hfaDI2NC1iYXNpYy1nZW4yXzcyMHARAHUCZZSeAQA\u0026_nc_gid=c0y-6UUvqEZWSIJgRwqTzA\u0026_nc_ss=7d289\u0026_nc_zt=28\u0026oh=00_AQDR0bDWSObABVCGOY3uDsEGPcSYLIy81X7wC-ReIacR1A\u0026oe=6A6F2D3E\u0026bitrate=1756304\u0026tag=dash_h264-basic-gen2_720p",
+  "dash_url": "https://web.facebook.com/dash_mpd_debug.mpd?v=1380134307388381\u0026dummy=.mpd",
+  "captions": [
+    {
+      "locale": "en_US",
+      "name": "English",
+      "url": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.2093-6/752699183_1380134780721667_9034022286614669370_n.srt?_nc_cat=110\u0026ccb=1-7\u0026_nc_sid=c211c2\u0026_nc_ohc=0FyKrnc8owcQ7kNvwG7UCV1\u0026_nc_oc=Adrq905Gfg7ATKPozIx2YxRAhjiEsJdcbQBR7-4-VGbWGVVnm8_u_FlNO7tJmPBhV_JYvQondPMTBeqxBIiPjZyS\u0026_nc_zt=14\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=c0y-6UUvqEZWSIJgRwqTzA\u0026_nc_ss=7d289\u0026oh=00_AQDe4lnOjKTcglcWYzeH2Q6uQMsACwTP3KtOVinQFgxp4g\u0026oe=6A6F3D7C"
+    }
+  ],
+  "music": {
+    "album_art": "https://scontent.fhan17-1.fna.fbcdn.net/v/t39.30808-1/243095782_416661036495945_3843362260429099279_n.png?stp=cp0_dst-png\u0026cstp=mx800x800\u0026ctp=s64x64\u0026_nc_cat=1\u0026ccb=1-7\u0026_nc_sid=0fc832\u0026_nc_ohc=rc5kNRYek84Q7kNvwEMjNBm\u0026_nc_oc=AdpU9CmKKQXeILCBSaciorntxu-bV6X-oTemMvZ5V7zdUCt50W7B3fdzs8GuqAASuQbNyPg3oQ_QtDF3_NCwujbB\u0026_nc_zt=24\u0026_nc_ht=scontent.fhan17-1.fna\u0026_nc_gid=c0y-6UUvqEZWSIJgRwqTzA\u0026_nc_ss=7d289\u0026oh=00_AQA99FL8x6nAEGjaauvbRKqPW8_Yf_tWRWGO3aPc-Fr3cw\u0026oe=6A6F4455"
+  },
+  "privacy": "Public",
+  "counts": {
+    "reactions": 5978,
+    "comments": 173,
+    "shares": 262
+  }
+}

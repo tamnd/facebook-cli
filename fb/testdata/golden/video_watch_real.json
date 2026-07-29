@@ -1,0 +1,35 @@
+{
+  "tier": 0,
+  "surfaces": [
+    "s1"
+  ],
+  "id": "1380134307388381",
+  "kind": "video",
+  "owner": {
+    "kind": "profile",
+    "id": "100044561550831",
+    "name": "NASA - National Aeronautics and Space Administration"
+  },
+  "title": "NASA Astronaut Chris Williams: Thinking Like a Scientist",
+  "message": {
+    "text": ""
+  },
+  "thumbnail": {
+    "uri": ""
+  },
+  "transcript": "I remember really well the first time\nrealizing that you could use math and science and technology\nand laws of the universe to figure out how things work and kind of making\nthat connection in my head, I think was was pretty special for me\nand kind of led me down the path, that I've traveled\nthrough the rest of my career. Chris! What's up? How’s it going? Dude! I'm so happy to see you guys. Oh, how's it going, Johnny? It's great to see you. Welcome to the USOS segment, bud. Feels just like Building 9. I'm a scientist by background. I'm a physicist. But, I have done up here all sorts of different biology experiments,\nsome chemistry experiments, experiments on the human body,\nand things like growing plants. All things that are different because\nthere are scientists on the ground that came up with really good ideas\nthat we can help, figure out and help them answer questions about. I was doing a bunch of biology experiments\njust last week in a glove box, and I'd never done that before,\nbut knowing that I know how to think like a scientist. And I've learned how to\nthink like a scientist gave me the confidence to say, okay, well, this isn't something I've done before,\nbut I know how to approach these problems. But the biggest skill is teamwork. That's how we get\nthese incredible things done. Chris, it was awesome to watch you and Jessica\ngo out on a spacewalk. You know, it's been an incredible time\ngetting to, be here on, station. I think we've done a really great job here\nof proving out some of the technologies that we're going to use\nas we take our next exploration steps. One of the things that I found\nthe most interesting is how varied and different\nthe skills are to be successful on a mission\nto the International Space Station. You really have to execute at a high level\nand you kind of prove to yourself that you can do it. You can do a whole lot more\nthan maybe you think you can.",
+  "counts": {
+    "reactions": 5978,
+    "reactions_text": "5.9K",
+    "by_type": {
+      "Angry": 3,
+      "Care": 73,
+      "Haha": 33,
+      "Like": 5232,
+      "Love": 623,
+      "Sad": 1,
+      "Wow": 13
+    },
+    "comments": 173
+  }
+}

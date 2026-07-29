@@ -1,0 +1,35 @@
+# capture.txt records where every fixture in this directory came from.
+#
+# None of these files is hand-written. Each one is a page Facebook really served,
+# captured with `fb archive` and gzipped, and this file is what makes that
+# checkable: a fixture nobody can recapture is a fixture nobody can update when
+# the page changes. TestEveryFixtureHasACaptureCommand fails if a .html.gz here
+# has no row.
+#
+# Recapture one with the command in its row and gzip the page.html that
+# `fb archive` writes:
+#
+#	fb archive nasa --dir /tmp/cap
+#	gzip -9 -c /tmp/cap/page.html > fb/testdata/page_nasa.html.gz
+#	go test ./fb -run Golden -update
+#
+# Then read the golden diff before committing it. A recapture that changes a
+# record is either Facebook changing the page or the parser reading it
+# differently, and the diff is the only place that difference is visible.
+#
+# Every page here was fetched signed out, on 2026-07-29, so what they hold is
+# what Tier 0 sees and nothing more. Columns are name, date, command.
+
+dir_blocked	2026-07-29	fb archive 'https://www.facebook.com/directory/pages/A'
+dir_pages	2026-07-29	fb archive 'https://www.facebook.com/directory/pages/'
+event	2026-07-29	fb archive 'https://www.facebook.com/events/1526795995494848/'
+group_big	2026-07-29	fb archive 'https://www.facebook.com/groups/1443890352589739/'
+page_about	2026-07-29	fb archive 'https://www.facebook.com/NASA/about'
+page_events	2026-07-29	fb archive 'https://www.facebook.com/NASA/events'
+page_nasa	2026-07-29	fb archive 'https://www.facebook.com/NASA'
+page_photos	2026-07-29	fb archive 'https://www.facebook.com/NASA/photos'
+page_videos	2026-07-29	fb archive 'https://www.facebook.com/NASA/videos'
+photo	2026-07-29	fb archive 'https://www.facebook.com/NASA/photos/1587860609375976/'
+post_perm	2026-07-29	fb archive 'https://www.facebook.com/NASA/posts/1587860636042640/'
+reel	2026-07-29	fb archive 'https://www.facebook.com/reel/1380134307388381/'
+watch_real	2026-07-29	fb archive 'https://www.facebook.com/watch/?v=1380134307388381'

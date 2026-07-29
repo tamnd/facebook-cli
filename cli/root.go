@@ -1,211 +1,90 @@
-// Package cli builds the fb command tree on top of the fb library.
 package cli
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
+	"context"
 	"time"
 
-	"github.com/spf13/cobra"
+	"github.com/tamnd/any-cli/kit"
 	"github.com/tamnd/facebook-cli/fb"
 )
 
-// App carries the resolved configuration and shared client for a command run.
-type App struct {
-	Cfg    fb.Config
-	Client *fb.Client
-	Out    *Output
-	Limit  int
-	since  time.Time
-	until  time.Time
-	dryRun bool
-	g      *globalFlags
-}
+// Build metadata, stamped with -ldflags. goreleaser targets
+// github.com/tamnd/facebook-cli/cli.{Version,Commit,Date}.
+var (
+	Version = "dev"
+	Commit  = "none"
+	Date    = "unknown"
+)
 
-// globalFlags holds the persistent flag values before they fold into Cfg.
-type globalFlags struct {
-	output    string
-	fields    string
-	noHeader  bool
-	template  string
-	limit     int
-	since     string
-	until     string
-	rate      time.Duration
-	retries   int
-	timeout   time.Duration
-	workers   int
-	noCache   bool
-	cacheTTL  time.Duration
-	surface   string
-	lang      string
-	quiet     bool
-	verbose   int
-	color     string
-	proxy     string
-	userAgent string
-	raw       bool
-	dryRun    bool
-	yes       bool
-}
+// New builds the app: the identity, the fb-only global flags, and every command.
+//
+// cli touches kit only here. kit wraps cobra and fang internally, so a command
+// in this package names none of them.
+func New() *kit.App {
+	app := kit.New(kit.Identity{
+		Binary: "fb",
+		Short:  "A fast, read-only command line for Facebook",
+		Long: "fb reads Facebook's public pages: the Relay data the site ships to a signed-out browser, " +
+			"the meta head beside it, and the embed plugins. There is no app id, no developer app and " +
+			"no API token anywhere in this tool, and there is nothing to sign up for. Two cookies from " +
+			"a browser you are already signed into unlock the timeline past the first post; everything " +
+			"else works with nothing at all.",
+		Version: Version,
+		Site:    "https://www.facebook.com",
+		Repo:    "https://github.com/tamnd/facebook-cli",
+	}, kit.WithDefaults(withFBDefaults))
 
-// Root builds the root command and its whole subtree.
-func Root() *cobra.Command {
-	g := &globalFlags{}
-	app := &App{g: g}
+	app.GlobalFlags(bindFBFlags)
 
-	root := &cobra.Command{
-		Use:   "fb",
-		Short: "A delightful command line for Facebook",
-		Long: `fb turns facebook.com into a fast, scriptable command line.
+	app.CommandGroup("auth", "Manage your Facebook session (Tier 1)")
+	app.CommandGroup("config", "Show where fb keeps things")
+	app.CommandGroup("cache", "Inspect or clear the page cache")
 
-Resolve a Page, profile, or group to a rich record; stream its recent posts;
-pull each post's preview comments, media, and counts; and build datasets, all
-from one binary. Reads are anonymous: fb crawls the same server-rendered pages
-Facebook serves to search engines, so there is no login and no browser.
-
-Quick start:
-  fb page nasa                       a Page's full profile
-  fb page nasa --posts --limit 20    its twenty most recent posts
-  fb post <url> --comments           a post and its comment thread
-  fb id <anything>                   classify any Facebook id or URL`,
-		SilenceUsage:  true,
-		SilenceErrors: true,
-		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
-			return app.init(g)
-		},
+	for _, c := range readCommands() {
+		app.AddCommand(c)
+	}
+	for _, c := range storeCommands() {
+		app.AddCommand(c)
+	}
+	for _, c := range metaCommands() {
+		app.AddCommand(c)
+	}
+	for _, c := range authCommands() {
+		app.AddCommand(c)
+	}
+	for _, c := range configCommands() {
+		app.AddCommand(c)
 	}
 
-	pf := root.PersistentFlags()
-	pf.StringVarP(&g.output, "output", "o", "auto", "table|json|jsonl|csv|tsv|yaml|url|raw")
-	pf.StringVar(&g.fields, "fields", "", "comma-separated columns to keep/order")
-	pf.BoolVar(&g.noHeader, "no-header", false, "omit the header row (table/csv/tsv)")
-	pf.StringVar(&g.template, "template", "", "Go text/template applied per record")
-	pf.IntVarP(&g.limit, "limit", "n", 0, "max records emitted (0 = unlimited)")
-	pf.StringVar(&g.since, "since", "", "stop walking a feed older than this date (YYYY-MM-DD)")
-	pf.StringVar(&g.until, "until", "", "skip feed items newer than this date")
-	pf.DurationVar(&g.rate, "rate", fb.DefaultDelay, "min delay between requests")
-	pf.IntVar(&g.retries, "retries", fb.DefaultRetries, "retry attempts on 429/5xx")
-	pf.DurationVar(&g.timeout, "timeout", fb.DefaultTimeout, "per-request timeout")
-	pf.IntVarP(&g.workers, "workers", "j", fb.DefaultWorkers, "concurrency for fan-out commands")
-	pf.BoolVar(&g.noCache, "no-cache", false, "bypass the on-disk cache")
-	pf.DurationVar(&g.cacheTTL, "cache-ttl", time.Hour, "cache freshness window")
-	pf.StringVar(&g.surface, "surface", "auto", "mbasic|mobile|auto")
-	pf.StringVar(&g.lang, "lang", "en-US", "Accept-Language / locale")
-	pf.BoolVarP(&g.quiet, "quiet", "q", false, "suppress progress on stderr")
-	pf.CountVarP(&g.verbose, "verbose", "v", "increase verbosity (repeatable)")
-	pf.StringVar(&g.color, "color", "auto", "color output: auto|always|never")
-	pf.StringVar(&g.proxy, "proxy", "", "HTTP/SOCKS proxy URL")
-	pf.StringVar(&g.userAgent, "user-agent", "", "override the default rotating UA set")
-	pf.BoolVar(&g.raw, "raw", false, "print the upstream HTML/JSON untouched")
-	pf.BoolVar(&g.dryRun, "dry-run", false, "print the requests that would be made, do nothing")
-	pf.BoolVarP(&g.yes, "yes", "y", false, "assume yes to prompts")
-
-	root.AddCommand(
-		newPageCmd(app),
-		newProfileCmd(app),
-		newGroupCmd(app),
-		newPostCmd(app),
-		newCommentsCmd(app),
-		newReactionsCmd(app),
-		newPhotosCmd(app),
-		newPhotoCmd(app),
-		newVideoCmd(app),
-		newVideosCmd(app),
-		newEventCmd(app),
-		newEventsCmd(app),
-		newSearchCmd(app),
-		newFeedCmd(app),
-		newDiscoverCmd(app),
-		newIDCmd(app),
-		newSeedCmd(app),
-		newCrawlCmd(app),
-		newArchiveCmd(app),
-		newDBCmd(app),
-		newConfigCmd(app),
-		newCacheCmd(app),
-		newWhoamiCmd(app),
-		newManCmd(),
-		newVersionCmd(),
-	)
-	return root
+	// The same reads again, as operations, which is what `fb serve` and `fb mcp`
+	// answer with. Everything above is a kit escape hatch, and an escape hatch
+	// is a command and nothing else, so without this both surfaces are empty.
+	//
+	// NoCLI keeps them off the command line, where they would shadow the
+	// commands above. The difference is not cosmetic: the hand-written ones
+	// render the eight fields somebody typing `fb page nasa` wants, while a
+	// reflected Profile is forty columns with JSON in the cells.
+	app.SetClient(func(_ context.Context, kc kit.Config) (any, error) {
+		return fb.NewEngine(fbConfig(kc))
+	})
+	fb.RegisterOps(app, fb.OpOptions{NoCLI: true})
+	return app
 }
 
-func (a *App) init(g *globalFlags) error {
-	cfg := fb.DefaultConfig()
-	cfg.Delay = g.rate
-	cfg.Retries = g.retries
-	cfg.Timeout = g.timeout
-	cfg.Workers = g.workers
-	cfg.NoCache = g.noCache
-	cfg.CacheTTL = g.cacheTTL
-	cfg.UserAgent = g.userAgent
-	cfg.Proxy = g.proxy
-	cfg.Lang = g.lang
-	cfg.Verbose = g.verbose
-	switch g.surface {
-	case "mbasic":
-		cfg.Surface = fb.SurfaceMBasic
-	case "mobile":
-		cfg.Surface = fb.SurfaceMobile
-	default:
-		cfg.Surface = fb.SurfaceAuto
-	}
-
-	client, err := fb.NewClient(cfg)
-	if err != nil {
-		return err
-	}
-	a.Cfg = cfg
-	a.Client = client
-	a.Limit = g.limit
-	a.dryRun = g.dryRun
-	a.since = parseDate(g.since)
-	a.until = parseDate(g.until)
-	a.Out = newOutput(g)
-	return nil
+// withFBDefaults overlays fb's request defaults onto the kit baseline, so help
+// and `fb config show` read the same whether or not the user passed a flag.
+func withFBDefaults(c *kit.Config) {
+	c.Rate = time.Second
+	c.Retries = 2
+	c.Timeout = 30 * time.Second
 }
 
-func parseDate(s string) time.Time {
-	if s == "" {
-		return time.Time{}
-	}
-	for _, f := range []string{"2006-01-02", "2006/01/02", "01/02/2006"} {
-		if t, err := time.Parse(f, s); err == nil {
-			return t
-		}
-	}
-	return time.Time{}
-}
-
-// progress writes a status line to stderr unless --quiet is set.
-func (a *App) progress(format string, args ...any) {
-	if a.g != nil && a.g.quiet {
-		return
-	}
-	_, _ = fmt.Fprintf(os.Stderr, "[fb] "+format+"\n", args...)
-}
-
-// listOpts builds fb.ListOptions from the app's resolved flags.
-func (a *App) listOpts() fb.ListOptions {
-	return fb.ListOptions{Limit: a.Limit, Since: a.since, Until: a.until}
-}
-
-// readArgsOrStdin returns args, or lines from stdin when the single arg is "-".
-func readArgsOrStdin(args []string) []string {
-	if len(args) == 1 && args[0] == "-" {
-		var out []string
-		sc := bufio.NewScanner(os.Stdin)
-		sc.Buffer(make([]byte, 1024*1024), 1024*1024)
-		for sc.Scan() {
-			line := strings.TrimSpace(sc.Text())
-			if line != "" {
-				out = append(out, line)
-			}
-		}
-		return out
-	}
-	return args
+// bindFBFlags registers the fb-only persistent flags. kit already provides
+// -o/--output, --fields, --template, --no-header, -n/--limit, --rate,
+// --retries, --timeout, --data-dir, --no-cache, -q/--quiet, -v, --color and
+// --dry-run, so fb adds these three.
+func bindFBFlags(f *kit.FlagSet) {
+	f.StringVar(&flagTier, "tier", "", "cap the tier (0|1) or pin one surface (comet|graphql|og|embed|session)")
+	f.StringVar(&flagProxy, "proxy", "", "an HTTP proxy to send every request through")
+	f.DurationVar(&flagCacheTTL, "cache-ttl", 0, "how long a cached page counts as fresh (default 15m)")
 }
